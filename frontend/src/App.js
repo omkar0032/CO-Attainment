@@ -14,7 +14,6 @@ import {
 } from "react-router-dom";
 import Login from './components/navbar/Login';
 import Navbar from './components/navbar/Navbar';
-import DB_fetch from './components/db_Fetch';
 import Absent from './components/below_table';
 import ParentComponent from './components/ParentComponent';
 const App = () => {
@@ -28,13 +27,12 @@ const App = () => {
     <div>
       <Router>
       <Navbar title="Text2" about="About Info"  />
-        <div className="container my-3">
           <Routes>
             <Route path="/Login" element={<Login/>} />
+            <Route path="/" element={<Dropdown/>}/>
           </Routes>
-        </div>
       </Router>
-      <Dropdown/>
+      {/* <Dropdown/> */}
       <Footer/>
       
     </div>

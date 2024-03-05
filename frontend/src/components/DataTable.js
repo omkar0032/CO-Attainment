@@ -64,7 +64,6 @@ const DataTable = ({tableName}) => {
         formData.append('file', file);
 
         try {
-            console.log(tableName)
             const response = await axios.post(`http://localhost:3000/upload/${tableName}`, formData);
 
             if (response.status === 200) {
@@ -85,11 +84,10 @@ const DataTable = ({tableName}) => {
             <div className='accept-and-save'>
             
                 <input className='accept-file' type="file" onChange={handleFileChange} accept=".xlsx" />
-                {/* {file && <p>Selected File: {file.name}</p>} */}
                 <div className="omkar">
                 
                 <Button variant="primary" onClick={handleSave} disabled={uploading}>
-                    {uploading ? 'Uploading...' : 'Save to Database'}
+                    {uploading ? 'Uploading...' : 'Upload Excel'}
                 </Button>
                 
                 

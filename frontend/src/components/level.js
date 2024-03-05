@@ -81,7 +81,7 @@ const Level = () => {
   };
 
   return (
-    <div className='container'>
+    <div className='level-container'>
       <table>
         <tbody>
           <tr>

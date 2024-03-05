@@ -177,10 +177,10 @@ const countLevelThreeStudent = async() =>{
  console.log(countLevelTwoUT);
 };
   return (
-    <div id='below' ref={containerRef}  style={{ margin: 20 ,alignItems:'center' }}>
-     { resultState ?     <table border="1">
+    <div id='below' ref={containerRef}  className="result-table-container">
+     { resultState ?     <table className="result-table" border="1">
         <thead>
-          <tr style={{backgroundColor:'#1976d2'}}>
+          <tr style={{ backgroundColor: '#1976d2'}}>
             {/* <th>Total No. Absent</th> */}
             <th>Title</th>
             <th>UT1-Q1</th>

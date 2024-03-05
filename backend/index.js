@@ -1,6 +1,7 @@
 const express = require("express");
 const mysql = require("mysql2/promise");
 const ExcelJS = require("exceljs");
+const XLSX =require("XLSX");
 const fileUpload = require("express-fileupload");
 const app = express();
 const cors = require("cors");
@@ -34,6 +35,7 @@ const uploadDir = __dirname + "/uploads/";
 //     res.status(500).send("Internal Server Error");
 //   }
 // });
+const path = require("path");
 
 app.post("/upload/:tableName", async (req, res) => {
   try {
@@ -43,9 +45,10 @@ app.post("/upload/:tableName", async (req, res) => {
     const { tableName } = req.params;
 
     const excelFile = req.files.file;
+    const fileName = excelFile.name;
 
     // Save the file to a temporary location
-    const filePath = uploadDir + excelFile.name;
+    const filePath = path.join(__dirname, fileName);
     await excelFile.mv(filePath);
     console.log(filePath, tableName);
 
@@ -59,15 +62,88 @@ app.post("/upload/:tableName", async (req, res) => {
   }
 });
 
+// async function excelToMySQLArray(filePath, tableName) {
+//   try {
+//     // Load the Excel file
+//     const workbook = new ExcelJS.Workbook();
+//     await workbook.xlsx.readFile(filePath);
+//     console.log(tableName);
+//     // Get the first worksheet
+//     const worksheet = workbook.getWorksheet(1);
+
+//     // Define the MySQL table structure
+//     const columns = [
+//       "Serial No",
+//       "Roll No",
+//       "Seat No",
+//       "Name",
+//       "UT1-Q1",
+//       "UT1-Q2",
+//       "UT2-Q1",
+//       "UT2-Q2",
+//       "UT3-Q1",
+//       "UT3-Q2",
+//       "UA",
+//       "Total-UT1",
+//       "Total-UT2",
+//       "Total-UT3",
+//     ];
+
+//     // Initialize array to store data
+//     const dataArray = [];
+
+//     // Iterate through rows and convert to objects
+//     worksheet.eachRow((row, rowNumber) => {
+//       if (rowNumber !== 1) {
+//         // Skip the header row
+//         const rowData = {};
+
+//         // Populate rowData dynamically
+//         columns.forEach((colName, index) => {
+//           const cellValue = row.getCell(index + 1).value;
+//           rowData[colName] = cellValue;
+//         });
+
+//         // Push rowData to dataArray
+//         dataArray.push(rowData);
+//       }
+//     });
+
+//     // Insert data into the MySQL table
+//     if (dataArray.length > 0) {
+//       const placeholders = columns.map(() => "?").join(", ");
+
+//       const values = dataArray.map((rowData) =>
+//         columns.map((col) => rowData[col])
+//       );
+
+//       // Execute the SQL INSERT query
+//       await pool.execute(
+//         `INSERT INTO ${tableName} (\`${columns.join("`, `")}\`) VALUES ${values
+//           .map(() => `(${placeholders})`)
+//           .join(", ")}`,
+//         values.flat()
+//       );
+
+//       console.log("Data inserted into MySQL table.");
+//     } else {
+//       console.log("No data to insert.");
+//     }
+//   } catch (error) {
+//     console.error("Error:", error);
+//   }
+// }
+
+//temp ai code
+
 async function excelToMySQLArray(filePath, tableName) {
+  
   try {
     // Load the Excel file
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(filePath);
-    console.log(tableName);
     // Get the first worksheet
     const worksheet = workbook.getWorksheet(1);
-
     // Define the MySQL table structure
     const columns = [
       "Serial No",
@@ -98,7 +174,19 @@ async function excelToMySQLArray(filePath, tableName) {
         // Populate rowData dynamically
         columns.forEach((colName, index) => {
           const cellValue = row.getCell(index + 1).value;
-          rowData[colName] = cellValue;
+
+          // Check for 'A' or 'FF' and handle accordingly
+          if (cellValue === 'A') {
+            rowData[colName] = null; // 'A' should be saved as null
+          }
+          else if (cellValue === 'ff') {
+            // If 'FF' is encountered, set all fields in the row to null except for specified columns
+            rowData[colName] = 0;
+          }
+        
+        else {
+            rowData[colName] = cellValue;
+          }
         });
 
         // Push rowData to dataArray
@@ -189,7 +277,7 @@ app.post("/updateDatabase/:tableName", async (req, res) => {
           q22,
           q31,
           q32,
-          ua,
+          ua === "FF" ? 0 : ua,
           tut1,
           tut2,
           tut3,
@@ -198,9 +286,7 @@ app.post("/updateDatabase/:tableName", async (req, res) => {
         ];
 
         const [result] = await pool.query(query, values);
-        console.log(
-          `Row with Roll No ${roll} and Seat No ${seat} updated successfully`
-        );
+        console.log(result)
       })
     );
 

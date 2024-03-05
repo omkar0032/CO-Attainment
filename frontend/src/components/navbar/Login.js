@@ -1,68 +1,58 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0
+    };
+  }
 
-  const handleSubmit = (e) => {
-    // e.preventDefault();
+  // Guideline 1: Always define the initial state in the constructor
+  // and avoid directly mutating the state
 
-    // Check if the password meets the minimum length requirement
-    if (password.length < 8) {
-      alert('Password must be at least 8 characters long.');
-      return;
-    }
-    // Reset the form fields after submission (if needed)
-    setEmail('');
-    setPassword('');
+  // Guideline 2: Use lifecycle methods when necessary
+  componentDidMount() {
+    // Perform any side effects (e.g., API calls, subscriptions) here
+  }
+
+  // Guideline 3: Define event handlers and other functions
+  // outside of the render method for better readability
+  handleIncrement = () => {
+    this.setState({ count: this.state.count + 1 });
   };
 
-  return (
-    <>
-      <div className="container d-flex justify-content-center  vh-100" style={{marginTop:'50px'}}>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="exampleInputEmail1" className="form-label" >
-            Email address
-          </label>
-          <input
-            type="email"
-            className="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <div id="emailHelp" className="form-text">
-            We'll never share your email with anyone else.
-          </div>
-        </div>
-        
-        <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
-            Password
-          </label>
-          <input
-            type="password"
-            className="form-control"
-            id="exampleInputPassword1"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        
-        <div className="text-center my-4"  >
-        <button type="button" class="btn btn-secondary" style={{width:'150px'}}>Login By Google</button>
+  handleDecrement = () => {
+    this.setState({ count: this.state.count - 1 });
+  };
 
-        </div>
-
-        <div className="text-center my-3">
-        <button type="submit" className="btn btn-primary "style={{width:'150px'}} >
-          Submit
-        </button>
-        </div>
-      </form>
+  render() {
+    // Guideline 4: Always return a single root element
+    return (
+      <div>
+        {/* Guideline 5: Use JSX syntax to define UI elements */}
+        <h1>Counter: {this.state.count}</h1>
+        {/* Guideline 6: Attach event handlers to elements */}
+        <button onClick={this.handleIncrement}>Increment</button>
+        <button onClick={this.handleDecrement}>Decrement</button>
+        {/* Guideline 7: Use props to make components reusable */}
+        <ChildComponent />
       </div>
-    </>
-  );
+    );
+  }
 }
+
+// Guideline 8: Use functional components whenever possible
+function ChildComponent() {
+  return (
+    <div>
+      <h2>Child Component</h2>
+    </div>
+  );
+}
+
+export default MyComponent;
+
+// Guideline 9: Use export default to export a single component from a file
+
+// Guideline 10: Follow consistent naming conventions for components
