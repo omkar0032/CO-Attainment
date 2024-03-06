@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import axios from 'axios';
 import "react-toastify/dist/ReactToastify.css";
@@ -7,7 +7,8 @@ import { ToastContainer, toast } from "react-toastify";
 const ShyamImport = ({tableName}) => {
     const [file, setFile] = useState(null);
     const [uploading, setUploading] = useState(false);
-
+    const [showTeachersBool,setShowTeachersBool]=useState(false);
+    const [teachersData,setTeachersData]=useState([]);
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
     };
@@ -84,10 +85,51 @@ const ShyamImport = ({tableName}) => {
             setUploading(false);
         }
     };
+    const showTeachers=async()=>{
+        try{
+        setShowTeachersBool(true);
+        const response=await axios.get(`http://localhost:3000/createTable/teachersTable/${tableName}`);
+        console.log(response.data)
+        // setTeachersData(result);
+            if (response.data.length === 0) {
+              // Display toast notification for empty table
+              toast.warn("Table is empty. Upload to the database.");
+            } else if (response.status === 200) {
+              if (response.data === "Table created successfully.") {
+                // Table created successfully, show success notification
+                toast.success("Table Created Successfully. Enter Data.");
+              } else {
+                // Table data fetched successfully, show success notification
+                toast.success("Data Fetched Successfully.");
+                // Handle table data if needed
+                if (response.data.length === 0) {
+                  // Display toast notification for empty table
+                  toast.warning("Table is empty. Upload to the database.");
+                } 
+                // else {
+                  // console.log("first")
+                  // console.log(reportInfo);
+                  // console.log(valuefortest1)
+                //   const updatedData = response.data.map((row) => {});
+                //   console.log(updatedData)
+                  setTeachersData(response.data);
+                  console.log(teachersData)
+                  // console.log(data)
+                // }
+              }
+            } else {
+              // Unexpected response, handle it
+              console.error("Unexpected response:", response);
+              // Handle unexpected response if needed
+            }
+          } catch (error) {
+            console.error("Error creating table:", error);
+            // Handle error if needed
+          }
 
-
+    }
     return (
-        <>
+        <><Button onClick={downloadSampleFile} style={{margin:'0 0 0 43%'}} >Download Sample File</Button>
             <div className='accept-and-save'>
             
                 <input className='accept-file' type="file" onChange={handleFileChange} accept=".xlsx" />
@@ -96,13 +138,41 @@ const ShyamImport = ({tableName}) => {
                 <Button variant="primary" onClick={handleSave} disabled={uploading}>
                     {uploading ? 'Uploading...' : 'Upload Excel'}
                 </Button>
-                
-                
                 </div>
                 
                 
             </div>
-            <Button onClick={downloadSampleFile} style={{margin:'0 0 0 43%'}} >Download Sample File</Button>
+            <Button onClick={showTeachers} style={{margin:'0 0 0 43%'}} >Show teachers</Button>
+            {showTeachersBool && (<div>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>Sr No</th>
+                            <th>Mail</th>
+                            <th>Password</th>
+                            <th>Name</th>
+                            <th>Subject</th>
+                            <th>Division</th>
+                            <th>Coordinator</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        { teachersData.map((row,index)=>{
+                            return (
+                                <tr key={index}>
+                                    <td>{index+1}</td>
+                                    <td className="name-col">{row["Email ID"]}</td>
+                                    <td>{row["Password"]}</td>
+                                    <td >{row["Name"]}</td>
+                                    <td>{row["Subject"]}</td>
+                                    <td>{row["Division"]}</td>
+                                    <td>{row["Coordinator"]}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </Table>
+            </div>)}
         </>
     );
 };

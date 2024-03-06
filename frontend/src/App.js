@@ -30,7 +30,7 @@ const App = () => {
       <Navbar title="Text2" about="About Info"  />
           <Routes>
             <Route path="/Login" element={<Login/>} />
-            <Route path="/" element={<Dropdown/>}/>
+            <Route path="/" element={<Shyam/>}/>
           </Routes>
       </Router>
       {/* <Dropdown/> */}

@@ -29,17 +29,14 @@ const createTableTeachers = async (req, res) => {
         console.log(rowCount);
         if (rowCount === 0) {
           // Table is empty, send notification
-          console.log("first");
           const fetchDataQuery = `SELECT * FROM ${tableName}`;
           const tableData = await teachersPool.query(fetchDataQuery);
           console.log(rowCount);
           return res.status(200).send([]);
         } else {
-          console.log("tableData[0]");
           // Table is not empty, fetch data
           const fetchDataQuery = `SELECT * FROM ${tableName}`;
           const tableData = await teachersPool.query(fetchDataQuery);
-          // console.log(tableData[0])
           return res.status(200).send(tableData[0]);
         }
       } else {
@@ -50,7 +47,7 @@ const createTableTeachers = async (req, res) => {
       \`Email ID\` VARCHAR(50) UNIQUE,
       \`Password\` VARCHAR(20),
       Name VARCHAR(255),
-      \`Subject\` INT,
+      \`Subject\` VARCHAR(255),
       \`Division\` INT,
       \`Coordinator\` BOOLEAN
     )
