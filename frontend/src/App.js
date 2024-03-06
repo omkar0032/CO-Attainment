@@ -16,6 +16,7 @@ import Login from './components/navbar/Login';
 import Navbar from './components/navbar/Navbar';
 import Absent from './components/below_table';
 import ParentComponent from './components/ParentComponent';
+import Shyam from './components/master/shyam';
 const App = () => {
   const [data, setData] = useState([]);
   const [excelData, setExcelData] = useState([]);
