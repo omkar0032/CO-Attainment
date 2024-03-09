@@ -53,7 +53,7 @@ function Dropdown() {
     const [showTable, setShowTable] = useState(false);
     // passed in option={patternname}
     const createTable = async () => {
-      const tableName = `${valueforpattern?.value}_${valueforyear?.value}_${valuefordepartment?.value}${valuefordivision?.value}_${valueforsem?.value}_${valueforsubject?.value}`;
+      const tableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${valueforsem?.value}_${valueforsubject?.value}`;
   
       if (
         valueforpattern &&

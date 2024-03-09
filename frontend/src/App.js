@@ -17,6 +17,7 @@ import Navbar from './components/navbar/Navbar';
 import Absent from './components/below_table';
 import ParentComponent from './components/ParentComponent';
 import Shyam from './components/master/shyam';
+import LoginNikunj from './components/login';
 const App = () => {
   const [data, setData] = useState([]);
   const [excelData, setExcelData] = useState([]);
@@ -27,14 +28,14 @@ const App = () => {
   return (
     <div>
       <Router>
-      <Navbar title="Text2" about="About Info"  />
+      {/* <Navbar title="Text2" about="About Info"  /> */}
           <Routes>
-            <Route path="/Login" element={<Login/>} />
-            <Route path="/" element={<Shyam/>}/>
+            {/* <Route path="/Login" element={<Login/>} /> */}
+            <Route path="/" element={<LoginNikunj/>}/>
           </Routes>
       </Router>
       {/* <Dropdown/> */}
-      <Footer/>
+      {/* <Footer/> */}
       
     </div>
   );
