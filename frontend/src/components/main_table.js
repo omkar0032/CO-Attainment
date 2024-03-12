@@ -98,35 +98,6 @@ const Main_table = ({ tableName }) => {
     }
   };
 
-  // const handleMarksChange = (index, question, value, e) => {
-  //   try {
-  //     const updatedData = [...data];
-  //     const numericValue = isNaN(value) ? 0 : parseInt(value, 10);
-
-  //     // Limit marks to a maximum of 15
-  //     const limitedMarks = Math.min(numericValue, 15);
-
-  //     updatedData[index] ??= {};
-  //     updatedData[index][question] = limitedMarks;
-
-  //     // Recalculate total marks
-  //     updatedData[index]["Total-UT1"] =
-  //       (updatedData[index]["UT1-Q1"] || 0) +
-  //       (updatedData[index]["UT1-Q2"] || 0);
-  //     updatedData[index]["Total-UT2"] =
-  //       (updatedData[index]["UT2-Q1"] || 0) +
-  //       (updatedData[index]["UT2-Q2"] || 0);
-  //     updatedData[index]["Total-UT3"] =
-  //       (updatedData[index]["UT3-Q1"] || 0) +
-  //       (updatedData[index]["UT3-Q2"] || 0);
-
-  //     setData(updatedData);
-  //   } catch (error) {
-  //     console.error("Error occurred while handling marks change:", error);
-  //     // Handle error here, such as displaying a message to the user
-  //   }
-  // };
-
   useEffect(() => {
     const updatedData = data.map((row) => {
       const totalUT1 = (row["UT1-Q1"] !== null && row["UT1-Q2"] !== null) ? row["UT1-Q1"] + row["UT1-Q2"] : null;
@@ -361,19 +332,60 @@ const Main_table = ({ tableName }) => {
     XLSX.writeFile(workbook, "students_data.xlsx");
 };
 
+const addHeaderContent = (doc, data) => {
+  // Add content to 1/4th of the page
+  const contentX = doc.internal.pageSize.getWidth() / 2; // Center align content
+  const contentY = 20; // Adjust Y position as needed
 
+  // Add content goes here text
+  const content = `Final CO Attainment for ${valueforacadamicyearlabel} `;
+  doc.setFont("helvetica", "bold"); // Make the text bold
+  doc.text(content, contentX, contentY, { align: "center" });
+
+  // Add image
+  const img = new Image();
+  img.src = "./defaultHeader.jpg"; // Specify the path to your image
+  const imgWidth = 400; // Adjust image width as needed
+  const imgHeight = 80; // Adjust image height as needed
+  doc.addImage(img, 'JPEG', contentX - imgWidth / 2, contentY + 20, imgWidth, imgHeight);
+
+  // Add subheading
+  const subheading1 = `Subject: ${valueforsubjectlabel}`;
+  const subheading2 = `Class: ${valueforyearlabel}`;
+  const subheading3 = `Year & Sem: ${valueforacadamicyearlabel}, ${valueforsemlabel}`;
+  doc.setFontSize(14);
+  doc.text([subheading1, subheading2, subheading3], contentX-150, contentY + 130, { align: "center" });
+  doc.setFont('normal');
+  return contentY + 200; // Return the startY position for the table
+};
 
 const generatePDF = () => {
   // Create new jsPDF instance
   const doc = new jsPDF('l', 'pt', 'a4');
 
-  // Set the position for the table
-  const startY = 20;
-  const tableHeader = ["Serial No", "Roll No", "Seat No", "Name", "UT1-Q1", "UT1-Q2", "UT2-Q1", "UT2-Q2", "UT3-Q1", "UT3-Q2", "UA", "Total-UT1", "Total-UT2", "Total-UT3"];
+  // Set startY position for the table
+  const startY = addHeaderContent(doc, data);
 
-  // Define data for the table with the new header
-  const tableData = [
-    tableHeader, // Add the table header
+  // Define small table data
+  const smallTableData = [
+    ["Subject", valueforsubjectlabel],
+    ["Class", valueforyearlabel],
+    ["Year & Sem", `${valueforacadamicyearlabel}, ${valueforsemlabel}`]
+  ];
+
+  // Add small table to the right side
+  doc.autoTable({
+    startY: 130, // Adjust Y position as needed
+    head: [["Field", "Value"]],
+    body: smallTableData,
+    theme: 'grid',
+    margin: { left: 400 } // Adjust margin to position the table on the right side
+  });
+
+  // Define main table headers and data
+  const mainTableHeader = ["Serial No", "Roll No", "Seat No", "Name", "UT1-Q1", "UT1-Q2", "UT2-Q1", "UT2-Q2", "UT3-Q1", "UT3-Q2", "UA", "Total-UT1", "Total-UT2", "Total-UT3"];
+  const mainTableData = [
+    mainTableHeader, // Add the table header
     ...data.map(row => {
       // Replace null values with 'A' and 'FF' as required
       return [
@@ -395,7 +407,7 @@ const generatePDF = () => {
     })
   ];
 
-  // Adjust column width and row height
+  // Adjust column width and row height for the main table
   const columnStyles = {
     Name: { columnWidth: 120 }, // Increase the width of the "Name" column
     "Serial No": { columnWidth: 30 }, // Reduce the width of the "Serial No" column
@@ -403,12 +415,13 @@ const generatePDF = () => {
     "Seat No": { columnWidth: 70 } // Reduce the width of the "Seat No" column
   };
 
-  // Add the table to the PDF using autoTable
+  // Add the main table below the small table
   doc.autoTable({
     startY,
-    head: [tableHeader],
-    body: tableData.slice(1),
+    head: [mainTableHeader],
+    body: mainTableData.slice(1), // Skip the table header
     columnStyles: columnStyles,
+    theme: 'grid',
     didDrawCell: (data) => {
       if (data.column.index === 3) { // Check if it's the "Name" column
         // Reduce font size to fit the content in the cell
@@ -424,8 +437,117 @@ const generatePDF = () => {
   });
 
   // Save the PDF
+  doc.setFont("helvetica", "normal"); // Set font to normal
+doc.setFontSize(10); // Set font size to 10 (or adjust as needed)
+
+const totalPages = doc.internal.getNumberOfPages();
+for (let i = 1; i <= totalPages; i++) {
+  doc.setPage(i);
+  doc.text('Page ' + i + ' of ' + totalPages, doc.internal.pageSize.getWidth() - 70, doc.internal.pageSize.getHeight() - 10);
+}
+
+  // Add a new page for "below" content
+  doc.addPage();
+
+  // Add content for "below"
+  const belowContentX = doc.internal.pageSize.getWidth() / 2; // Center align content
+const belowContentY = 20; // Adjust Y position as needed
+const belowContent1 = "Final Attainment Calculation";
+doc.setFont("helvetica", "bold"); // Make the text bold
+doc.setFontSize(20);
+doc.text(belowContent1, belowContentX, belowContentY, { align: "center" });
+doc.setFont('normal');
+doc.setFontSize(10);
+
+// Get the HTML content of the component with id "below"
+// Get the below content from the UI
+// Get the below content from the UI
+const belowContentElement = document.getElementById('below');
+
+// Convert the table HTML to a string
+const tableHtml = belowContentElement.innerHTML;
+
+// Create a temporary element to parse the HTML table
+const tempElement = document.createElement('div');
+tempElement.innerHTML = tableHtml;
+
+// Get the table element
+const tableElement = tempElement.querySelector('table');
+
+// Parse the HTML table and extract the data
+const tableData = [];
+const headers = [];
+const rows = tableElement.querySelectorAll('tr');
+rows.forEach((row, rowIndex) => {
+  const rowData = [];
+  const cells = row.querySelectorAll('th, td');
+  cells.forEach((cell, cellIndex) => {
+    const text = cell.textContent.trim();
+    if (rowIndex === 0) {
+      headers.push(text);
+    } else {
+      rowData.push(text);
+    }
+  });
+  if (rowIndex !== 0) {
+    tableData.push(rowData);
+  }
+});
+
+// Add the table to the PDF
+doc.autoTable({
+  head: [headers],
+  body: tableData,
+  startY: belowContentY + 50, // Adjust Y position as needed
+  theme: 'striped',
+  margin: { left: 40, right: 40 } // Adjust margins as needed
+});
+// Get the below content from the UI
+const belowContentElement2 = document.getElementById('below-attainment');
+
+// Convert the table HTML to a string
+const tableHtml2 = belowContentElement2.innerHTML;
+
+// Create a temporary element to parse the HTML table
+const tempElement2 = document.createElement('div');
+tempElement2.innerHTML = tableHtml2;
+
+// Get the table element
+const tableElement2 = tempElement2.querySelector('table');
+
+// Parse the HTML table and extract the data
+const tableData2 = [];
+const rows2 = tableElement2.querySelectorAll('tr');
+rows2.forEach((row, rowIndex) => {
+  const rowData2 = [];
+  const cells2 = row.querySelectorAll('td');
+  cells2.forEach((cell, cellIndex) => {
+    const text2 = cell.textContent.trim();
+    rowData2.push(text2);
+  });
+  tableData2.push(rowData2);
+});
+
+// Add the second table to the PDF
+doc.autoTable({
+  body: tableData2,
+  startY: belowContentY + 450, // Adjust Y position as needed
+  theme: 'striped',
+  margin: { left: 300, right: 300 } // Adjust margins as needed
+});
+
+
+
+
+
+  // Add page number for the "below" page
+  // Save the PDF
   doc.save("table.pdf");
 };
+
+
+
+
 
 
 

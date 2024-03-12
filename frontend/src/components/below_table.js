@@ -378,7 +378,7 @@ function BelowTable({ containerRef, tableName }) {
         </table> : <div></div>}
       </div>
       <h1 style={{ textAlign: 'center', marginTop: '50px' }}>CO-PO ATTAINMENT</h1>
-      <div className="container" style={{ marginTop: "0px" }}>
+      <div id='below-attainment' className="container" style={{ marginTop: "0px" }}>
         <table style={{ margin: "25px" }}>
           <tbody>
             <tr>
