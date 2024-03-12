@@ -310,9 +310,9 @@ const countsOfAbsentStudent = async (req, res) => {
 
 // for counting present student
 const countsOfPresentStudentPercentage = async (req, res) => {
-    try {
-        const { tableName } = req.params;
-        let sql = `SELECT
+  try {
+    const { tableName } = req.params;
+    let sql = `SELECT
         (SUM(CASE WHEN \`UT1-Q1\` IS NOT NULL THEN 1 ELSE 0 END) * 100) / COUNT(*) AS sum_q11,
         (SUM(CASE WHEN \`UT1-Q2\` IS NOT NULL THEN 1 ELSE 0 END) * 100) / COUNT(*) AS sum_q12,
         (SUM(CASE WHEN \`UT2-Q1\` IS NOT NULL THEN 1 ELSE 0 END) * 100) / COUNT(*) AS sum_q21,
@@ -322,39 +322,45 @@ const countsOfPresentStudentPercentage = async (req, res) => {
         (SUM(CASE WHEN UA IS NOT NULL THEN 1 ELSE 0 END) * 100) / COUNT(*) AS sum_UA
       FROM ${tableName} AS new_table;
       `;
-        const queryResult = await pool.query(sql);
-    
-        if (queryResult.length === 0) {
-          console.log("No data found");
-          res.status(404).send("No data found");
-          return;
-        }
-    
-        // Log the entire first row of the result
-        // console.log("First row of the result:", queryResult[0]);
-    
-        // Attempt to fetch the value of sum_q11
-        const present = queryResult[0];
-        // console.log("Fetched sum_q11:", present);
-    
-        res.send(present); // Sending a JSON response with the value of sum_q11
-      } catch (error) {
+    const queryResult = await pool.query(sql);
+
+    if (queryResult.length === 0) {
+      console.log("No data found");
+      res.status(404).send("No data found");
+      return;
+    }
+
+    // Log the entire first row of the result
+    // console.log("First row of the result:", queryResult[0]);
+
+    // Attempt to fetch the value of sum_q11
+    const present = queryResult[0];
+    // console.log("Fetched sum_q11:", present);
+
+    res.send(present); // Sending a JSON response with the value of sum_q11
+  } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).send("Internal Server Error");
   }
 };
 
+
 // To find level 1 student count
 const countsOflevel1 = async (req, res) => {
   try {
     const { tableName } = req.params;
+
+    const resultQuery = `SELECT * FROM max_marks_for_each_co WHERE Main_Table_Name = '${tableName}'`;
+    const result = await pool.query(resultQuery);
+    const firstResult = result[0][0];
+
     let sql = `SELECT
-      SUM(CASE WHEN (\`UT1-Q1\` IS NOT NULL AND \`UT1-Q1\` >=(10*40/100) ) THEN 1 ELSE 0 END) AS sum_q11,
-      SUM(CASE WHEN (\`UT1-Q2\` IS NOT NULL AND \`UT1-Q2\` >=(10*40/100) ) THEN 1 ELSE 0 END) AS sum_q12,
-      SUM(CASE WHEN (\`UT2-Q1\` IS NOT NULL AND \`UT2-Q1\` >=(10*40/100) ) THEN 1 ELSE 0 END) AS sum_q21,
-      SUM(CASE WHEN (\`UT2-Q2\` IS NOT NULL AND \`UT2-Q2\` >=(10*40/100) ) THEN 1 ELSE 0 END) AS sum_q22,
-      SUM(CASE WHEN (\`UT3-Q1\` IS NOT NULL AND \`UT3-Q1\` >=(10*40/100) ) THEN 1 ELSE 0 END) AS sum_q31,
-      SUM(CASE WHEN (\`UT3-Q2\` IS NOT NULL AND \`UT3-Q2\` >=(10*40/100) ) THEN 1 ELSE 0 END) AS sum_q32,
+      SUM(CASE WHEN (\`UT1-Q1\` IS NOT NULL AND \`UT1-Q1\` >=(${firstResult['CO-1']}*40/100) ) THEN 1 ELSE 0 END) AS sum_q11,
+      SUM(CASE WHEN (\`UT1-Q2\` IS NOT NULL AND \`UT1-Q2\` >=(${firstResult['CO-2']}*40/100) ) THEN 1 ELSE 0 END) AS sum_q12,
+      SUM(CASE WHEN (\`UT2-Q1\` IS NOT NULL AND \`UT2-Q1\` >=(${firstResult['CO-3']}*40/100) ) THEN 1 ELSE 0 END) AS sum_q21,
+      SUM(CASE WHEN (\`UT2-Q2\` IS NOT NULL AND \`UT2-Q2\` >=(${firstResult['CO-4']}*40/100) ) THEN 1 ELSE 0 END) AS sum_q22,
+      SUM(CASE WHEN (\`UT3-Q1\` IS NOT NULL AND \`UT3-Q1\` >=(${firstResult['CO-5']}*40/100) ) THEN 1 ELSE 0 END) AS sum_q31,
+      SUM(CASE WHEN (\`UT3-Q2\` IS NOT NULL AND \`UT3-Q2\` >=(${firstResult['CO-6']}*40/100) ) THEN 1 ELSE 0 END) AS sum_q32,
       SUM(CASE WHEN (UA IS NOT NULL AND UA >=(100*40/100) ) THEN 1 ELSE 0 END) AS sum_UA
       FROM ${tableName} AS new_table;`;
 
@@ -384,13 +390,18 @@ const countsOflevel1 = async (req, res) => {
 const countsOflevel2 = async (req, res) => {
   try {
     const { tableName } = req.params;
+
+    const resultQuery = `SELECT * FROM max_marks_for_each_co WHERE Main_Table_Name = '${tableName}'`;
+    const result = await pool.query(resultQuery);
+    const firstResult = result[0][0];
+
     let sql = `SELECT
-      SUM(CASE WHEN (\`UT1-Q1\` IS NOT NULL AND \`UT1-Q1\` >=(10*60/100) ) THEN 1 ELSE 0 END) AS sum_q11,
-      SUM(CASE WHEN (\`UT1-Q2\` IS NOT NULL AND \`UT1-Q2\` >=(10*60/100) ) THEN 1 ELSE 0 END) AS sum_q12,
-      SUM(CASE WHEN (\`UT2-Q1\` IS NOT NULL AND \`UT2-Q1\` >=(10*60/100) ) THEN 1 ELSE 0 END) AS sum_q21,
-      SUM(CASE WHEN (\`UT2-Q2\` IS NOT NULL AND \`UT2-Q2\` >=(10*60/100) ) THEN 1 ELSE 0 END) AS sum_q22,
-      SUM(CASE WHEN (\`UT3-Q1\` IS NOT NULL AND \`UT3-Q1\` >=(10*60/100) ) THEN 1 ELSE 0 END) AS sum_q31,
-      SUM(CASE WHEN (\`UT3-Q2\` IS NOT NULL AND \`UT3-Q2\` >=(10*60/100) ) THEN 1 ELSE 0 END) AS sum_q32,
+      SUM(CASE WHEN (\`UT1-Q1\` IS NOT NULL AND \`UT1-Q1\` >=(${firstResult['CO-1']}*60/100) ) THEN 1 ELSE 0 END) AS sum_q11,
+      SUM(CASE WHEN (\`UT1-Q2\` IS NOT NULL AND \`UT1-Q2\` >=(${firstResult['CO-2']}*60/100) ) THEN 1 ELSE 0 END) AS sum_q12,
+      SUM(CASE WHEN (\`UT2-Q1\` IS NOT NULL AND \`UT2-Q1\` >=(${firstResult['CO-3']}*60/100) ) THEN 1 ELSE 0 END) AS sum_q21,
+      SUM(CASE WHEN (\`UT2-Q2\` IS NOT NULL AND \`UT2-Q2\` >=(${firstResult['CO-4']}*60/100) ) THEN 1 ELSE 0 END) AS sum_q22,
+      SUM(CASE WHEN (\`UT3-Q1\` IS NOT NULL AND \`UT3-Q1\` >=(${firstResult['CO-5']}*60/100) ) THEN 1 ELSE 0 END) AS sum_q31,
+      SUM(CASE WHEN (\`UT3-Q2\` IS NOT NULL AND \`UT3-Q2\` >=(${firstResult['CO-6']}*60/100) ) THEN 1 ELSE 0 END) AS sum_q32,
       SUM(CASE WHEN (UA IS NOT NULL AND UA >=(100*60/100) ) THEN 1 ELSE 0 END) AS sum_UA
       FROM ${tableName} AS new_table;`;
 
@@ -420,13 +431,17 @@ const countsOflevel2 = async (req, res) => {
 const countsOflevel3 = async (req, res) => {
   try {
     const { tableName } = req.params;
+
+    const resultQuery = `SELECT * FROM max_marks_for_each_co WHERE Main_Table_Name = '${tableName}'`;
+    const result = await pool.query(resultQuery);
+    const firstResult = result[0][0];
     let sql = `SELECT
-      SUM(CASE WHEN (\`UT1-Q1\` IS NOT NULL AND \`UT1-Q1\` >=(10*66/100) ) THEN 1 ELSE 0 END) AS sum_q11,
-      SUM(CASE WHEN (\`UT1-Q2\` IS NOT NULL AND \`UT1-Q2\` >=(10*66/100) ) THEN 1 ELSE 0 END) AS sum_q12,
-      SUM(CASE WHEN (\`UT2-Q1\` IS NOT NULL AND \`UT2-Q1\` >=(10*66/100) ) THEN 1 ELSE 0 END) AS sum_q21,
-      SUM(CASE WHEN (\`UT2-Q2\` IS NOT NULL AND \`UT2-Q2\` >=(10*66/100) ) THEN 1 ELSE 0 END) AS sum_q22,
-      SUM(CASE WHEN (\`UT3-Q1\` IS NOT NULL AND \`UT3-Q1\` >=(10*66/100) ) THEN 1 ELSE 0 END) AS sum_q31,
-      SUM(CASE WHEN (\`UT3-Q2\` IS NOT NULL AND \`UT3-Q2\` >=(10*66/100) ) THEN 1 ELSE 0 END) AS sum_q32,
+      SUM(CASE WHEN (\`UT1-Q1\` IS NOT NULL AND \`UT1-Q1\` >=(${firstResult['CO-1']}*66/100) ) THEN 1 ELSE 0 END) AS sum_q11,
+      SUM(CASE WHEN (\`UT1-Q2\` IS NOT NULL AND \`UT1-Q2\` >=(${firstResult['CO-2']}*66/100) ) THEN 1 ELSE 0 END) AS sum_q12,
+      SUM(CASE WHEN (\`UT2-Q1\` IS NOT NULL AND \`UT2-Q1\` >=(${firstResult['CO-3']}*66/100) ) THEN 1 ELSE 0 END) AS sum_q21,
+      SUM(CASE WHEN (\`UT2-Q2\` IS NOT NULL AND \`UT2-Q2\` >=(${firstResult['CO-4']}*66/100) ) THEN 1 ELSE 0 END) AS sum_q22,
+      SUM(CASE WHEN (\`UT3-Q1\` IS NOT NULL AND \`UT3-Q1\` >=(${firstResult['CO-5']}*66/100) ) THEN 1 ELSE 0 END) AS sum_q31,
+      SUM(CASE WHEN (\`UT3-Q2\` IS NOT NULL AND \`UT3-Q2\` >=(${firstResult['CO-6']}*66/100) ) THEN 1 ELSE 0 END) AS sum_q32,
       SUM(CASE WHEN (UA IS NOT NULL AND UA >=(100*66/100) ) THEN 1 ELSE 0 END) AS sum_UA
       FROM ${tableName} AS new_table;`;
 
@@ -451,6 +466,60 @@ const countsOflevel3 = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
+
+
+
+const updateMaxMarks = async (req, res) => {
+  try {
+    console.log("in bacend");
+    const valueForMaxMarks = req.body.valueForMaxMarks;
+    const tableName = req.params.tableName;
+    // console.log(valueForMaxMarks);
+
+    const { CO_1, CO_2, CO_3, CO_4, CO_5, CO_6 } = valueForMaxMarks;
+
+    const query = `
+      UPDATE max_marks_for_each_co
+      SET \`CO-1\` = ?, \`CO-2\` = ?, \`CO-3\` = ?, \`CO-4\` = ?,
+          \`CO-5\` = ?, \`CO-6\` = ?
+      WHERE \`Main_Table_Name\` = '${tableName}'`;
+
+    const values = [CO_1, CO_2, CO_3, CO_4, CO_5, CO_6];
+
+    await pool.query(query, values);
+    res.json({ message: "Data updated successfully" });
+  } catch (error) {
+    console.error("Error updating marks:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+const getMaxMarks = async (req, res) => {
+  const { tableName } = req.params;
+
+  try {
+    // Check if entry with Main_Table_Name exists
+    const checkQuery = `SELECT * FROM max_marks_for_each_co WHERE Main_Table_Name = '${tableName}'`;
+    const checkResult = await pool.query(checkQuery);
+
+    if (checkResult[0].length === 0) {
+      // If Main_Table_Name entry doesn't exist, create it with default values
+      const createQuery = `INSERT INTO max_marks_for_each_co (Main_Table_Name, \`CO-1\`, \`CO-2\`, \`CO-3\`, \`CO-4\`, \`CO-5\`, \`CO-6\`) VALUES ('${tableName}', 15 , 15, 15, 15, 15, 15)`;
+      await pool.query(createQuery);
+    }
+
+    // Retrieve the data
+    const resultQuery = `SELECT * FROM max_marks_for_each_co WHERE Main_Table_Name = '${tableName}'`;
+    const result = await pool.query(resultQuery);
+
+    res.status(200).send(result[0]);
+  } catch (error) {
+    console.error("Error while fetching", error);
+    res.status(500).send("Error while fetching");
+  }
+};
 module.exports = {
   createTableStudents,
   uploadExcelStudents,
@@ -461,4 +530,6 @@ module.exports = {
   countsOflevel1,
   countsOflevel2,
   countsOflevel3,
+  getMaxMarks,
+  updateMaxMarks
 };

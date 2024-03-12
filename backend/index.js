@@ -11,10 +11,12 @@ app.use(fileUpload());
 // Import routes
 const studentsRoutes = require("./routes/studentsRoutes");
 const teachersRoutes = require("./routes/teachersRoutes");
+const targetRoutes=require("./routes/targetRoutes")
 
 // Use routes
 app.use(studentsRoutes);
 app.use(teachersRoutes);
+app.use(targetRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;

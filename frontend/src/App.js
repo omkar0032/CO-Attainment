@@ -12,12 +12,15 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import Login from './components/navbar/Login';
 import Navbar from './components/navbar/Navbar';
-import Absent from './components/below_table';
 import ParentComponent from './components/ParentComponent';
-import Shyam from './components/master/shyam';
-import LoginNikunj from './components/login';
+import MasterMain from './components/master/mainMaster';
+import LoginForm from './components/login';
+import ForgotPassword from './components/ForgotPassword';
+import VerifyOTP from './components/VerifyOTP';
+import ResendOTP from './components/resendOTP';
+import ResetPassword from './components/resetPassword';
+import Average from './components/average';
 const App = () => {
   const [data, setData] = useState([]);
   const [excelData, setExcelData] = useState([]);
@@ -28,15 +31,22 @@ const App = () => {
   return (
     <div>
       <Router>
-      <Navbar title="Text2" about="About Info"  />
-          <Routes>
-            {/* <Route path="/Login" element={<Login/>} /> */}
-            <Route path="/" element={<Dropdown/>}/>
-          </Routes>
+        <Navbar title="Text2" about="About Info" />
+        <Routes>
+          {/* <Route path="/" element={<Shyam />} /> */}
+          <Route path="/forgot-password" element={<ForgotPassword />}></Route>
+          <Route path="/resend-otp" element={<ResendOTP />}></Route>
+          <Route path="/verify-otp" element={<VerifyOTP />}></Route>
+          <Route path="/reset-password" element={<ResetPassword />}></Route>
+          <Route path="/Login" element={<LoginForm />} />
+          <Route path="/average" element={<Average />} />
+          <Route path="/home" element={<Dropdown />} />
+          <Route path='/allocate-data' element={<MasterMain />} />
+
+        </Routes>
       </Router>
-      {/* <Dropdown/> */}
-      <Footer/>
-      
+      <Footer />
+
     </div>
   );
 };

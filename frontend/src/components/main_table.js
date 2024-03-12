@@ -16,6 +16,7 @@ import BelowTable from "./below_table";
 import Level from "./level";
 import jsPDF from "jspdf";
 import "jspdf-autotable"
+import MaxMarkTable from "./MaxMarksTable";
 const Main_table = ({ tableName }) => {
   useEffect(() => {
     createTable();
@@ -434,6 +435,7 @@ const generatePDF = () => {
   return (
     <>
       <Level />
+      <MaxMarkTable tableName={tableName}/>
       <div id="table-container">
         <Table striped bordered hover>
           <thead>

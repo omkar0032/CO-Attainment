@@ -1,60 +1,97 @@
+// src/components/LoginForm.js
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
-import Validation from './loginValidation';
 import axios from 'axios';
-import backgroundImage from './pict2.jpg'; // Import your background image
+import { useNavigate, Link } from 'react-router-dom';
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
+import { UseData } from '../NewContext';
 
-function LoginNikunj() {
-  const [values, setValues] = useState({
-    email: '',
-    password: ''
-  });
+const LoginForm = () => {
+  const { email, setEmail } = UseData();
+  const { name, setName } = UseData();
+  const [password, setPassword] = useState('');
 
   const navigate = useNavigate(); // useNavigate hook
 
-  const [errors, setErrors] = useState({});
-  const [email,setEmail]=useState('');
-  const [password ,setPassword]=useState('');
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/login', {
+        email,
+        password,
+      }, {
+        validateStatus: (status) => status >= 200 && status < 500, // Allow only 2xx status codes
+      });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setErrors(Validation(values));
-    if (errors.email === "" && errors.password === "") {
-      axios.post('http://localhost:8081/login', values)
-        .then(res => {
-          if (res.data === "Success") {
-            navigate('/home'); // Use navigate to navigate
-          } else {
-            alert("No record existed");
-          }
-        })
-        .catch(err => console.log(err));
+      if (response.status === 200) {
+        setName(response.data);
+        toast.success("Login Successful.");
+        navigate('/home');
+      } else {
+        if (response.status === 401) {
+          toast.warning("Invalid Credentials!");
+        } else {
+          toast.error("An error occurred during login.");
+        }
+      }
+
+    } catch (error) {
+      console.error('Error during login:', error.response); // Log the error response
+
     }
-  };
-  return (
-    <div style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover'  }}>
-      <div className='d-flex justify-content-center align-items-center  vh-100'>
-        <div className='bg-white p-3 rounded w-25'>
-          <h2 style={{ fontFamily: 'Arial', color: '#333' }}>Sign In</h2>
-          <form action=" " onSubmit={handleSubmit}>
-            <div className='mb-3'>
-              <label htmlFor="email">Email</label>
-              <input type="email" placeholder="enter email" name='email' onChange={e=>{setEmail(e.target.value)}} className="form-control rounded-0"></input>
-              {errors.email && <span className='text-danger'>{errors.email}</span>}
-            </div>
-            <div className='mb-3'>
-              <label htmlFor="password">Password</label>
-              <input type="password" placeholder="enter password" name="password" onChange={e=>{setPassword(e.target.value)}} className="form-control rounded-0"></input>
-              {errors.password && <span className='text-danger'>{errors.password}</span>}
-            </div>
-            <button type='submit' className='btn btn-success w-100'>Login</button>
-            <p>u agree to our policy</p>
-            <Link to='/signup' style={{ color: '#333' }} className='btn btn-default border w-100 color-'>create account</Link>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
-}
 
-export default LoginNikunj;
+
+
+  };
+
+  return (<>
+
+    <div
+      style={{
+        maxWidth: '300px',
+        margin: '76px auto',
+        padding: '20px',
+        border: '1px solid #ccc',
+        borderRadius: '5px',
+        boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
+      }}
+    >
+      <label style={{ display: 'block', marginBottom: '8px' }}>Email:</label>
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        style={{ width: '100%', padding: '8px', marginBottom: '16px', border: '1px solid #ccc' }}
+      />
+
+      <label style={{ display: 'block', marginBottom: '8px' }}>Password:</label>
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        style={{ width: '100%', padding: '8px', marginBottom: '16px', border: '1px solid #ccc' }}
+      />
+      <div><Link to="/forgot-password">Forgot Password</Link>
+      </div>
+
+
+      <button
+        onClick={handleLogin}
+        style={{
+          backgroundColor: '#4caf50',
+          color: 'white',
+          marginTop: '10px',
+          padding: '10px 15px',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+        }}
+      >
+        Login
+      </button>
+      <ToastContainer />
+    </div>
+  </>
+  );
+};
+
+export default LoginForm;
