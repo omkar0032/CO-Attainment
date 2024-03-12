@@ -1,0 +1,76 @@
+    .boxComponent {
+        /* width: 100%; */
+        display: flex;
+        /* flex-direction: column; */
+        justify-content: space-between;
+    }
+    /* .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        background-color: beige;
+        color: orangered;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 20px;
+    } */
+    
+    .buttonbox {
+        width: 175px;
+        margin: 50px;
+    }
+    
+    .buttonbox label {
+        margin: 5px;
+    }
+    
+    .initial-content {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .create-table {
+        display: flex;
+        justify-content: center;
+        /* Change to space-between to place buttons at start and end */
+        align-items: center;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        margin-inline: 100px;
+    }
+    /* heloowjiwdjidj */
+    
+    .Drop-downs {
+        display: flex;
+    }
+    
+    .first-row-dropdowns {
+        display: flex;
+        justify-content: center;
+        /* Spread items across the container */
+        flex-wrap: wrap;
+        /* Allow items to wrap onto the next line if needed */
+        margin-bottom: 20px;
+        /* Add margin at the bottom for spacing */
+    }
+    /* Flex container for the second row of dropdowns */
+    
+    .second-row-dropdowns {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .second-row-dropdowns .buttonbox {
+        width: 175px;
+        margin-bottom: 20px;
+        /* Add right margin between dropdowns */
+    }
+    /* Common styles for dropdowns */
+    
+    .buttonbox {
+        width: 175px;
+        margin-bottom: 20px;
+        /* Add bottom margin for spacing */
+    }

@@ -1,0 +1,275 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
+body {
+    box-sizing: border-box;
+    color: #220f5f;
+    font-family: 'Poppins', sans-serif;
+}
+
+.container {
+    width: 100%;
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.level-container {
+    width: 90%;
+    /* Set initial width */
+    margin: 20px auto;
+    /* Center the container horizontally and set vertical margin */
+    /* Responsive adjustments */
+    @media (min-width: 768px) {
+        width: 70%;
+        /* Adjust width for medium screens */
+    }
+    @media (min-width: 992px) {
+        width: 50%;
+        /* Adjust width for large screens */
+    }
+    @media (min-width: 1200px) {
+        width: 30%;
+        /* Adjust width for extra large screens */
+    }
+}
+
+.title {
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 30px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+tr th {
+    font-size: 18px;
+    padding: 5px;
+    border: 1px solid #eeeeee;
+    text-align: left;
+    background-color: rgba(217, 221, 146, 0.2);
+}
+
+tr td {
+    border: 1px solid #eeeeee;
+    text-align: left;
+    height: 5px;
+    max-width: 30px;
+}
+
+th td {
+    padding: 1px 1px;
+}
+
+tr {
+    height: 1px;
+    padding: 0;
+}
+
+input {
+    font-size: 5px;
+    background-color: transparent;
+    border: none;
+    width: 100%;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    margin-left: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.name-col {
+    min-width: 200px;
+}
+
+.file-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    width: 20%;
+    margin-left: 40%;
+    margin-bottom: 15px;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.file-selected {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.btn-download-csv {
+    align-items: center;
+    padding: 10px;
+    background-color: beige;
+    color: orangered;
+    border: dashed;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    margin-left: 45%;
+}
+
+.omkar {
+    display: flex;
+    justify-content: space-between;
+    /* Change to space-between to place buttons at start and end */
+    align-items: center;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin-inline: 100px;
+}
+
+.leftbtn {
+    /* Add any additional styling you need for your buttons */
+    /* For example: */
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.generate-calculations {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    padding-left: 50px;
+}
+
+.accept-file {
+    /* display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 50px; */
+    padding: 20px;
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    width: 20%;
+    /* Set width to 30% */
+    box-sizing: border-box;
+    /* Include padding in width calculation */
+}
+
+.accept-file:hover {
+    border-color: #0096FF;
+}
+
+.accept-and-save {
+    /* display: flex;
+    margin-left: 400px; */
+    display: flex;
+    flex-direction: row;
+    /* Display buttons in a row */
+    justify-content: center;
+    /* Align buttons to the start and end of the container */
+    align-items: center;
+    /* Center items vertically */
+    width: 100%;
+    /* Take full width of parent container */
+    margin: 20px;
+}
+
+.create-table {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 10px;
+    margin-top: 50px;
+}
+
+
+/* CSS for Result table   */
+
+.result-table-container {
+    margin: 20px;
+    overflow-x: auto;
+    /* Enable horizontal scrolling for small screens */
+}
+
+.result-table {
+    width: 100%;
+    /* Table takes full width */
+    border-collapse: collapse;
+    /* Collapse border spacing */
+    font-size: 14px;
+    /* Adjust font size */
+}
+
+.result-table th,
+.result-table td {
+    padding: 8px;
+    /* Adjust cell padding */
+    text-align: center;
+    /* Center align text */
+    border: 1px solid #ddd;
+    /* Add border between cells */
+}
+
+.result-table th {
+    background-color: #0096FF;
+    /* /* Background color for header cells */
+}
+
+
+/* Media query for responsiveness */
+
+@media (max-width: 768px) {
+    .result-table th,
+    .result-table td {
+        font-size: 12px;
+        /* Reduce font size for smaller screens */
+    }
+}
+
+#below {
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    /* Center the table */
+}
+
+#below table {
+    width: 70%;
+    /* Set the table width to 70% of the screen */
+    margin: 0 auto;
+    /* Center the table horizontally */
+    border-collapse: collapse;
+}
+
+#below table th:not(:first-child),
+#below table td:not(:first-child) {
+    width: 9%;
+    /* Adjust the width as needed */
+}
+
+#below table th,
+#below table td {
+    padding: 2px;
+    text-align: center;
+    border: 1px solid #ddd;
+    /* Add border between cells */
+}
+
+@media (max-width: 768px) {
+    #below table {
+        width: 100%;
+        /* Set table width to full width on smaller screens */
+    }
+    #below table th,
+    #below table td {
+        padding: 5px;
+        /* Reduce padding on smaller screens */
+    }
+}
