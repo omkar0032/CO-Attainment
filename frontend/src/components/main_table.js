@@ -14,6 +14,8 @@ import * as XLSX from "xlsx";
 import React, { useState, useEffect, useRef } from "react";
 import BelowTable from "./below_table";
 import Level from "./level";
+import jsPDF from "jspdf";
+import "jspdf-autotable"
 const Main_table = ({ tableName }) => {
   useEffect(() => {
     createTable();
@@ -55,18 +57,31 @@ const Main_table = ({ tableName }) => {
             // console.log("first")
             // console.log(reportInfo);
             // console.log(valuefortest1)
-            const updatedData = response.data.map((row) => {
-              const newTotalUT1 = row["UT1-Q1"] + row["UT1-Q2"];
-              const newTotalUT2 = row["UT2-Q1"] + row["UT2-Q2"];
-              const newTotalUT3 = row["UT3-Q1"] + row["UT3-Q2"];
+            // const updatedData = response.data.map((row) => {
+            //   const newTotalUT1 = row["UT1-Q1"] + row["UT1-Q2"];
+            //   const newTotalUT2 = row["UT2-Q1"] + row["UT2-Q2"];
+            //   const newTotalUT3 = row["UT3-Q1"] + row["UT3-Q2"];
 
+            //   return {
+            //     ...row,
+            //     ["Total-UT1"]: newTotalUT1,
+            //     ["Total-UT2"]: newTotalUT2,
+            //     ["Total-UT3"]: newTotalUT3,
+            //   };
+            // });
+            // setData(updatedData);
+            const updatedData = response.data.map((row) => {
+              const totalUT1 = (row["UT1-Q1"] !== null && row["UT1-Q2"] !== null) ? row["UT1-Q1"] + row["UT1-Q2"] : null;
+              const totalUT2 = (row["UT2-Q1"] !== null && row["UT2-Q2"] !== null) ? row["UT2-Q1"] + row["UT2-Q2"] : null;
+              const totalUT3 = (row["UT3-Q1"] !== null && row["UT3-Q2"] !== null) ? row["UT3-Q1"] + row["UT3-Q2"] : null;
               return {
                 ...row,
-                ["Total-UT1"]: newTotalUT1,
-                ["Total-UT2"]: newTotalUT2,
-                ["Total-UT3"]: newTotalUT3,
+                ["Total-UT1"]: totalUT1,
+                ["Total-UT2"]: totalUT2,
+                ["Total-UT3"]: totalUT3,
               };
             });
+        
             setData(updatedData);
             // console.log(data)
           }
@@ -112,15 +127,21 @@ const Main_table = ({ tableName }) => {
   // };
 
   useEffect(() => {
-    const updatedData = data.map((row) => ({
-      ...row,
-      ["Total-UT1"]: row["UT1-Q1"] + row["UT1-Q2"],
-      ["Total-UT2"]: row["UT2-Q1"] + row["UT2-Q2"],
-      ["Total-UT3"]: row["UT3-Q1"] + row["UT3-Q2"],
-    }));
+    const updatedData = data.map((row) => {
+      const totalUT1 = (row["UT1-Q1"] !== null && row["UT1-Q2"] !== null) ? row["UT1-Q1"] + row["UT1-Q2"] : null;
+      const totalUT2 = (row["UT2-Q1"] !== null && row["UT2-Q2"] !== null) ? row["UT2-Q1"] + row["UT2-Q2"] : null;
+      const totalUT3 = (row["UT3-Q1"] !== null && row["UT3-Q2"] !== null) ? row["UT3-Q1"] + row["UT3-Q2"] : null;
+      return {
+        ...row,
+        ["Total-UT1"]: totalUT1,
+        ["Total-UT2"]: totalUT2,
+        ["Total-UT3"]: totalUT3,
+      };
+    });
 
-    setData(updatedData); // <-- Update data instead of tableData
-  }, []);
+    setData(updatedData);
+}, []);
+
 
   const handleMarksChange = (index, question, value, e) => {
     const updatedData = [...data];
@@ -202,7 +223,6 @@ const Main_table = ({ tableName }) => {
 
   const insertData = async () => {
     try {
-      console.log("Data to insert:", data);
       const response = await axios.post(
         `http://localhost:3000/updateDatabase/${tableName}`,
         { dataToInsert: data }
@@ -295,23 +315,121 @@ const Main_table = ({ tableName }) => {
     }
   };
 
+
   const convertToExcel = async () => {
     const workbook = XLSX.utils.book_new();
 
+    // Modify data before creating worksheet
+    const modifiedData = data.map(row => {
+        const modifiedRow = { ...row };
+        // Handle null values
+        if (modifiedRow["UA"] === 0) {
+            modifiedRow["UA"] = 'FF';
+        }
+        // Iterate through other fields and replace null with 'A'
+        Object.keys(modifiedRow).forEach(key => {
+            if (modifiedRow[key] === null) {
+                modifiedRow[key] = 'A';
+            }
+        });
+        return modifiedRow;
+    });
+
     // Create a worksheet
-    const worksheet = XLSX.utils.json_to_sheet(data);
+    const worksheet = XLSX.utils.json_to_sheet(modifiedData, {
+        raw: true, // This retains data type for numbers
+        header: Object.keys(modifiedData[0]),
+        cellDates: true // Enable date formatting
+    });
+
+    // Set alignment for cells with value 'A' and 'FF'
+    modifiedData.forEach((row, rowIndex) => {
+        Object.keys(row).forEach((key, colIndex) => {
+            const cellRef = XLSX.utils.encode_cell({ r: rowIndex, c: colIndex });
+            if (row[key] === 'A' || row[key] === 'FF') {
+                worksheet[cellRef].s = { alignment: { horizontal: 'right' } };
+            }
+        });
+    });
 
     // Add the worksheet to the workbook
     XLSX.utils.book_append_sheet(workbook, worksheet, "Students Data");
 
-    // Modify the worksheet to add default headings and selected class
-
-    // Insert default headings and selected class as separate rows
-
     // Save the workbook as an Excel file
     toast.success("Excel Downloaded!");
     XLSX.writeFile(workbook, "students_data.xlsx");
+};
+
+
+
+const generatePDF = () => {
+  // Create new jsPDF instance
+  const doc = new jsPDF('l', 'pt', 'a4');
+
+  // Set the position for the table
+  const startY = 20;
+  const tableHeader = ["Serial No", "Roll No", "Seat No", "Name", "UT1-Q1", "UT1-Q2", "UT2-Q1", "UT2-Q2", "UT3-Q1", "UT3-Q2", "UA", "Total-UT1", "Total-UT2", "Total-UT3"];
+
+  // Define data for the table with the new header
+  const tableData = [
+    tableHeader, // Add the table header
+    ...data.map(row => {
+      // Replace null values with 'A' and 'FF' as required
+      return [
+        row["Serial No"],
+        row["Roll No"],
+        row["Seat No"],
+        row["Name"],
+        row["UT1-Q1"] === null ? 'A' : row["UT1-Q1"],
+        row["UT1-Q2"] === null ? 'A' : row["UT1-Q2"],
+        row["UT2-Q1"] === null ? 'A' : row["UT2-Q1"],
+        row["UT2-Q2"] === null ? 'A' : row["UT2-Q2"],
+        row["UT3-Q1"] === null ? 'A' : row["UT3-Q1"],
+        row["UT3-Q2"] === null ? 'A' : row["UT3-Q2"],
+        row["UA"] === 0 ? 'FF' : row["UA"],
+        row["Total-UT1"] === null ? 'A' : row["Total-UT1"],
+        row["Total-UT2"] === null ? 'A' : row["Total-UT2"],
+        row["Total-UT3"] === null ? 'A' : row["Total-UT3"]
+      ];
+    })
+  ];
+
+  // Adjust column width and row height
+  const columnStyles = {
+    Name: { columnWidth: 120 }, // Increase the width of the "Name" column
+    "Serial No": { columnWidth: 30 }, // Reduce the width of the "Serial No" column
+    "Roll No": { columnWidth: 60 }, // Reduce the width of the "Roll No" column
+    "Seat No": { columnWidth: 70 } // Reduce the width of the "Seat No" column
   };
+
+  // Add the table to the PDF using autoTable
+  doc.autoTable({
+    startY,
+    head: [tableHeader],
+    body: tableData.slice(1),
+    columnStyles: columnStyles,
+    didDrawCell: (data) => {
+      if (data.column.index === 3) { // Check if it's the "Name" column
+        // Reduce font size to fit the content in the cell
+        doc.setFontSize(10);
+      }
+    },
+    // Adjust the row height
+    didParseCell: (data) => {
+      if (data.row.index > 0) { // Skip the header row
+        data.cell.styles.cellHeight = 20; // Set the row height to 20
+      }
+    }
+  });
+
+  // Save the PDF
+  doc.save("table.pdf");
+};
+
+
+
+
+
 
   return (
     <>
@@ -623,12 +741,12 @@ const Main_table = ({ tableName }) => {
                     valuefortest1 === "UT-3" ||
                     valuefortest1 === "UA") && (
                     <td>
-                      {row["Total-UT2"] === null ? "A" : row["Total-UT2"]}
+                      {row["Total-UT2"] === null || row["UT2-Q1"] === null || row["UT2-Q2"] === null? "A" : row["Total-UT2"]}
                     </td>
                   )}
                   {(valuefortest1 === "UT-3" || valuefortest1 === "UA") && (
                     <td>
-                      {row["Total-UT3"] === null ? "A" : row["Total-UT3"]}
+                      {row["Total-UT3"] === null || row["UT3-Q1"] === null || row["UT3-Q2"] === null? "A" : row["Total-UT3"]}
                     </td>
                   )}
                 </tr>
@@ -643,7 +761,7 @@ const Main_table = ({ tableName }) => {
         <Button onClick={insertData} className="leftbtn">
           Save Changed marks
         </Button>
-        <Button onClick={handleGeneratePdf} className="leftbtn">
+        <Button onClick={generatePDF} className="leftbtn">
           {/* <Button onClick={handleGeneratePdf()} className="leftbtn"> */}
           Export to PDF
         </Button>

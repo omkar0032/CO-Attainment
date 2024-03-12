@@ -28,14 +28,14 @@ const App = () => {
   return (
     <div>
       <Router>
-      {/* <Navbar title="Text2" about="About Info"  /> */}
+      <Navbar title="Text2" about="About Info"  />
           <Routes>
             {/* <Route path="/Login" element={<Login/>} /> */}
-            <Route path="/" element={<LoginNikunj/>}/>
+            <Route path="/" element={<Dropdown/>}/>
           </Routes>
       </Router>
       {/* <Dropdown/> */}
-      {/* <Footer/> */}
+      <Footer/>
       
     </div>
   );
