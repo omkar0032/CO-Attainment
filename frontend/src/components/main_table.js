@@ -350,11 +350,27 @@ const addHeaderContent = (doc, data) => {
   doc.addImage(img, 'JPEG', contentX - imgWidth / 2, contentY + 20, imgWidth, imgHeight);
 
   // Add subheading
-  const subheading1 = `Subject: ${valueforsubjectlabel}`;
-  const subheading2 = `Class: ${valueforyearlabel}`;
-  const subheading3 = `Year & Sem: ${valueforacadamicyearlabel}, ${valueforsemlabel}`;
-  doc.setFontSize(14);
-  doc.text([subheading1, subheading2, subheading3], contentX-150, contentY + 130, { align: "center" });
+  // Define subheadings with bold font for labels and regular font for values
+const subheading1 = `Subject: `;
+const subheading2 = `Class: `;
+const subheading3 = `Year & Sem: `;
+const value1 = valueforsubjectlabel;
+const value2 = valueforyearlabel;
+const value3 = `${valueforacadamicyearlabel}, ${valueforsemlabel}`;
+// Set font styles for subheadings
+doc.setFont("helvetica", "bold"); // Set font to bold
+doc.setFontSize(14);
+// Add subheading 1
+doc.text(subheading1, contentX - 150, contentY + 130, { align: "center" });
+doc.text(subheading2, contentX - 150, contentY + 150, { align: "center" });
+doc.text(subheading3, contentX - 150, contentY + 170, { align: "center" });
+// Set font styles for values
+doc.setFont("helvetica", "normal"); // Set font to normal
+doc.setFontSize(12); // Set font size to smaller
+// Add value for subheading 1
+doc.text(value1, contentX - 90, contentY + 130, { align: "center" });
+doc.text(value2, contentX - 90, contentY + 150, { align: "center" });
+doc.text(value3, contentX - 50, contentY + 170, { align: "center" });
   doc.setFont('normal');
   return contentY + 200; // Return the startY position for the table
 };
@@ -368,19 +384,23 @@ const generatePDF = () => {
 
   // Define small table data
   const smallTableData = [
-    ["Subject", valueforsubjectlabel],
-    ["Class", valueforyearlabel],
-    ["Year & Sem", `${valueforacadamicyearlabel}, ${valueforsemlabel}`]
+    ["Level 3", valueforsubjectlabel],
+    ["Level 2", valueforyearlabel],
+    ["Level 1", `${valueforacadamicyearlabel}, ${valueforsemlabel}`]
   ];
 
   // Add small table to the right side
   doc.autoTable({
     startY: 130, // Adjust Y position as needed
-    head: [["Field", "Value"]],
+    head: [["UT", "UA"]],
     body: smallTableData,
     theme: 'grid',
-    margin: { left: 400 } // Adjust margin to position the table on the right side
+    margin: { left: 500 , right:150 }, // Adjust margin to position the table on the right side
+    styles: {
+      head: { fillColor: 'transparent' } // Set the background color of the header to transparent
+    }
   });
+  
 
   // Define main table headers and data
   const mainTableHeader = ["Serial No", "Roll No", "Seat No", "Name", "UT1-Q1", "UT1-Q2", "UT2-Q1", "UT2-Q2", "UT3-Q1", "UT3-Q2", "UA", "Total-UT1", "Total-UT2", "Total-UT3"];
@@ -417,7 +437,7 @@ const generatePDF = () => {
 
   // Add the main table below the small table
   doc.autoTable({
-    startY,
+    startY :230,
     head: [mainTableHeader],
     body: mainTableData.slice(1), // Skip the table header
     columnStyles: columnStyles,
@@ -440,11 +460,7 @@ const generatePDF = () => {
   doc.setFont("helvetica", "normal"); // Set font to normal
 doc.setFontSize(10); // Set font size to 10 (or adjust as needed)
 
-const totalPages = doc.internal.getNumberOfPages();
-for (let i = 1; i <= totalPages; i++) {
-  doc.setPage(i);
-  doc.text('Page ' + i + ' of ' + totalPages, doc.internal.pageSize.getWidth() - 70, doc.internal.pageSize.getHeight() - 10);
-}
+
 
   // Add a new page for "below" content
   doc.addPage();
@@ -458,7 +474,6 @@ doc.setFontSize(20);
 doc.text(belowContent1, belowContentX, belowContentY, { align: "center" });
 doc.setFont('normal');
 doc.setFontSize(10);
-
 // Get the HTML content of the component with id "below"
 // Get the below content from the UI
 // Get the below content from the UI
@@ -535,25 +550,19 @@ doc.autoTable({
   theme: 'striped',
   margin: { left: 300, right: 300 } // Adjust margins as needed
 });
+const nameAndSign="Examiners name & Sign:"
+doc.text(nameAndSign, belowContentX-60, belowContentY+560, { align: "center" });
 
-
-
-
-
+const totalPages = doc.internal.getNumberOfPages();
+for (let i = 1; i <= totalPages; i++) {
+  doc.setPage(i);
+  doc.setFont('normal');
+  doc.text('Page ' + i + ' of ' + totalPages, doc.internal.pageSize.getWidth() - 70, doc.internal.pageSize.getHeight() - 10);
+}
   // Add page number for the "below" page
   // Save the PDF
   doc.save("table.pdf");
 };
-
-
-
-
-
-
-
-
-
-
   return (
     <>
       <Level />
