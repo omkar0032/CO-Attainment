@@ -136,7 +136,9 @@ async function excelToMySQLArray(filePath, tableName) {
           const cellValue = row.getCell(index + 1).value;
 
           // Check for 'A' or 'FF' and handle accordingly
-          if (cellValue === "A") {
+          if (cellValue === undefined || cellValue === null || cellValue === '') {
+            rowData[colName] = null; // Empty cell value should be saved as null
+          } else if (cellValue === "A") {
             rowData[colName] = null; // 'A' should be saved as null
           } else if (cellValue === "ff") {
             // If 'FF' is encountered, set all fields in the row to null except for specified columns

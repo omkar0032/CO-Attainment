@@ -262,7 +262,8 @@ async function excelToMySQLArrayMainTable(filePath) {
       "Serial No",
       "Email ID",
       "Password",
-      "Name"
+      "Name",
+      "Master"
     ];
 
     // Initialize array to store data
@@ -569,6 +570,35 @@ const getSubjectsAndDivisions = async (req, res) => {
     console.log("Error occured: ", error);
   }
 }
+
+const updateTeacherSubjects = async (req, res) => {
+  try {
+    const tableName = req.params.tableName;
+    const data = req.body;
+    console.log("in backend")
+
+    // Delete all existing data from the table
+    await teachersPool.query(`DELETE FROM ${tableName}`);
+
+    // Insert new data into the table
+    // Assuming data is an array of objects containing the rows to be inserted
+    for (let i = 0; i < data.length; i++) {
+      const rowData = data[i];
+      const keys = Object.keys(rowData);
+      const values = keys.map(key => rowData[key]);
+      const placeholders = keys.map(() => '?').join(',');
+      const escapedColumns = keys.map(key => `\`${key}\``).join(',');
+      const query = `INSERT INTO ${tableName} (${escapedColumns}) VALUES (${placeholders})`;
+      await teachersPool.query(query, values);
+    }
+
+    res.status(200).send("Teacher subjects updated successfully");
+  } catch (error) {
+    console.error("Error in updating teacher subjects:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 //--------------------------------------------------------------------------------------
 
 
@@ -578,4 +608,4 @@ const getSubjectsAndDivisions = async (req, res) => {
 //-------------------------------------------------------------------------------------
 
 
-module.exports = { createAndLinkTable, uploadExcelTeachers, uploadMainTable, login, forgotPassword, verifyOTP, resendOTP, resetPassword, getSubjectsAndDivisions };
+module.exports = { updateTeacherSubjects,createAndLinkTable, uploadExcelTeachers, uploadMainTable, login, forgotPassword, verifyOTP, resendOTP, resetPassword, getSubjectsAndDivisions };
