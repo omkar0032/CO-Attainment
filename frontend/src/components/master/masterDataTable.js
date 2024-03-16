@@ -17,7 +17,7 @@ const MasterDataTable = () => {
 
         // Create a worksheet
         const worksheet = XLSX.utils.aoa_to_sheet([
-            ["Serial No", "Email ID", "Password", "Name"]
+            ["Serial No", "Email ID", "Password", "Name","Master"]
         ]);
 
         // Add the worksheet to the workbook
@@ -42,7 +42,7 @@ const MasterDataTable = () => {
         // Create a link element
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'sample.xlsx'; // Set the file name here
+        link.download = 'TeachersInfo.xlsx'; // Set the file name here
 
         // Click the link programmatically to trigger the download
         link.click();
