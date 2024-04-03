@@ -34,6 +34,9 @@ export const ContextProvider = ({ children }) => {
     //sending name in navbar login to navbar
     const [name, setName] = useState();
 
+    // check logged in ore not
+    const [loggedInUserName, setLoggedInUserName] = useState('');
+    const [valueForRole, setValueForRole] = useState('');
 
     return (
         <Context.Provider value={{
@@ -51,7 +54,9 @@ export const ContextProvider = ({ children }) => {
             valueforsubjectlabel, setvalueforsubjectlabel,
             valueforsemlabel, setvalueforsemlabel,
             email, setEmail,
-            name, setName
+            name, setName,
+            loggedInUserName, setLoggedInUserName,
+            valueForRole, setValueForRole,
 
         }}>
             {children}

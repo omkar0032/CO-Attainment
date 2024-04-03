@@ -40,7 +40,6 @@ function ForgotPassword() {
     return (
 
         <>
-
             <div
                 style={{
                     maxWidth: '300px',

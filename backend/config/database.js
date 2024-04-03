@@ -25,7 +25,19 @@ const teachersPool = mysql.createPool({
   queueLimit: 0,
 });
 
+// Pool for dropdown
+const dropdownPool = mysql.createPool({
+  host: "localhost",
+  database: "inhouse_dropdown",
+  user: "root",
+  password: "",
+  port: 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 module.exports = {
   pool,
   teachersPool,
+  dropdownPool,
 };

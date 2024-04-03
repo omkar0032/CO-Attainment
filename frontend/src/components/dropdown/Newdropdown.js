@@ -21,12 +21,11 @@ function Dropdown(teachers_table) {
 
     // for department
     const [valuefordepartment, setValuedepartment] = useState("");
-    // for departmentArray
-    const [valuefordepartmentArray, setValuedepartmentArray] = useState([]);
+   
 
 
     // useState for All divisions initial state is object
-    const [valuefordivisionArray, setValuefordivisionArray] = useState([]);
+    // const [valuefordivisionArray, setValuefordivisionArray] = useState([]);
     // this to use usestate for addition for subject selection
     const [valuefordivision, setValuefordivision] = useState("");
 
@@ -36,7 +35,7 @@ function Dropdown(teachers_table) {
     const [valueforsem, setValueforsem] = useState("");
 
     // useState for Subject contaning initial value as object. 
-    const [valueforsubjectArray, setValueforsubjectArray] = useState([]);
+    // const [valueforsubjectArray, setValueforsubjectArray] = useState([]);
     // to is actual setValue for subject selection
     const [valueforsubject, setValueforsubject] = useState();
 
@@ -55,62 +54,137 @@ function Dropdown(teachers_table) {
     const [subjects, setSubjects] = useState([]);
     const [divisions, setDivisions] = useState([]);
     const [transformedSubjects, setTransformedSubjects] = useState([]);
-    const [transformedDivisions, setTransformedDivisions] = useState([]);
+    const [transformedDivisions, setTransformedDivisions] = useState([]);   
+
+    let patternnames =[];
+    const [transformedPattern,setTransformedPattern]=useState([]);
+    let acadamicyearnames = [];
+    const [transformedAcadamicYear,setTransformedAcadamicYear]=useState([]);
+    let departmentnames = [];
+    const [transformedDepartment,setTransformedDepartment]=useState([]);
+    let divisionnames = [];   
+    const [transformedDivision,setTransformedDivision]=useState([]);
+    let subjectnames = [];   
+    const [transformedSubject,setTransformedSubject]=useState([]);
+
     // passed in option={patternname}
 
     useEffect(() => {
-        const fetchSubjectsAndDivisions = async () => {
-            try {
-                const dataTableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${valueforsem?.value}`;
-                console.log(dataTableName);
-                const response = await axios.get(`http://localhost:3000/getSubjectsAndDivisions/${email}/${dataTableName}`);
-                const { subjects, divisions } = response.data;
-                setSubjects(subjects);
-                setDivisions(divisions);
+        transformPattern();
+        transformDepartment();
+        
+        // const fetchSubjectsAndDivisions = async () => {
+        //     try {
+        //         const dataTableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${valueforsem?.value}`;
+        //         console.log(dataTableName);
+        //         const response = await axios.get(`http://localhost:3000/getSubjectsAndDivisions/${email}/${dataTableName}`);
+        //         const { subjects, divisions } = response.data;
+        //         setSubjects(subjects);
+        //         setDivisions(divisions);
 
-                const transformedSubjects = subjects.map(subject => ({
-                    value: subject,
-                    label: subject,
-                }));
-                setTransformedSubjects(transformedSubjects);
-                // Function to map division numbers to prefixes
-                const mapDivisionToPrefix = (division) => {
-                    if (divisions >= 1 && divisions <= 4) {
-                        return `cs${divisions}`;
-                    } else if (divisions >= 5 && divisions <= 8) {
-                        return `entc${divisions}`;
-                    } else if (divisions >= 9 && divisions <= 11) {
-                        return `it${divisions}`;
-                    } else {
-                        // Handle other cases if needed
-                        return `unknown${divisions}`;
-                    }
-                };
+        //         const transformedSubjects = subjects.map(subject => ({
+        //             value: subject,
+        //             label: subject,
+        //         }));
+        //         setTransformedSubjects(transformedSubjects);
+        //         // Function to map division numbers to prefixes
+        //         const mapDivisionToPrefix = (division) => {
+        //             if (divisions >= 1 && divisions <= 4) {
+        //                 return `cs${divisions}`;
+        //             } else if (divisions >= 5 && divisions <= 8) {
+        //                 return `entc${divisions}`;
+        //             } else if (divisions >= 9 && divisions <= 11) {
+        //                 return `it${divisions}`;
+        //             } else {
+        //                 // Handle other cases if needed
+        //                 return `unknown${divisions}`;
+        //             }
+        //         };
 
-                // Transform the array of divisions into the desired format
-                const transformedDivisions = divisions.map((division) => ({
-                    value: mapDivisionToPrefix(division),
-                    label: division,
-                }));
-                setTransformedDivisions(transformedDivisions);
+        //         // Transform the array of divisions into the desired format
+        //         const transformedDivisions = divisions.map((division) => ({
+        //             value: mapDivisionToPrefix(division),
+        //             label: division,
+        //         }));
+        //         setTransformedDivisions(transformedDivisions);
+        //     } catch (error) {
+        //         console.error('Error fetching subjects and divisions:', error.message);
+        //     }
+        // };
+        // if (valueforsemlabel) {
+        //     fetchSubjectsAndDivisions();
+        // }
+    }, []);//[valueforsemlabel]);
 
-                console.log(transformedDivisions);
+    const transformPattern=async()=>{
+        await handleGetPattern();
+        let transformedPatterns= patternnames.map( patternname=>({
+            value:convertPattern( patternname),
+            label:String( patternname.Pattern),
+        }));
+        // console.log(transformedPatterns);
+        setTransformedPattern(transformedPatterns);
+    }
+    const convertPattern=(pattern)=>{
+        // console.log(String(pattern.Pattern));
+        return "p"+String(pattern.Pattern);
+    }
 
-                console.log(transformedSubjects);
-            } catch (error) {
-                console.error('Error fetching subjects and divisions:', error.message);
-            }
-        };
-        if (valueforsemlabel) {
-            fetchSubjectsAndDivisions();
-        }
-    }, [valueforsemlabel]);
+    const transformAcadamicYear=async(selectedOption)=>{
+        await handleGetAcadamicYear(selectedOption);
+        // console.log(acadamicyearnames);
+        // console.log(acadamicYears);
+        const transformedAcadamicYears=acadamicyearnames.map(acadamicyearname=>({
+            value:convertAcadamicYear(acadamicyearname),
+            label:acadamicyearname.Acadamic_Year,
+        }))
+        setTransformedAcadamicYear(transformedAcadamicYears);
+        
+    }
 
+    const convertAcadamicYear=(acadamicYear)=>{
+        const[startYear,endYear]=acadamicYear.Acadamic_Year.split('-');
+        return "y_"+startYear+"_"+endYear;
+    }
+
+    const transformDepartment=async()=>{
+        await handleGetDeparment();
+        // console.log(departmentnames);
+        const transformedDepartments=departmentnames.map(departmentname=>({
+            value:departmentname.Department.toLowerCase(),
+            label:departmentname.Department
+            
+        }));
+        setTransformedDepartment(transformedDepartments);
+        // console.log(transformedDepartments);
+    }
+
+    const transformdivision=async()=>{
+        await handleGetDivision();
+        const transformedDivision1=divisionnames.map(division=>({
+            value:String(division.Division),
+            label:String(division.Division)
+        }));
+        setTransformedDivision(transformedDivision1);
+    }
+
+    const transformSubject=async(selectedOption)=>{
+        await handleGetSubject(selectedOption);
+        // console.log(subjectnames);
+        const transformedSubject1=subjectnames.map(subjectname=>({
+            value:subjectname.Subject_Name,
+            label:subjectname.Subject_Name
+        }));
+        setTransformedSubject(transformedSubject1);
+        console.log(transformedSubject1);
+    }
+    
     const createTable = async () => {
         const tableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${valueforsem?.value}_${valueforsubject?.value}`;
 
         if (
             valueforpattern &&
+            valueforacadamicyear&&
             valueforyear &&
             valuefordepartment &&
             valuefordivision &&
@@ -150,68 +224,101 @@ function Dropdown(teachers_table) {
             toast.error("Please select all fields");
         }
     };
-    const patternname = [
 
-        { value: "p2019", label: "2019 pattern" }, // Corrected value
+    // get pattern from backend
+    const handleGetPattern=async()=>{
+        try{
+            const result=await axios.get("http://localhost:3000/pattern");
+            
+            if (result.status === 200) {
+                patternnames=result.data;
+                // console.log(acadamicyearnames);
+            } else {
+                console.error(`Error: Received unexpected status code ${result.status}`);
+            }
+        }catch(error){
+           console.log("Error while fetching data")
+        }
+    }
 
-    ];
+    // get acadamic year from backend
+    
+    const handleGetAcadamicYear = async (selectedOption) => {
+        try {
+            const name = selectedOption?.label;
+            const response = await axios.get(`http://localhost:3000/pattrenname/${name}`);
+            
+            if (response.status === 200) {
+                acadamicyearnames = response.data;
+                // console.log(acadamicyearnames);
+            } else {
+                console.error(`Error: Received unexpected status code ${response.status}`);
+            }
+        } catch (error) {
+            console.error("Error while fetching data:", error.message);
+        }
+    };
+    
+     // get pattern from backend
+     const handleGetDeparment=async()=>{
+        try{
+            const result=await axios.get("http://localhost:3000/department");
+            
+            if (result.status === 200) {
+                departmentnames=result.data;
+                // console.log(departmentnames);
+            } else {
+                console.error(`Error: Received unexpected status code ${result.status}`);
+            }
+        }catch(error){
+           console.log("Error while fetching data")
+        }
+    }
 
-    // passed in option={acadamicYearname}
-    const acadamicyearname = [
+    const handleGetDivision = async () => {
+        try {
+            const name = valuefordepartment.label+"_"+valueforyear.label;
+            console.log(name)
+            const response = await axios.get(`http://localhost:3000/division/${name}`);
+            
+            if (response.status === 200) {
+                divisionnames = response.data;
+                // console.log(acadamicyearnames);
+            } else {
+                console.error(`Error: Received unexpected status code ${response.status}`);
+            }
+        } catch (error) {
+            console.error("Error while fetching data:", error.message);
+        }
+    };
 
-        { value: "y_2019_20", label: "2019-2020" },
-        { value: "y_2020_21", label: "2020-2021" },
-        { value: "y_2021_22", label: "2021-2022" },
-        { value: "y_2022_23", label: "2022-2023" },
-        { value: "y_2023_24", label: "2023-2024" },
-        { value: "y_2024_25", label: "2024-2025" },
+    const handleGetSubject = async (selectedOption) => {
+        try {
+            const name = `${valueforpattern?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${selectedOption?.value}`;
+            console.log(name)
+            const response = await axios.get(`http://localhost:3000/subject/${name}`);
+            
+            if (response.status === 200) {
+                subjectnames = response.data;
+                // console.log(subjectnames);
+            } else {
+                console.error(`Error: Received unexpected status code ${response.status}`);
+            }
+        } catch (error) {
+            console.error("Error while fetching data:", error.message);
+        }
+        
+    };
 
-    ]
+    
     // passed in option={yearname}
+
     const yearname = [
         { value: "y1_d", label: "FE" },
         { value: "y2_d", label: "SE" },
         { value: "y3_d", label: "TE" },
         { value: "y4_d", label: "BE" },
     ]
-
-    const d = [
-        { value: "fe", label: "FE" },
-        { value: "cs", label: "CS" },
-        { value: "entc", label: "ENTC" },
-        { value: "it", label: "IT" },
-    ]
-    // array for department
-    const departmentname = { d };
-
-
-    // it for cs
-    const cs = [
-        { value: "cs1", label: "1" },
-        { value: "cs2", label: "2" },
-        { value: "cs3", label: "3" },
-        { value: "cs4", label: "4" },
-    ]
-
-    // it for entc
-    const entc = [
-
-        { value: "entc5", label: "5" },
-        { value: "entc6", label: "6" },
-        { value: "entc7", label: "7" },
-        { value: "entc8", label: "8" },
-
-    ]
-
-    // it for IT
-    const it = [
-        { value: "it9", label: "9" },
-        { value: "it10", label: "10" },
-        { value: "it11", label: "11" },
-    ]
-
-    // object of array for division
-    const divisionname = { cs, entc, it };
 
     // One of these Array of objects is passed when user hits YEAR section because sem depends on YEAR
     const fe = [
@@ -239,373 +346,7 @@ function Dropdown(teachers_table) {
     // this Object of Above Array.
     const semname = { fe, se, te, be };
 
-    // // Pattern 2015----------------------------------------------------------------------------------
-
-    // // subject for CS 2015 PATTERN
-    // // for se CS sem3
-    // const p2015y2_dcssem3 = [
-    //     { value: "DM", label: "DM" },
-    //     { value: "COA", label: "COA" },
-    //     { value: "DELD", label: "DELD" },
-    //     { value: "DSA", label: "DSA" },
-    //     { value: "OOP", label: "OOP" },
-    // ];
-    // // for se CS sem4
-    // const p2015y2_dcssem4 = [
-    //     { value: "EM-3", label: "EM-3" },
-    //     { value: "CG", label: "CG" },
-    //     { value: "ADS", label: "ADS" },
-    //     { value: "MP", label: "MP" },
-    //     { value: "PPL", label: "PPL" },
-    // ];
-    // // for te CS sem5
-    // const p2015y3_dcssem5 = [
-    //     { value: "TOC", label: "TOC" },
-    //     { value: "DBMS", label: "DBMS" },
-    //     { value: "ISEE", label: "ISEE" },
-    //     { value: "SE", label: "SE" },
-    //     { value: "CN", label: "CN" }
-    //     // {value:"HCI",label:"HCI"},
-    //     // {value:"DS",label:"DS"},
-    //     // {value:"SPM",label:"SPM"}
-    // ];
-    // // for te CS sem6
-    // const p2015y3_dcssem6 = [
-    //     { value: "ESIT", label: "ESIT" },
-    //     { value: "SPOS", label: "SPOS " },
-    //     { value: "DAA", label: "DAA" },
-    //     { value: "SMAD", label: "SMAD" },
-    //     { value: "WT", label: "WT" }
-    //     // {value:"CC",label:"CC"},
-    //     // {value:"SMAA",label:"SMAA"}
-    // ]
-    // // for be CS sem7
-    // const p2015y4_dcssem7 = [
-    //     { value: "HPC", label: "HPC" },
-    //     { value: "AIR", label: "AIR" },
-    //     { value: "DA", label: "DA" },
-    //     { value: "E1", label: "E1" },
-    //     { value: "E2", label: "E2" }
-    // ]
-
-    // // for be CS sem8
-    // const p2015y4_dcssem8 = [
-    //     { value: "ML", label: "ML" },
-    //     { value: "ICS", label: "ICS" },
-    //     { value: "E3", label: "E3" },
-    //     { value: "E4", label: "E4" }
-    // ]
-
-    // // subject for ENTC 2015 PATTERN
-    // // for se ENTC sem3
-    // const p2015y2_dentcsem3 = [
-    //     { value: "SS", label: "SS" },
-    //     { value: "EDAC", label: "EDAC" },
-    //     { value: "ECAM", label: "ECAM" },
-    //     { value: "DSA", label: "DSA" },
-    //     { value: "DE", label: "DE" },
-    //     { value: "EMIAT", label: "EMIAT" }
-    // ];
-    // // for se ENTC sem4
-    // const p2015y2_dentcsem4 = [
-    //     { value: "EM-3", label: "EM-3" },
-    //     { value: "IC", label: "IC" },
-    //     { value: "CS", label: "CS" },
-    //     { value: "AC", label: "AC" },
-    //     { value: "OOP", label: "OOP" },
-    //     { value: "ESD", label: "ESD" }
-    // ];
-    // // for te ENTC sem5
-    // const p2015y3_dentcsem5 = [
-    //     { value: "DC", label: "DC" },
-    //     { value: "DSP", label: "DSP" },
-    //     { value: "EM", label: "EM" },
-    //     { value: "MC", label: "MC" },
-    //     { value: "MCT", label: "MCT" }
-    //     // {value:"HCI",label:"HCI"},
-    //     // {value:"DS",label:"DS"},
-    //     // {value:"SPM",label:"SPM"}
-    // ];
-    // // for te ENTC sem6
-    // const p2015y3_dentcsem6 = [
-    //     { value: "PE", label: "PE" },
-    //     { value: "ITCCN", label: "ITCCN " },
-    //     { value: "BM", label: "BM" },
-    //     { value: "AP", label: "AP" },
-    //     { value: "SPOS", label: "SPOS" }
-    //     // {value:"CC",label:"CC"},
-    //     // {value:"SMAA",label:"SMAA"}
-    // ]
-    // // for be entc sem7
-    // const p2015y4_dentcsem7 = [
-    //     { value: "VLSIDT", label: "VLSIDT" },
-    //     { value: "CNS", label: "CNS" },
-    //     { value: "RAMT", label: "RAMT" },
-    //     { value: "E1", label: "E1" },
-    //     { value: "E2", label: "E2" }
-    // ]
-
-    // // for be ENTC sem8
-    // const p2015y4_dentcsem8 = [
-    //     { value: "MC", label: "MC" },
-    //     { value: "BCS", label: "BCS" },
-    //     { value: "E3", label: "E3" },
-    //     { value: "E4", label: "E4" }
-    // ]
-
-
-    // // subject for IT 2015 PATTERN
-    // // for se IT sem3
-    // const p2015y2_ditsem3 = [
-    //     { value: "DS", label: "DS" },
-    //     { value: "COA", label: "COA" },
-    //     { value: "DELD", label: "DELD" },
-    //     { value: "FDS", label: "FDS" },
-    //     { value: "OOP", label: "OOP" },
-    // ];
-    // // for se IT sem4
-    // const p2015y2_ditsem4 = [
-    //     { value: "EM-3", label: "EM-3" },
-    //     { value: "CG", label: "CG" },
-    //     { value: "PAI", label: "PAI" },
-    //     { value: "DSF", label: "DSF" },
-    //     { value: "FCCN", label: "FCCN" },
-    // ];
-    // // for te it sem5
-    // const p2015y3_ditsem5 = [
-    //     { value: "TOC", label: "TOC" },
-    //     { value: "DBMS", label: "DBMS" },
-    //     { value: "OS", label: "OS" },
-    //     { value: "SE", label: "SE" },
-    //     { value: "HCI", label: "HCI" }
-    //     // {value:"HCI",label:"HCI"},
-    //     // {value:"DS",label:"DS"},
-    //     // {value:"SPM",label:"SPM"}
-    // ];
-    // // for te it sem6
-    // const p2015y3_ditsem6 = [
-    //     { value: "CNS", label: "CNS" },
-    //     { value: "SP", label: "SP" },
-    //     { value: "DAA", label: "DAA" },
-    //     { value: "CC", label: "CC" },
-    //     { value: "DSBDA", label: "DSBDA" }
-    //     // {value:"CC",label:"CC"},
-    //     // {value:"SMAA",label:"SMAA"}
-    // ]
-    // // for be it sem7
-    // const p2015y4_ditsem7 = [
-    //     { value: "ICS", label: "ICS" },
-    //     { value: "MLA", label: "MLA" },
-    //     { value: "SDM", label: "SDM" },
-    //     { value: "E1", label: "E1" },
-    //     { value: "E2", label: "E2" }
-    // ]
-
-    // // for be IT sem8
-    // const p2015y4_ditsem8 = [
-    //     { value: "DCS", label: "DCS" },
-    //     { value: "UC", label: "UC" },
-    //     { value: "E3", label: "E3" },
-    //     { value: "E4", label: "E4" }
-    // ]
-
-
-    // // Pattern 2019------------------------------------------------------------------------
-
-    // // Values of Subject
-    // // For first year sem1
-    // const p2019y1_type1sem1 = [
-    //     { value: "PHYSICS", label: "PHYSICS" },
-    //     { value: "EM-1", label: "EM-1" },
-    //     { value: "SME", label: "SME" },
-    //     { value: "BEE", label: "BEE" },
-    //     { value: "EM", label: "EM" },
-    // ];
-
-    // const p2019y1_type2sem1 = [
-    //     { value: "CHEMISTRY", label: "CHEMISTRY" },
-    //     { value: "EM-1", label: "EM-1" },
-    //     { value: "SME", label: "SME" },
-    //     { value: "BXE", label: "BXE" },
-    //     { value: "PPS", label: "PPS" },
-    // ];
-
-    // // for fe sem2
-    // const p2019y1_type1sem2 = [
-    //     { value: "CHEMISTRY", label: "CHEMISTRY" },
-    //     { value: "EM-2", label: "EM-2" },
-    //     { value: "BXE", label: "BXE" },
-    //     { value: "PPS", label: "PPS" },
-    //     { value: "GRAPHICS", label: "GRAPHICS" },
-    // ];
-
-    // const p2019y1_type2sem2 = [
-    //     { value: "PHYSICS", label: "PHYSICS" },
-    //     { value: "EM-2", label: "EM-2" },
-    //     { value: "GRAPHICS", label: "GRAPHICS" },
-    //     { value: "BEE", label: "BEE" },
-    //     { value: "EM", label: "EM" },
-
-    // ];
-
-    // // subject for CS
-    // // for se CS sem3
-    // const p2019y2_dcssem3 = [
-    //     { value: "DM", label: "DM" },
-    //     { value: "FDS", label: "FDS" },
-    //     { value: "CG", label: "CG" },
-    //     { value: "OOP", label: "OOP" },
-    //     { value: "DELD", label: "DELD" },
-    // ];
-    // // for se CS sem4
-    // const p2019y2_dcssem4 = [
-    //     { value: "EM-3", label: "EM-3" },
-    //     { value: "DSA", label: "DSA" },
-    //     { value: "SE", label: "SE" },
-    //     { value: "MP", label: "MP" },
-    //     { value: "PPL", label: "PPL" },
-    // ];
-    // // for te cs sem5
-    // const p2019y3_dcssem5 = [
-    //     { value: "TOC", label: "TOC" },
-    //     { value: "DBMS", label: "DBMS" },
-    //     { value: "OS", label: "OS" },
-    //     { value: "CNS", label: "CNS" },
-    //     { value: "ITES", label: "ITES" },
-    //     { value: "HCI", label: "HCI" },
-    //     { value: "DS", label: "DS" },
-    //     { value: "SPM", label: "SPM" }
-    // ];
-    // // for te cs sem6
-    // const p2019y3_dcssem6 = [
-    //     { value: "WT", label: "WT" },
-    //     { value: "IS", label: "IS" },
-    //     { value: "DSBDA", label: "DSBDA" },
-    //     { value: "AAVR", label: "AAVR" },
-    //     { value: "AI", label: "AI" },
-    //     { value: "CC", label: "CC" },
-    //     { value: "SMAA", label: "SMAA" }
-    // ]
-    // // for be cs sem7
-    // const p2019y4_dcssem7 = [
-    //     { value: "DAA", label: "DAA" },
-    //     { value: "ML", label: "ML" },
-    //     { value: "BCT", label: "BCT" },
-    //     { value: "E3", label: "E3" },
-    //     { value: "E4", label: "E4" }
-    // ]
-
-    // // for be cs sem8
-    // const p2019y4_dcssem8 = [
-    //     { value: "HPC", label: "HPC" },
-    //     { value: "DL", label: "DL" },
-    //     { value: "E5", label: "E5" },
-    //     { value: "E6", label: "E6" }
-    // ]
-
-
-    // // subject for ENTC
-    // // for se ENTC sem3
-    // const p2019y2_dentcsem3 = [
-    //     { value: "EM3", label: "EM3 " },
-    //     { value: "EC", label: "EC" },
-    //     { value: "DC", label: "DC " },
-    //     { value: "EC", label: "EC " },
-    //     { value: "DSA", label: "DSA " },
-    // ];
-
-    // // for se ENTC sem4
-    // const p2019y2_dentcsem4 = [
-    //     { value: "SS", label: "SS " },
-    //     { value: "CS", label: "CS " },
-    //     { value: "PCS", label: "PCS " },
-    //     { value: "OOP", label: "OOP " },
-    //     { value: "ESD", label: "ESD " },
-    // ];
-
-    // // for te ENTC sem5
-    // const p2019y3_dentcsem5 = [
-    //     { value: "DC", label: "DC" },
-    //     { value: "EFT", label: "EFT " },
-    //     { value: "DBM", label: "DBM " },
-    //     { value: "MC", label: "MC" },
-    //     { value: "EI", label: "Elective-I" },
-    // ];
-
-    // // for te ENTC sem6
-    // const p2019y3_dentcsem6 = [
-    //     { value: "CN", label: "CN" },
-    //     { value: "PM", label: "PM" },
-    //     { value: "PDC", label: "PDC" },
-    //     { value: "EI", label: "Elective-II" }
-    // ]
-
-    // // for be ENTC sem7
-    // const p2019y4_dentcsem7 = [
-    //     { value: "RMT", label: "RMT " },
-    //     { value: "VLSI", label: "VLSI " },
-    //     { value: "CC", label: "CC" },
-    //     { value: "EI3", label: "Elective- 3" },
-    //     { value: "EI4", label: "Elective- 4" },
-    // ];
-
-    // // for be ENTC sem8
-    // const p2019y4_dentcsem8 = [
-    //     { value: "FOC", label: "FOC " },
-    //     { value: "EI5", label: "Elective - 5" },
-    //     { value: "EI6", label: "Elective - 6" },
-    // ];
-
-    // // subject for IT
-    // // for se it sem3
-    // const p2019y2_ditsem3 = [
-    //     { value: "DM", label: "DM" },
-    //     { value: "LDCO", label: "LDCO" },
-    //     { value: "DSA", label: "DSA" },
-    //     { value: "OOP", label: "OOP" },
-    //     { value: "BCN", label: "BCN" },
-    // ];
-    // // for se it sem4
-    // const p2019y2_ditsem4 = [
-    //     { value: "DMS", label: "DMS" },
-    //     { value: "CG", label: "CG" },
-    //     { value: "PA", label: "PA" },
-    //     { value: "SE", label: "SE" },
-    //     { value: "EM-3", label: "EM-3" },
-    // ];
-    // // for te it sem5
-    // const p2019y3_ditsem5 = [
-    //     { value: "TOC", label: "TOC" },
-    //     { value: "OS", label: "OS" },
-    //     { value: "ML", label: "ML" },
-    //     { value: "HCI", label: "HCI" },
-    //     { value: "DAA", label: "DAA" },
-    //     { value: "ADBMS", label: "ADBMS" },
-    // ];
-    // // for te it sem6
-    // const p2019y3_ditsem6 = [
-    //     { value: "CN", label: "CN" },
-    //     { value: "WAD", label: "WAD" },
-    //     { value: "DSBDA", label: "DSBDA" },
-    //     { value: "CC", label: "CC" },
-    //     { value: "AI", label: "AI" },
-    // ]
-    // // for be it sem7
-    // const p2019y4_ditsem7 = [
-    //     { value: "DS", label: "DS" },
-    //     { value: "SC", label: "SC" },
-    //     { value: "BCT", label: "BCT" },
-    //     { value: "S7E", label: "S&E" },
-    // ]
-
-    // // for be it sem8
-    // const p2019y4_ditsem8 = [
-    //     { value: "DS", label: "DS" },
-    //     { value: "SC", label: "SC" },
-    //     { value: "BCT", label: "BCT" },
-    //     { value: "S7E", label: "S&E" },
-    // ]
-
+    
 
     //    this Array for test pattern 
     const testname = [
@@ -622,18 +363,6 @@ function Dropdown(teachers_table) {
         // console.log(valuefortest1);
     }
 
-    // This is Object of Above value.
-    // const subjectname = {
-    //     p2015y2_dcssem3, p2015y2_dcssem4, p2015y3_dcssem5, p2015y3_dcssem6, p2015y4_dcssem7, p2015y4_dcssem8,
-    //     p2015y2_dentcsem3, p2015y2_dentcsem4, p2015y3_dentcsem5, p2015y3_dentcsem6, p2015y4_dentcsem7, p2015y4_dentcsem8,
-    //     p2015y2_ditsem3, p2015y2_ditsem4, p2015y3_ditsem5, p2015y3_ditsem6, p2015y4_ditsem7, p2015y4_ditsem8,
-    //     p2019y1_type1sem1, p2019y1_type1sem2, p2019y1_type2sem1, p2019y1_type2sem2,
-    //     p2019y2_dcssem3, p2019y2_dcssem4, p2019y3_dcssem5, p2019y3_dcssem6, p2019y4_dcssem7, p2019y4_dcssem8,
-    //     p2019y2_dentcsem3, p2019y2_dentcsem4, p2019y3_dentcsem5, p2019y3_dentcsem6, p2019y4_dentcsem7, p2019y4_dentcsem8,
-    //     p2019y2_ditsem3, p2019y2_ditsem4, p2019y3_ditsem5, p2019y3_ditsem6, p2019y4_ditsem7, p2019y4_ditsem8
-    // };
-
-
     return (
         <>
             <div className="boxComponent">
@@ -641,24 +370,22 @@ function Dropdown(teachers_table) {
                 <div className="buttonbox" >
                     <label>Pattern:</label>
                     <Select
-                        options={patternname} value={valueforpattern}
+                        options={transformedPattern} 
+                        value={valueforpattern}
                         onChange={(selectedOption) => {
                             setValueforpattern(selectedOption);
-                            // bug handeling to trigger subject value
-                            var additionString;
-                            additionString = selectedOption.value + valueforyear.value + valuefordepartment.value + valueforsem.value;
-                            // setValueforsubjectArray(subjectname[additionString]);
+                            transformAcadamicYear(selectedOption);
                         }}
                         isSearchable
                         placeholder="Select Pattern"
                         required
                     />
                 </div>
-                {/* <div style={{margin:20, width:165}}></div> */}
                 <div className="buttonbox" >
                     <label>Acadamic Year:</label>
                     <Select
-                        options={acadamicyearname} value={valueforacadamicyear}
+                        options={transformedAcadamicYear}
+                        value={valueforacadamicyear}
                         onChange={(selectedOption) => {
                             setValueForAcadamicYear(selectedOption)
                             setValueForAcademicYearlabel(selectedOption.label)
@@ -677,16 +404,8 @@ function Dropdown(teachers_table) {
                         value={valueforyear}
                         onChange={(selectedOption) => {
                             setValueforyear(selectedOption);
-                            console.log(selectedOption.label)
                             setvalueforyearlabel(selectedOption.label);
-                            // setValuefordivisionArray(divis[selectedOption.value]);
                             setValueforsemArray(semname[selectedOption.label.toLowerCase()]);
-                            setValuedepartmentArray(departmentname[selectedOption.value.split('')[3]]);// bug handeling to trigger subject value
-                            var additionString;
-                            additionString = valueforpattern.value + selectedOption.value + valuefordepartment.value + valueforsem.value;
-                            // setValueforsubjectArray(subjectname[additionString]);
-
-
                         }}
                         isSearchable
                         placeholder="Select Year"
@@ -698,15 +417,11 @@ function Dropdown(teachers_table) {
                 <div className="buttonbox" >
                     <label>Department:</label>
                     <Select
-                        options={valuefordepartmentArray} value={valuefordepartment}
+                        options={transformedDepartment}
+                        value={valuefordepartment}
                         onChange={(selectedOption) => {
                             setValuedepartment(selectedOption)
                             setvaluefordepartmentlabel(selectedOption.label);
-                            setValuefordivisionArray(divisionname[selectedOption.value]);
-                            // bug handeling to trigger subject value
-                            var additionString;
-                            additionString = valueforpattern.value + valueforyear.value + selectedOption.value + valueforsem.value;
-                            // setValueforsubjectArray(subjectname[additionString]);
                         }
                         }
                         isSearchable
@@ -719,16 +434,13 @@ function Dropdown(teachers_table) {
                 <div className="buttonbox">
                     <label>Semester:</label>
                     <Select
-                        // array from year
                         options={valueforsemArray}
                         value={valueforsem}
                         onChange={(selectedOption) => {
-                            // console.log(selectedOption.value)
                             setvalueforsemlabel(selectedOption.label)
                             setValueforsem(selectedOption);
-                            var additionString;
-                            additionString = valueforpattern.value + valueforyear.value + valuefordepartment.value + selectedOption.value;
-                            // setValueforsubjectArray(subjectname[additionString]);
+                            transformdivision();
+                            transformSubject(selectedOption);
                         }}
                         isSearchable
                         placeholder="Select Sem"
@@ -739,7 +451,7 @@ function Dropdown(teachers_table) {
                 <div className="buttonbox">
                     <label>Subject:</label>
                     <Select
-                        options={transformedSubjects}
+                        options={transformedSubject}
                         value={valueforsubject}
                         onChange={(selectedOption) => {
                             setValueforsubject(selectedOption);
@@ -765,14 +477,10 @@ function Dropdown(teachers_table) {
                         required
                     />
                 </div>
-                {/* <Context.Provider value={{valuefortest,setValuefortest}}>
-                </Context.Provider> */}
-
                 <div className="buttonbox">
                     <label>Division:</label>
                     <Select
-                        // this array from above
-                        options={transformedDivisions}
+                        options={transformedDivision}
                         value={valuefordivision}
                         onChange={(selectedOption) => {
                             setValuefordivision(selectedOption);
@@ -782,11 +490,6 @@ function Dropdown(teachers_table) {
                         placeholder="Select Division"
                         required
                     >
-                        {/* {divisions.map((division) => (
-                            <option key={division} value={division}>
-                                {division}
-                            </option>
-                        ))} */}
                     </Select>
                 </div>
             </div>
@@ -794,13 +497,8 @@ function Dropdown(teachers_table) {
                 <Button onClick={createTable}>Show Records</Button>
             </div>
             <ToastContainer />
-            {showbtn && <ParentComponent tableName={tableName} />}
-            {showTable && (
-                <Main_table
-                    tableName={tableName}
-                />
-            )}
-
+            {showbtn    && (<ParentComponent tableName={tableName} />)}
+            {showTable  && (<Main_table tableName={tableName} />)     }
         </>
     );
 }
