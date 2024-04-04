@@ -384,7 +384,6 @@ function BelowTable({ containerRef, tableName }) {
             <tr>
               <td>UA_CO_AT</td>
               <td>{(((((countLevelOne[0].sum_UA * 100) / presentStudent[0].sum_UA) / countLevelOneUA) + (((countLevelTwo[0].sum_UA * 100) / presentStudent[0].sum_UA) * 2 / countLevelTwoUA) + (((countLevelThree[0].sum_UA * 100) / presentStudent[0].sum_UA) * 3 / countLevelThreeUA)) / 6).toFixed(2)}</td>
-
             </tr>
             <tr>
               <td>UT_CO_attainment</td>
