@@ -165,4 +165,33 @@ const addSubject = async (req, res) => {
     }
 }
 
-module.exports = { deletePatternAndYear, insertPattern, fetchPatternAndYear, handleGetPattern, handleGetAcadamicYear, handleGetDepartment, handleGetDivision, handleGetSubject, fetchSubjects, deleteSubject, addSubject }
+const handleCoPoAttainment=async(req,res)=>{
+    try{
+        const { tableName } = req.params;
+        // const {UA_CO_AT,}=req.body;
+        // console.log(coValue)
+
+         // Check if entry with Main_Table_Name exists
+        const checkQuery = `SELECT * FROM co_po_attainment WHERE Main_Table_Name = '${tableName}'`;
+        const checkResult = await dropdownPool.query(checkQuery);
+
+        if (checkResult[0].length === 0) {
+            // If Main_Table_Name entry doesn't exist, create it with default values
+            const createQuery = `INSERT INTO co_po_attainment (Main_Table_Name,UA_CO_AT,UT_CO_attainment,\`Course Outcome\` ) VALUES ('${tableName}', 0, 0, 0)`;
+            await dropdownPool.query(createQuery);
+        }
+        
+        const UA_CO_AT=Number(req.body.UA_CO_AT);
+        const UT_CO_attainment=Number(req.body.UT_CO_attainment);
+        const Course_Outcome=Number(req.body.Course_Outcome);
+
+        let sqlquery=`UPDATE co_po_attainment SET  UA_CO_AT= ?,UT_CO_attainment = ?,\`Course Outcome\` = ? WHERE Main_Table_Name = '${tableName}'`;
+
+        await dropdownPool.query(sqlquery,[UA_CO_AT,UT_CO_attainment,Course_Outcome]);
+        res.status(200).send({message:"posted successfully"});
+    }catch(error){
+        console.log("Error:",error);
+        res.status(500).send({message:"enternal server error"});
+    }
+}
+module.exports = { deletePatternAndYear, insertPattern, fetchPatternAndYear, handleGetPattern, handleGetAcadamicYear, handleGetDepartment, handleGetDivision, handleGetSubject, fetchSubjects, deleteSubject, addSubject,handleCoPoAttainment}

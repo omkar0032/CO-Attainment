@@ -136,14 +136,14 @@ function Dropdown(teachers_table) {
         // console.log(acadamicYears);
         const transformedAcadamicYears=acadamicyearnames.map(acadamicyearname=>({
             value:convertAcadamicYear(acadamicyearname),
-            label:acadamicyearname.Acadamic_Year,
+            label:acadamicyearname.Academic_Year,
         }))
         setTransformedAcadamicYear(transformedAcadamicYears);
         
     }
 
     const convertAcadamicYear=(acadamicYear)=>{
-        const[startYear,endYear]=acadamicYear.Acadamic_Year.split('-');
+        const[startYear,endYear]=acadamicYear.Academic_Year.split('-');
         return "y_"+startYear+"_"+endYear;
     }
 
@@ -172,7 +172,7 @@ function Dropdown(teachers_table) {
         await handleGetSubject(selectedOption);
         // console.log(subjectnames);
         const transformedSubject1=subjectnames.map(subjectname=>({
-            value:subjectname.Subject_Name,
+            value:subjectname.Subject_Name.toLowerCase(),
             label:subjectname.Subject_Name
         }));
         setTransformedSubject(transformedSubject1);
@@ -181,7 +181,6 @@ function Dropdown(teachers_table) {
     
     const createTable = async () => {
         const tableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${valueforsem?.value}_${valueforsubject?.value}`;
-
         if (
             valueforpattern &&
             valueforacadamicyear&&

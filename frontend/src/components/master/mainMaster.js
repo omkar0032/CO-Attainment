@@ -512,14 +512,14 @@ function MasterMain(teachers_table) {
         // console.log(acadamicYears);
         const transformedAcadamicYears = acadamicyearnames.map(acadamicyearname => ({
             value: convertAcadamicYear(acadamicyearname),
-            label: acadamicyearname.Acadamic_Year,
+            label: acadamicyearname.Academic_Year,
         }))
         setTransformedAcadamicYear(transformedAcadamicYears);
 
     }
 
     const convertAcadamicYear = (acadamicYear) => {
-        const [startYear, endYear] = acadamicYear.Acadamic_Year.split('-');
+        const [startYear, endYear] = acadamicYear.Academic_Year.split('-');
         return "y_" + startYear + "_" + endYear;
     }
 

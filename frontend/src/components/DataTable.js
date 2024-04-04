@@ -68,12 +68,18 @@ const DataTable = ({tableName}) => {
 
             if (response.status === 200) {
                 toast.success('Data inserted into MySQL table.');
+            } else if (response.status === 400 && response.data === "Duplicate entries not allowed") {
+                toast.warning('Duplicate entries not allowed.');
             } else {
                 toast.warning('Error inserting data into MySQL table.');
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('An error occurred while saving data to the database.');
+            if (error.response && error.response.status === 400) {
+                toast.warning(error.response.data);
+            } else {
+                toast.error('An error occurred while saving data to the database.');
+            }
         } finally {
             setUploading(false);
         }

@@ -7,12 +7,12 @@ const path = require("path");
 const createTableStudents = async (req, res) => {
   const { tableName } = req.params;
   console.log(tableName);
-
   // Check if the table already exists
   const checkTableQuery = `
       SELECT EXISTS (
         SELECT 1
         FROM information_schema.tables
+      
         WHERE table_schema = 'inhouse'
         AND table_name = '${tableName}'
       ) AS table_exists;
@@ -48,7 +48,7 @@ const createTableStudents = async (req, res) => {
       const createTableQuery = `
     CREATE TABLE IF NOT EXISTS ${tableName} (
       \`Serial No\` INT,
-      \`Roll No\` INT,
+      \`Roll No\` INT PRIMARY KEY,
       \`Seat No\` VARCHAR(10),
       Name VARCHAR(255),
       \`UT1-Q1\` INT,
@@ -88,7 +88,11 @@ const uploadExcelStudents = async (req, res) => {
     console.log(filePath, tableName);
 
     // Call the function to process the Excel file
-    await excelToMySQLArray(filePath, tableName);
+    const result=await excelToMySQLArray(filePath, tableName);
+
+    if (result && result.error && result.error.includes("Duplicate entry")) {
+      return res.status(400).send("Duplicate entries not allowed");
+    }
 
     res.sendStatus(200);
   } catch (error) {
@@ -102,8 +106,11 @@ async function excelToMySQLArray(filePath, tableName) {
     // Load the Excel file
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(filePath);
+    console.log(tableName);
+
     // Get the first worksheet
     const worksheet = workbook.getWorksheet(1);
+
     // Define the MySQL table structure
     const columns = [
       "Serial No",
@@ -134,18 +141,7 @@ async function excelToMySQLArray(filePath, tableName) {
         // Populate rowData dynamically
         columns.forEach((colName, index) => {
           const cellValue = row.getCell(index + 1).value;
-
-          // Check for 'A' or 'FF' and handle accordingly
-          if (cellValue === undefined || cellValue === null || cellValue === '') {
-            rowData[colName] = null; // Empty cell value should be saved as null
-          } else if (cellValue === "A") {
-            rowData[colName] = null; // 'A' should be saved as null
-          } else if (cellValue === "ff") {
-            // If 'FF' is encountered, set all fields in the row to null except for specified columns
-            rowData[colName] = 0;
-          } else {
-            rowData[colName] = cellValue;
-          }
+          rowData[colName] = cellValue;
         });
 
         // Push rowData to dataArray
@@ -162,19 +158,29 @@ async function excelToMySQLArray(filePath, tableName) {
       );
 
       // Execute the SQL INSERT query
-      await pool.execute(
-        `INSERT INTO ${tableName} (\`${columns.join("`, `")}\`) VALUES ${values
-          .map(() => `(${placeholders})`)
-          .join(", ")}`,
-        values.flat()
-      );
-
-      console.log("Data inserted into MySQL table.");
+      try {
+        await pool.execute(
+          `INSERT INTO ${tableName} (\`${columns.join("`, `")}\`) VALUES ${values
+            .map(() => `(${placeholders})`)
+            .join(", ")}`,
+          values.flat()
+        );
+        console.log("Data inserted into MySQL table.");
+      } catch (error) {
+        // Check for MySQL error code indicating duplicate entry
+        if (error.code === 'ER_DUP_ENTRY') {
+          console.log("Duplicate entry not allowed");
+          return { error: "Duplicate entry not allowed" };
+        } else {
+          throw error; // Rethrow other errors
+        }
+      }
     } else {
       console.log("No data to insert.");
     }
   } catch (error) {
     console.error("Error:", error);
+    return { error: "An error occurred while processing the Excel file." };
   }
 }
 
@@ -474,7 +480,7 @@ const countsOflevel3 = async (req, res) => {
 
 const updateMaxMarks = async (req, res) => {
   try {
-    console.log("in bacend");
+    // console.log("in bacend");
     const valueForMaxMarks = req.body.valueForMaxMarks;
     const tableName = req.params.tableName;
     // console.log(valueForMaxMarks);

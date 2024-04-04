@@ -28,7 +28,7 @@ const {checkAuth}=require("./middleware/auth")
 // Use routes
 // app.use(checkAuth);
 app.use(authRoute);
-// app.use(studentsRoutes,checkAuth);
+app.use(studentsRoutes);
 app.use(teachersRoutes);
 app.use(targetRoutes);
 app.use(dropdownRoutes);

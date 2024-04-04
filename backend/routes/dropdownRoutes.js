@@ -1,5 +1,5 @@
 const express = require("express");
-const { handleGetPattern, handleGetAcadamicYear, handleGetDepartment, handleGetDivision, handleGetSubject, deletePatternAndYear, insertPattern, fetchPatternAndYear, fetchSubjects, deleteSubject, addSubject } = require("../controllers/dropdownController");
+const { handleGetPattern, handleGetAcadamicYear, handleGetDepartment, handleGetDivision, handleGetSubject, deletePatternAndYear, insertPattern, fetchPatternAndYear, fetchSubjects, deleteSubject, addSubject, handleCoPoAttainment } = require("../controllers/dropdownController");
 const router = express.Router();
 
 router.get("/pattern", handleGetPattern);
@@ -13,5 +13,6 @@ router.post("/insert_pattern", insertPattern)
 router.get("/fetch_subject/:tableName", fetchSubjects);
 router.post("/delete_subject/:tableName/:subject", deleteSubject)
 router.post("/add_subject/:tableName/:inputValue", addSubject)
+router.post("/co_po/:tableName",handleCoPoAttainment);
 
 module.exports = router;
