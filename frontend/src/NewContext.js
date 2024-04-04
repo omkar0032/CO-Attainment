@@ -8,13 +8,13 @@ export const ContextProvider = ({ children }) => {
     const [valuefortest1, setValuefortest1] = useState();
 
     // this hook to be set in level.js and used in below_table.js
-    const [countLevelOneUT, setCountLevelOneUT] = useState(95);
+    const [countLevelOneUT, setCountLevelOneUT] = useState(91);
     const [countLevelOneUA, setCountLevelOneUA] = useState(100);
-    const [countLevelTwoUT, setCountLevelTwoUT] = useState(87);
-    const [countLevelTwoUA, setCountLevelTwoUA] = useState(98);
+    const [countLevelTwoUT, setCountLevelTwoUT] = useState(80);
+    const [countLevelTwoUA, setCountLevelTwoUA] = useState(71);
 
-    const [countLevelThreeUT, setCountLevelThreeUT] = useState(80);
-    const [countLevelThreeUA, setCountLevelThreeUA] = useState(93);
+    const [countLevelThreeUT, setCountLevelThreeUT] = useState(74);
+    const [countLevelThreeUA, setCountLevelThreeUA] = useState(60);
 
 
     // this hook to store toggle button of show result
@@ -34,6 +34,9 @@ export const ContextProvider = ({ children }) => {
     //sending name in navbar login to navbar
     const [name, setName] = useState();
 
+    // check logged in ore not
+    const [loggedInUserName, setLoggedInUserName] = useState('');
+    const [valueForRole, setValueForRole] = useState('');
 
     return (
         <Context.Provider value={{
@@ -51,7 +54,9 @@ export const ContextProvider = ({ children }) => {
             valueforsubjectlabel, setvalueforsubjectlabel,
             valueforsemlabel, setvalueforsemlabel,
             email, setEmail,
-            name, setName
+            name, setName,
+            loggedInUserName, setLoggedInUserName,
+            valueForRole, setValueForRole,
 
         }}>
             {children}

@@ -21,34 +21,104 @@ import VerifyOTP from './components/VerifyOTP';
 import ResendOTP from './components/resendOTP';
 import ResetPassword from './components/resetPassword';
 import Average from './components/average';
+import EditPattern from './components/editPattern';
+import EditSubject from './components/editSubjects';
+import { UseData } from './NewContext';
+import UnauthorizedAlert from './Alert';
 const App = () => {
-  const [data, setData] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [excelData, setExcelData] = useState([]);
-
+  const { loggedInUserName, setLoggedInUserName } = UseData();
+  const { valueForRole, setValueForRole } = UseData();
+  useEffect(() => {
+    const loggedInUserNameFromStorage = localStorage.getItem('Userdata');
+    const loggedInUserNameFromStorage1 = JSON.parse(loggedInUserNameFromStorage)
+    if (loggedInUserNameFromStorage) {
+      setValueForRole(loggedInUserNameFromStorage1.role);
+      setLoggedInUserName(loggedInUserNameFromStorage1.name);
+      
+      console.log(valueForRole);
+    }
+  }, []);
   const handleDataLoaded = (data) => {
     setExcelData(data);
+  };
+
+  const UnauthorizedAlert1 = () => {
+    useEffect(() => {
+      alert("You are not an authorized person!");
+    }, []);
+
+    return null;
+  };
+
+  const UnauthorizedAlert2 = () => {
+    useEffect(() => {
+      alert("You are not an authorized person!");
+    }, []);
+
+    return null;
   };
   return (
     <div>
       <Router>
-        <Navbar title="Text2" about="About Info" />
-        <Routes>
-          {/* <Route path="/" element={<Shyam />} /> */}
-          <Route path="/forgot-password" element={<ForgotPassword />}></Route>
-          <Route path="/resend-otp" element={<ResendOTP />}></Route>
-          <Route path="/verify-otp" element={<VerifyOTP />}></Route>
-          <Route path="/reset-password" element={<ResetPassword />}></Route>
-          <Route path="/Login" element={<LoginForm />} />
-          <Route path="/average" element={<Average />} />
-          <Route path="/home" element={<Dropdown />} />
-          <Route path='/allocate-data' element={<MasterMain />} />
+        {!loggedInUserName ?
+          (<Routes>
+            <Route path="/" element={<LoginForm />} />
+            <Route path="/forgot-password" element={<ForgotPassword />}></Route>
+            <Route path="/verify-otp" element={<VerifyOTP />}></Route>
+            <Route path="/reset-password" element={<ResetPassword />}></Route>
+            <Route path="/resend-otp" element={<ResendOTP />}></Route>
+          </Routes>)
+          :
+          <>
+            <Navbar title="Text2" about="About Info" />
+            <Routes>
+              
+            
+              <Route path="/average" element={<Average />} />
+              <Route path="/Home" element={<Dropdown />} />
+              {/* {valueForRole === 'HOD' ? (
+                <>
+                  <Route path='/allocate-data' element={<MasterMain />} />
+                  <Route path='/edit-pattern' element={<EditPattern />} />
+                  <Route path='/edit-subject' element={<EditSubject />} />
+                </>
+              ) : (
+                <>
+                  <Route path='/Home' element={<UnauthorizedAlert />} />
+                  <Route path='/Home' element={<UnauthorizedAlert />} />
+                  <Route path='/Home' element={<UnauthorizedAlert />} />
+                </>
+              )} */}
+              {valueForRole === 'HOD' ?
 
-        </Routes>
+                <Route path='/allocate-data' element={<MasterMain />} /> : <Route path='/allocate-data' element={<UnauthorizedAlert />} />
+              }
+              {valueForRole === 'HOD' ?
+
+                <Route path='/edit-pattern' element={<EditPattern />} /> : <Route path='/edit-pattern' element={<UnauthorizedAlert1 />} />
+
+              }
+              {valueForRole === 'HOD' ?
+                <Route path='/edit-subject' element={<EditSubject />} /> : <Route path='/edit-subject' element={<UnauthorizedAlert2 />} />
+              }
+            </Routes>
+            <Footer />
+          </>
+        }
       </Router>
-      <Footer />
+      {/* <Footer /> */}
 
     </div>
   );
 };
 
+// const UnauthorizedAlert = () => {
+//   useEffect(() => {
+//     alert("You are not an authorized person!");
+//   }, []);
+
+//   return null;
+// };
 export default App;

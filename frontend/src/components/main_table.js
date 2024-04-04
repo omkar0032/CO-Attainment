@@ -836,7 +836,7 @@ for (let i = 1; i <= totalPages; i++) {
                           if (/^[0-9]*$/.test(value)) {
                             // If input is a number, update normally
                             setData({ ...data, ["UA"]: value });
-                            handleMarksChange(
+                            handleMarksChangeUA(
                               index,
                               "UA",
                               parseInt(e.target.value, 10) || 0,

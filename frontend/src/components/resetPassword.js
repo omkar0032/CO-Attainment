@@ -90,7 +90,7 @@ function ResetPassword() {
             console.log(response.status)
             if (response.status === 200) {
                 toast.success("Password Reset Successfully!")
-                navigate('/Login');
+                navigate('/');
             }
             else if (!password) {
                 toast.warn("Enter valid Password!")
