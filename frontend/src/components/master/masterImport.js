@@ -97,6 +97,7 @@ const MasterImport = ({ tableName }) => {
       const response = await axios.get(
         `http://localhost:3000/create_LinkTable/${tableName}`
       );
+      
       console.log(response.data);
       // setdata(result);
       if (response.data.length === 0) {
@@ -150,8 +151,6 @@ const MasterImport = ({ tableName }) => {
   };
   const handleSaveData = async () => {
     try {
-      // Implement your logic for handling save data request here
-      // Example:
       const response = await axios.post(
         `http://localhost:3000/teachers/update_teacher_subjects/${tableName}`,
         data

@@ -12,9 +12,12 @@ const {
   resetPassword,
   getSubjectsAndDivisions,
   updateTeacherSubjects,
+  fetchTeacherData,
+  updateTeacherData
 } = require("../controllers/teacherController");
 
 router.get("/create_LinkTable/:tableName", createAndLinkTable);
+router.get("/teacherData/:tableName",fetchTeacherData);
 router.post("/upload_teachers/:tableName", uploadExcelTeachers);
 router.post("/upload_main_table", uploadMainTable);
 // router.post("/login",login);
@@ -29,5 +32,9 @@ router.get(
 router.post(
   "/teachers/update_teacher_subjects/:tableName",
   updateTeacherSubjects
+);
+router.post(
+  "/teachers/update_teacher_data/:tableName",
+  updateTeacherData
 );
 module.exports = router;

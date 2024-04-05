@@ -12,12 +12,62 @@ const crypto = require('crypto');
 const secretKey = crypto.randomBytes(32).toString('hex');
 const{setUserId}=require("../service/auth");
 const jwt = require("jsonwebtoken");
-const {v4:uuidv4}=require("uuid");
+// const {v4:uuidv4}=require("uuid");
 const {setUser}=require("../service/auth");
 
 app.use(bodyParser.json());
 const TOKEN_EXPIRATION = '1h';
+const fetchTeacherData=async(req,res)=>{
+  const { tableName } = req.params;
+  console.log(tableName);
 
+  try {
+    // Check if the table already exists
+    const checkTableQuery = `
+      SELECT EXISTS (
+        SELECT 1
+        FROM information_schema.tables
+        WHERE table_schema = 'inhouse_teachers'
+        AND table_name = '${tableName}'
+      ) AS table_exists;
+    `;
+
+    const result = await teachersPool.query(checkTableQuery);
+    const tableExists = result[0][0].table_exists;
+
+    if (tableExists) {
+      // Table exists, check if it's empty
+      const checkEmptyTableQuery = `SELECT COUNT(*) AS row_count FROM ${tableName}`;
+      const rowCountResult = await teachersPool.query(checkEmptyTableQuery);
+      const rowCount = rowCountResult[0][0].row_count;
+
+      if (rowCount === 0) {
+        // Table is empty, send notification
+        return res.status(200).send([]);
+      } else {
+        // Table is not empty, fetch data
+        const fetchDataQuery = `SELECT * FROM ${tableName}`;
+        const tableData = await teachersPool.query(fetchDataQuery);
+        return res.status(200).send(tableData[0]);
+      }
+    } else {
+      // Table doesn't exist, create table
+      const createTableQuery = `
+        CREATE TABLE IF NOT EXISTS ${tableName} (
+          \`Serial No\` INT AUTO_INCREMENT PRIMARY KEY ,
+          \`Email ID\` VARCHAR(50) ,
+          \`Subject\` VARCHAR(255),
+          \`Division\` INT,
+          \`Coordinator\` VARCHAR(255)
+        )
+      `;
+      await teachersPool.query(createTableQuery);
+        }
+    } catch (error) {
+      console.error("Error creating, fetching, or linking table:", error);
+      return res.status(500).send('Internal Server Error');
+    }
+}
 const createAndLinkTable = async (req, res) => {
   const { tableName } = req.params;
   console.log(tableName);
@@ -601,7 +651,33 @@ const updateTeacherSubjects = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+const updateTeacherData=async(req,res)=>{
+  try {
+    const tableName = req.params.tableName;
+    const data = req.body;
+    console.log(data)
 
+    // Delete all existing data from the table
+    await teachersPool.query(`DELETE FROM ${tableName}`);
+
+    // Insert new data into the table
+    // Assuming data is an array of objects containing the rows to be inserted
+    for (let i = 0; i < data.length; i++) {
+      const rowData = data[i];
+      const keys = Object.keys(rowData);
+      const values = keys.map(key => rowData[key]);
+      const placeholders = keys.map(() => '?').join(',');
+      const escapedColumns = keys.map(key => `\`${key}\``).join(',');
+      const query = `INSERT INTO ${tableName} (${escapedColumns}) VALUES (${placeholders})`;
+      await teachersPool.query(query, values);
+    }
+
+    res.status(200).send("Teacher subjects updated successfully");
+  } catch (error) {
+    console.error("Error in updating teacher subjects:", error);
+    res.status(500).send("Internal Server Error");
+  }
+}
 //--------------------------------------------------------------------------------------
 
 
@@ -611,4 +687,4 @@ const updateTeacherSubjects = async (req, res) => {
 //-------------------------------------------------------------------------------------
 
 
-module.exports = { updateTeacherSubjects,createAndLinkTable, uploadExcelTeachers, uploadMainTable, login, forgotPassword, verifyOTP, resendOTP, resetPassword, getSubjectsAndDivisions };
+module.exports = {updateTeacherData, fetchTeacherData,updateTeacherSubjects,createAndLinkTable, uploadExcelTeachers, uploadMainTable, login, forgotPassword, verifyOTP, resendOTP, resetPassword, getSubjectsAndDivisions };
