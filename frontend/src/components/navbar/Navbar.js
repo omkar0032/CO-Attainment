@@ -66,22 +66,24 @@ export default function Navbar() {
     </ul>
     <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
   {loggedInUserName ? (
-    <div className="nav-item">
-      <span className="nav-link" style={{ marginRight: '10px' }}>
-        Welcome, {loggedInUserName}
-      </span>
-      <Button onClick={handleLogOut} className="nav-link btn btn-light" style={{ borderRadius: '5px', transition: 'background-color 0.3s', padding: '6px', fontSize: '14px' }}>
-        Log Out
-      </Button>
-    </div>
+    <ul className="navbar-nav">
+      <li className="nav-item dropdown">
+        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          {loggedInUserName}
+        </a>
+        <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+          <li><button className="dropdown-item" onClick={handleLogOut}>Log Out</button></li>
+          {/* Add more dropdown items as needed */}
+        </ul>
+      </li>
+    </ul>
   ) : (
-    <div className="nav-item">
-      <Button className="nav-link btn btn-light" style={{ borderRadius: '5px', transition: 'background-color 0.3s', padding: '6px', fontSize: '14px' }}>
-        Need To Login
-      </Button>
-    </div>
+    <Button className="nav-link btn btn-light" style={{ borderRadius: '5px', transition: 'background-color 0.3s', padding: '6px', fontSize: '14px' }}>
+      Need To Login
+    </Button>
   )}
 </div>
+
 
 
 

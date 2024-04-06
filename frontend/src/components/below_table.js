@@ -319,7 +319,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{((countLevelOne[0].sum_q31 * 100) / presentStudent[0].sum_q31).toFixed(2)}</td>
             <td>{((countLevelOne[0].sum_q32 * 100) / presentStudent[0].sum_q32).toFixed(2)}</td>
             <td>{((countLevelOne[0].sum_UA * 100) / presentStudent[0].sum_UA).toFixed(2)}</td>
-            <td>{((((countLevelOne[0].sum_q11 * 100) / presentStudent[0].sum_q11)+((countLevelOne[0].sum_q12 * 100) / presentStudent[0].sum_q12)+((countLevelOne[0].sum_q21 * 100) / presentStudent[0].sum_q21)+((countLevelOne[0].sum_q22 * 100) / presentStudent[0].sum_q22)+((countLevelOne[0].sum_q31 * 100) / presentStudent[0].sum_q31)+((countLevelOne[0].sum_q31 * 100) / presentStudent[0].sum_q32))/6).toFixed(2)}</td>
+            <td>{((((countLevelOne[0].sum_q11 * 100) / presentStudent[0].sum_q11)+((countLevelOne[0].sum_q12 * 100) / presentStudent[0].sum_q12)+((countLevelOne[0].sum_q21 * 100) / presentStudent[0].sum_q21)+((countLevelOne[0].sum_q22 * 100) / presentStudent[0].sum_q22)+((countLevelOne[0].sum_q31 * 100) / presentStudent[0].sum_q31)+((countLevelOne[0].sum_q32 * 100) / presentStudent[0].sum_q32))/6).toFixed(2)}</td>
           </tbody>
           <tbody>
             <td>% of students for level 2(60%)</td>
@@ -330,7 +330,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{((countLevelTwo[0].sum_q31 * 100) / presentStudent[0].sum_q31).toFixed(2)}</td>
             <td>{((countLevelTwo[0].sum_q32 * 100) / presentStudent[0].sum_q32).toFixed(2)}</td>
             <td>{((countLevelTwo[0].sum_UA * 100) / presentStudent[0].sum_UA).toFixed(2)}</td>
-            <td>{((((countLevelTwo[0].sum_q11 * 100) / presentStudent[0].sum_q11)+((countLevelTwo[0].sum_q12 * 100) / presentStudent[0].sum_q12)+((countLevelTwo[0].sum_q21 * 100) / presentStudent[0].sum_q21)+((countLevelTwo[0].sum_q22 * 100) / presentStudent[0].sum_q22)+((countLevelTwo[0].sum_q31 * 100) / presentStudent[0].sum_q31)+((countLevelTwo[0].sum_q31 * 100) / presentStudent[0].sum_q32))/6).toFixed(2)}</td>
+            <td>{((((countLevelTwo[0].sum_q11 * 100) / presentStudent[0].sum_q11)+((countLevelTwo[0].sum_q12 * 100) / presentStudent[0].sum_q12)+((countLevelTwo[0].sum_q21 * 100) / presentStudent[0].sum_q21)+((countLevelTwo[0].sum_q22 * 100) / presentStudent[0].sum_q22)+((countLevelTwo[0].sum_q31 * 100) / presentStudent[0].sum_q31)+((countLevelTwo[0].sum_q32 * 100) / presentStudent[0].sum_q32))/6).toFixed(2)}</td>
           </tbody>
           <tbody>
             <td>% of students for level 3(66%)</td>
@@ -341,7 +341,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{((countLevelThree[0].sum_q31 * 100) / presentStudent[0].sum_q31).toFixed(2)}</td>
             <td>{((countLevelThree[0].sum_q32 * 100) / presentStudent[0].sum_q32).toFixed(2)}</td>
             <td>{((countLevelThree[0].sum_UA * 100) / presentStudent[0].sum_UA).toFixed(2)}</td>
-            <td>{((((countLevelThree[0].sum_q11 * 100) / presentStudent[0].sum_q11)+((countLevelThree[0].sum_q12 * 100) / presentStudent[0].sum_q12)+((countLevelThree[0].sum_q21 * 100) / presentStudent[0].sum_q21)+((countLevelThree[0].sum_q22 * 100) / presentStudent[0].sum_q22)+((countLevelThree[0].sum_q31 * 100) / presentStudent[0].sum_q31)+((countLevelThree[0].sum_q31 * 100) / presentStudent[0].sum_q32))/6).toFixed(2)}</td>
+            <td>{((((countLevelThree[0].sum_q11 * 100) / presentStudent[0].sum_q11)+((countLevelThree[0].sum_q12 * 100) / presentStudent[0].sum_q12)+((countLevelThree[0].sum_q21 * 100) / presentStudent[0].sum_q21)+((countLevelThree[0].sum_q22 * 100) / presentStudent[0].sum_q22)+((countLevelThree[0].sum_q31 * 100) / presentStudent[0].sum_q31)+((countLevelThree[0].sum_q32 * 100) / presentStudent[0].sum_q32))/6).toFixed(2)}</td>
           </tbody>
           <tbody>
             <td>Level 1 Att</td>
