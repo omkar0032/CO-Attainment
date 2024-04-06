@@ -83,15 +83,6 @@ export default function Navbar() {
     </Button>
   )}
 </div>
-
-
-
-
-
-
-
-
-
   </div>
 </nav>
 

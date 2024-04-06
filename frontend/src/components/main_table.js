@@ -15,7 +15,7 @@ import React, { useState, useEffect, useRef } from "react";
 import BelowTable from "./below_table";
 import Level from "./level";
 import jsPDF from "jspdf";
-import "jspdf-autotable"
+import "jspdf-autotable";
 import MaxMarkTable from "./MaxMarksTable";
 const Main_table = ({ tableName }) => {
   useEffect(() => {
@@ -72,9 +72,18 @@ const Main_table = ({ tableName }) => {
             // });
             // setData(updatedData);
             const updatedData = response.data.map((row) => {
-              const totalUT1 = (row["UT1-Q1"] !== null && row["UT1-Q2"] !== null) ? row["UT1-Q1"] + row["UT1-Q2"] : null;
-              const totalUT2 = (row["UT2-Q1"] !== null && row["UT2-Q2"] !== null) ? row["UT2-Q1"] + row["UT2-Q2"] : null;
-              const totalUT3 = (row["UT3-Q1"] !== null && row["UT3-Q2"] !== null) ? row["UT3-Q1"] + row["UT3-Q2"] : null;
+              const totalUT1 =
+                row["UT1-Q1"] !== null && row["UT1-Q2"] !== null
+                  ? row["UT1-Q1"] + row["UT1-Q2"]
+                  : null;
+              const totalUT2 =
+                row["UT2-Q1"] !== null && row["UT2-Q2"] !== null
+                  ? row["UT2-Q1"] + row["UT2-Q2"]
+                  : null;
+              const totalUT3 =
+                row["UT3-Q1"] !== null && row["UT3-Q2"] !== null
+                  ? row["UT3-Q1"] + row["UT3-Q2"]
+                  : null;
               return {
                 ...row,
                 ["Total-UT1"]: totalUT1,
@@ -82,7 +91,7 @@ const Main_table = ({ tableName }) => {
                 ["Total-UT3"]: totalUT3,
               };
             });
-        
+
             setData(updatedData);
             // console.log(data)
           }
@@ -100,9 +109,18 @@ const Main_table = ({ tableName }) => {
 
   useEffect(() => {
     const updatedData = data.map((row) => {
-      const totalUT1 = (row["UT1-Q1"] !== null && row["UT1-Q2"] !== null) ? row["UT1-Q1"] + row["UT1-Q2"] : null;
-      const totalUT2 = (row["UT2-Q1"] !== null && row["UT2-Q2"] !== null) ? row["UT2-Q1"] + row["UT2-Q2"] : null;
-      const totalUT3 = (row["UT3-Q1"] !== null && row["UT3-Q2"] !== null) ? row["UT3-Q1"] + row["UT3-Q2"] : null;
+      const totalUT1 =
+        row["UT1-Q1"] !== null && row["UT1-Q2"] !== null
+          ? row["UT1-Q1"] + row["UT1-Q2"]
+          : null;
+      const totalUT2 =
+        row["UT2-Q1"] !== null && row["UT2-Q2"] !== null
+          ? row["UT2-Q1"] + row["UT2-Q2"]
+          : null;
+      const totalUT3 =
+        row["UT3-Q1"] !== null && row["UT3-Q2"] !== null
+          ? row["UT3-Q1"] + row["UT3-Q2"]
+          : null;
       return {
         ...row,
         ["Total-UT1"]: totalUT1,
@@ -112,12 +130,11 @@ const Main_table = ({ tableName }) => {
     });
 
     setData(updatedData);
-}, []);
-
+  }, []);
 
   const handleMarksChange = (index, question, value, e) => {
     const updatedData = [...data];
-    
+
     if (value === null) {
       updatedData[index][question] = null;
     } else {
@@ -126,8 +143,7 @@ const Main_table = ({ tableName }) => {
         e.target.value = 15;
         updatedData[index] ??= {};
         updatedData[index][question] = 15;
-      } 
-      else if (numericValue < 0) {
+      } else if (numericValue < 0) {
         e.target.value = 0;
         updatedData[index] ??= {};
         updatedData[index][question] = 0;
@@ -181,8 +197,7 @@ const Main_table = ({ tableName }) => {
       e.target.value = 100;
       updatedData[index] ??= {};
       updatedData[index][question] = 100;
-    }
-    else if (numericValue < 0) {
+    } else if (numericValue < 0) {
       e.target.value = 0;
       updatedData[index] ??= {};
       updatedData[index][question] = 0;
@@ -287,41 +302,40 @@ const Main_table = ({ tableName }) => {
     }
   };
 
-
   const convertToExcel = async () => {
     const workbook = XLSX.utils.book_new();
 
     // Modify data before creating worksheet
-    const modifiedData = data.map(row => {
-        const modifiedRow = { ...row };
-        // Handle null values
-        if (modifiedRow["UA"] === 0) {
-            modifiedRow["UA"] = 'FF';
+    const modifiedData = data.map((row) => {
+      const modifiedRow = { ...row };
+      // Handle null values
+      if (modifiedRow["UA"] === 0) {
+        modifiedRow["UA"] = "FF";
+      }
+      // Iterate through other fields and replace null with 'A'
+      Object.keys(modifiedRow).forEach((key) => {
+        if (modifiedRow[key] === null) {
+          modifiedRow[key] = "A";
         }
-        // Iterate through other fields and replace null with 'A'
-        Object.keys(modifiedRow).forEach(key => {
-            if (modifiedRow[key] === null) {
-                modifiedRow[key] = 'A';
-            }
-        });
-        return modifiedRow;
+      });
+      return modifiedRow;
     });
 
     // Create a worksheet
     const worksheet = XLSX.utils.json_to_sheet(modifiedData, {
-        raw: true, // This retains data type for numbers
-        header: Object.keys(modifiedData[0]),
-        cellDates: true // Enable date formatting
+      raw: true, // This retains data type for numbers
+      header: Object.keys(modifiedData[0]),
+      cellDates: true, // Enable date formatting
     });
 
     // Set alignment for cells with value 'A' and 'FF'
     modifiedData.forEach((row, rowIndex) => {
-        Object.keys(row).forEach((key, colIndex) => {
-            const cellRef = XLSX.utils.encode_cell({ r: rowIndex, c: colIndex });
-            if (row[key] === 'A' || row[key] === 'FF') {
-                worksheet[cellRef].s = { alignment: { horizontal: 'right' } };
-            }
-        });
+      Object.keys(row).forEach((key, colIndex) => {
+        const cellRef = XLSX.utils.encode_cell({ r: rowIndex, c: colIndex });
+        if (row[key] === "A" || row[key] === "FF") {
+          worksheet[cellRef].s = { alignment: { horizontal: "right" } };
+        }
+      });
     });
 
     // Add the worksheet to the workbook
@@ -330,243 +344,271 @@ const Main_table = ({ tableName }) => {
     // Save the workbook as an Excel file
     toast.success("Excel Downloaded!");
     XLSX.writeFile(workbook, "students_data.xlsx");
-};
-
-const addHeaderContent = (doc, data) => {
-  // Add content to 1/4th of the page
-  const contentX = doc.internal.pageSize.getWidth() / 2; // Center align content
-  const contentY = 20; // Adjust Y position as needed
-
-  // Add content goes here text
-  const content = `Final CO Attainment for ${valueforacadamicyearlabel} `;
-  doc.setFont("helvetica", "bold"); // Make the text bold
-  doc.text(content, contentX, contentY, { align: "center" });
-
-  // Add image
-  const img = new Image();
-  img.src = "./defaultHeader.jpg"; // Specify the path to your image
-  const imgWidth = 400; // Adjust image width as needed
-  const imgHeight = 80; // Adjust image height as needed
-  doc.addImage(img, 'JPEG', contentX - imgWidth / 2, contentY + 20, imgWidth, imgHeight);
-
-  // Add subheading
-  // Define subheadings with bold font for labels and regular font for values
-const subheading1 = `Subject: `;
-const subheading2 = `Class: `;
-const subheading3 = `Year & Sem: `;
-const value1 = valueforsubjectlabel;
-const value2 = valueforyearlabel;
-const value3 = `${valueforacadamicyearlabel}, ${valueforsemlabel}`;
-// Set font styles for subheadings
-doc.setFont("helvetica", "bold"); // Set font to bold
-doc.setFontSize(14);
-// Add subheading 1
-doc.text(subheading1, contentX - 150, contentY + 130, { align: "center" });
-doc.text(subheading2, contentX - 150, contentY + 150, { align: "center" });
-doc.text(subheading3, contentX - 150, contentY + 170, { align: "center" });
-// Set font styles for values
-doc.setFont("helvetica", "normal"); // Set font to normal
-doc.setFontSize(12); // Set font size to smaller
-// Add value for subheading 1
-doc.text(value1, contentX - 90, contentY + 130, { align: "center" });
-doc.text(value2, contentX - 90, contentY + 150, { align: "center" });
-doc.text(value3, contentX - 50, contentY + 170, { align: "center" });
-  doc.setFont('normal');
-  return contentY + 200; // Return the startY position for the table
-};
-
-const generatePDF = () => {
-  // Create new jsPDF instance
-  const doc = new jsPDF('l', 'pt', 'a4');
-
-  // Set startY position for the table
-  const startY = addHeaderContent(doc, data);
-
-  // Define small table data
-  const smallTableData = [
-    ["Level 3", valueforsubjectlabel],
-    ["Level 2", valueforyearlabel],
-    ["Level 1", `${valueforacadamicyearlabel}, ${valueforsemlabel}`]
-  ];
-
-  // Add small table to the right side
-  doc.autoTable({
-    startY: 130, // Adjust Y position as needed
-    head: [["UT", "UA"]],
-    body: smallTableData,
-    theme: 'grid',
-    margin: { left: 500 , right:150 }, // Adjust margin to position the table on the right side
-    styles: {
-      head: { fillColor: 'transparent' } // Set the background color of the header to transparent
-    }
-  });
-  
-
-  // Define main table headers and data
-  const mainTableHeader = ["Serial No", "Roll No", "Seat No", "Name", "UT1-Q1", "UT1-Q2", "UT2-Q1", "UT2-Q2", "UT3-Q1", "UT3-Q2", "UA", "Total-UT1", "Total-UT2", "Total-UT3"];
-  const mainTableData = [
-    mainTableHeader, // Add the table header
-    ...data.map(row => {
-      // Replace null values with 'A' and 'FF' as required
-      return [
-        row["Serial No"],
-        row["Roll No"],
-        row["Seat No"],
-        row["Name"],
-        row["UT1-Q1"] === null ? 'A' : row["UT1-Q1"],
-        row["UT1-Q2"] === null ? 'A' : row["UT1-Q2"],
-        row["UT2-Q1"] === null ? 'A' : row["UT2-Q1"],
-        row["UT2-Q2"] === null ? 'A' : row["UT2-Q2"],
-        row["UT3-Q1"] === null ? 'A' : row["UT3-Q1"],
-        row["UT3-Q2"] === null ? 'A' : row["UT3-Q2"],
-        row["UA"] === 0 ? 'FF' : row["UA"],
-        row["Total-UT1"] === null ? 'A' : row["Total-UT1"],
-        row["Total-UT2"] === null ? 'A' : row["Total-UT2"],
-        row["Total-UT3"] === null ? 'A' : row["Total-UT3"]
-      ];
-    })
-  ];
-
-  // Adjust column width and row height for the main table
-  const columnStyles = {
-    Name: { columnWidth: 120 }, // Increase the width of the "Name" column
-    "Serial No": { columnWidth: 30 }, // Reduce the width of the "Serial No" column
-    "Roll No": { columnWidth: 60 }, // Reduce the width of the "Roll No" column
-    "Seat No": { columnWidth: 70 } // Reduce the width of the "Seat No" column
   };
 
-  // Add the main table below the small table
-  doc.autoTable({
-    startY :230,
-    head: [mainTableHeader],
-    body: mainTableData.slice(1), // Skip the table header
-    columnStyles: columnStyles,
-    theme: 'grid',
-    didDrawCell: (data) => {
-      if (data.column.index === 3) { // Check if it's the "Name" column
-        // Reduce font size to fit the content in the cell
-        doc.setFontSize(10);
-      }
-    },
-    // Adjust the row height
-    didParseCell: (data) => {
-      if (data.row.index > 0) { // Skip the header row
-        data.cell.styles.cellHeight = 20; // Set the row height to 20
-      }
+  const addHeaderContent = (doc, data) => {
+    // Add content to 1/4th of the page
+    const contentX = doc.internal.pageSize.getWidth() / 2; // Center align content
+    const contentY = 20; // Adjust Y position as needed
+
+    // Add content goes here text
+    const content = `Final CO Attainment for ${valueforacadamicyearlabel} `;
+    doc.setFont("helvetica", "bold"); // Make the text bold
+    doc.text(content, contentX, contentY, { align: "center" });
+
+    // Add image
+    const img = new Image();
+    img.src = "./defaultHeader.jpg"; // Specify the path to your image
+    const imgWidth = 400; // Adjust image width as needed
+    const imgHeight = 80; // Adjust image height as needed
+    doc.addImage(
+      img,
+      "JPEG",
+      contentX - imgWidth / 2,
+      contentY + 20,
+      imgWidth,
+      imgHeight
+    );
+
+    // Add subheading
+    // Define subheadings with bold font for labels and regular font for values
+    const subheading1 = `Subject: `;
+    const subheading2 = `Class: `;
+    const subheading3 = `Year & Sem: `;
+    const value1 = valueforsubjectlabel;
+    const value2 = valueforyearlabel;
+    const value3 = `${valueforacadamicyearlabel}, ${valueforsemlabel}`;
+    // Set font styles for subheadings
+    doc.setFont("helvetica", "bold"); // Set font to bold
+    doc.setFontSize(14);
+    // Add subheading 1
+    doc.text(subheading1, contentX - 150, contentY + 130, { align: "center" });
+    doc.text(subheading2, contentX - 150, contentY + 150, { align: "center" });
+    doc.text(subheading3, contentX - 150, contentY + 170, { align: "center" });
+    // Set font styles for values
+    doc.setFont("helvetica", "normal"); // Set font to normal
+    doc.setFontSize(12); // Set font size to smaller
+    // Add value for subheading 1
+    doc.text(value1, contentX - 90, contentY + 130, { align: "center" });
+    doc.text(value2, contentX - 90, contentY + 150, { align: "center" });
+    doc.text(value3, contentX - 50, contentY + 170, { align: "center" });
+    doc.setFont("normal");
+
+    return contentY + 200; // Return the startY position for the table
+  };
+  const generatePDF = () => {
+    // Create new jsPDF instance
+    const doc = new jsPDF("l", "pt", "a4");
+
+    // Set startY position for the table
+    const startY = addHeaderContent(doc, data);
+
+    // Define small table data
+    const smallTableData = [
+      ["Subject", valueforsubjectlabel],
+      ["Class", valueforyearlabel],
+      ["Year & Sem", `${valueforacadamicyearlabel}, ${valueforsemlabel}`],
+      ["Level 3", valueforsubjectlabel],
+      ["Level 2", valueforyearlabel],
+      ["Level 1", `${valueforacadamicyearlabel}, ${valueforsemlabel}`],
+    ];
+
+    // Add small table to the right side
+    doc.autoTable({
+      startY: 130, // Adjust Y position as needed
+      head: [["Field", "Value"]],
+      body: smallTableData,
+      theme: "grid",
+      margin: { left: 500, right: 150 }, // Adjust margin to position the table on the right side
+      styles: {
+        head: { fillColor: "transparent" }, // Set the background color of the header to transparent
+      },
+    });
+
+    // Define main table headers and data
+    const mainTableHeader = [
+      "Serial No",
+      "Roll No",
+      "Seat No",
+      "Name",
+      "UT1-Q1",
+      "UT1-Q2",
+      "UT2-Q1",
+      "UT2-Q2",
+      "UT3-Q1",
+      "UT3-Q2",
+      "UA",
+      "Total-UT1",
+      "Total-UT2",
+      "Total-UT3",
+    ];
+    const mainTableData = [
+      mainTableHeader, // Add the table header
+      ...data.map((row) => {
+        // Replace null values with 'A' and 'FF' as required
+        return [
+          row["Serial No"],
+          row["Roll No"],
+          row["Seat No"],
+          row["Name"],
+          row["UT1-Q1"] === null ? "A" : row["UT1-Q1"],
+          row["UT1-Q2"] === null ? "A" : row["UT1-Q2"],
+          row["UT2-Q1"] === null ? "A" : row["UT2-Q1"],
+          row["UT2-Q2"] === null ? "A" : row["UT2-Q2"],
+          row["UT3-Q1"] === null ? "A" : row["UT3-Q1"],
+          row["UT3-Q2"] === null ? "A" : row["UT3-Q2"],
+          row["UA"] === 0 ? "FF" : row["UA"],
+          row["Total-UT1"] === null ? "A" : row["Total-UT1"],
+          row["Total-UT2"] === null ? "A" : row["Total-UT2"],
+          row["Total-UT3"] === null ? "A" : row["Total-UT3"],
+        ];
+      }),
+    ];
+
+    // Adjust column width and row height for the main table
+    const columnStyles = {
+      Name: { columnWidth: 120 }, // Increase the width of the "Name" column
+      "Serial No": { columnWidth: 30 }, // Reduce the width of the "Serial No" column
+      "Roll No": { columnWidth: 60 }, // Reduce the width of the "Roll No" column
+      "Seat No": { columnWidth: 70 }, // Reduce the width of the "Seat No" column
+    };
+
+    // Add the main table below the small table
+    doc.autoTable({
+      startY: 230,
+      head: [mainTableHeader],
+      body: mainTableData.slice(1), // Skip the table header
+      columnStyles: columnStyles,
+      theme: "grid",
+      didDrawCell: (data) => {
+        if (data.column.index === 3) {
+          // Check if it's the "Name" column
+          // Reduce font size to fit the content in the cell
+          doc.setFontSize(10);
+        }
+      },
+      // Adjust the row height
+      didParseCell: (data) => {
+        if (data.row.index > 0) {
+          // Skip the header row
+          data.cell.styles.cellHeight = 20; // Set the row height to 20
+        }
+      },
+    });
+
+    // Save the PDF
+    doc.setFont("helvetica", "normal"); // Set font to normal
+    doc.setFontSize(10); // Set font size to 10 (or adjust as needed)
+
+    const totalPages = doc.internal.getNumberOfPages();
+    // Add a new page for "below" content
+    doc.addPage();
+
+    // Add content for "below"
+    const belowContentX = doc.internal.pageSize.getWidth() / 2; // Center align content
+    const belowContentY = 20; // Adjust Y position as needed
+    const belowContent1 = "Final Attainment Calculation";
+    doc.setFont("helvetica", "bold"); // Make the text bold
+    doc.setFontSize(20);
+    doc.text(belowContent1, belowContentX, belowContentY, { align: "center" });
+    doc.setFont("normal");
+    doc.setFontSize(10);
+
+    // Get the HTML content of the component with id "below"
+    const belowContentElement = document.getElementById("below");
+    if (belowContentElement) {
+      // Convert the table HTML to a string
+      const tableHtml = belowContentElement.innerHTML;
+      // Create a temporary element to parse the HTML table
+      const tempElement = document.createElement("div");
+      tempElement.innerHTML = tableHtml;
+      // Get the table element
+      const tableElement = tempElement.querySelector("table");
+      // Parse the HTML table and extract the data
+      const tableData = [];
+      const headers = [];
+      const rows = tableElement.querySelectorAll("tr");
+      rows.forEach((row, rowIndex) => {
+        const rowData = [];
+        const cells = row.querySelectorAll("th, td");
+        cells.forEach((cell, cellIndex) => {
+          const text = cell.textContent.trim();
+          if (rowIndex === 0) {
+            headers.push(text);
+          } else {
+            rowData.push(text);
+          }
+        });
+        if (rowIndex !== 0) {
+          tableData.push(rowData);
+        }
+      });
+      // Add the table to the PDF
+      doc.autoTable({
+        head: [headers],
+        body: tableData,
+        startY: belowContentY + 50, // Adjust Y position as needed
+        theme: "striped",
+        margin: { left: 40, right: 40 }, // Adjust margins as needed
+      });
     }
-  });
 
-  // Save the PDF
-  doc.setFont("helvetica", "normal"); // Set font to normal
-doc.setFontSize(10); // Set font size to 10 (or adjust as needed)
-
-
-
-  // Add a new page for "below" content
-  doc.addPage();
-
-  // Add content for "below"
-  const belowContentX = doc.internal.pageSize.getWidth() / 2; // Center align content
-const belowContentY = 20; // Adjust Y position as needed
-const belowContent1 = "Final Attainment Calculation";
-doc.setFont("helvetica", "bold"); // Make the text bold
-doc.setFontSize(20);
-doc.text(belowContent1, belowContentX, belowContentY, { align: "center" });
-doc.setFont('normal');
-doc.setFontSize(10);
-// Get the HTML content of the component with id "below"
-// Get the below content from the UI
-// Get the below content from the UI
-const belowContentElement = document.getElementById('below');
-
-// Convert the table HTML to a string
-const tableHtml = belowContentElement.innerHTML;
-
-// Create a temporary element to parse the HTML table
-const tempElement = document.createElement('div');
-tempElement.innerHTML = tableHtml;
-
-// Get the table element
-const tableElement = tempElement.querySelector('table');
-
-// Parse the HTML table and extract the data
-const tableData = [];
-const headers = [];
-const rows = tableElement.querySelectorAll('tr');
-rows.forEach((row, rowIndex) => {
-  const rowData = [];
-  const cells = row.querySelectorAll('th, td');
-  cells.forEach((cell, cellIndex) => {
-    const text = cell.textContent.trim();
-    if (rowIndex === 0) {
-      headers.push(text);
-    } else {
-      rowData.push(text);
-    }
-  });
-  if (rowIndex !== 0) {
-    tableData.push(rowData);
+    // Get the below content from the UI
+    const belowContentElement2 = document.getElementById('below-attainment');
+  if (belowContentElement2) {
+    // Convert the table HTML to a string
+    const tableHtml2 = belowContentElement2.innerHTML;
+    // Create a temporary element to parse the HTML table
+    const tempElement2 = document.createElement('div');
+    tempElement2.innerHTML = tableHtml2;
+    // Get the table element
+    const tableElement2 = tempElement2.querySelector('table');
+    // Parse the HTML table and extract the data
+    const tableData2 = [];
+    const rows2 = tableElement2.querySelectorAll('tr');
+    rows2.forEach((row, rowIndex) => {
+      const rowData2 = [];
+      const cells2 = row.querySelectorAll('td');
+      cells2.forEach((cell, cellIndex) => {
+        const text2 = cell.querySelector('input') ? cell.querySelector('input').value.trim() : cell.textContent.trim();
+        rowData2.push(text2);
+      });
+      tableData2.push(rowData2);
+    });
+    // Add the second table to the PDF
+    doc.autoTable({
+      body: tableData2,
+      startY: belowContentY + 450, // Adjust Y position as needed
+      theme: 'striped',
+      margin: { left: 300, right: 300 } // Adjust margins as needed
+    });
   }
-});
 
-// Add the table to the PDF
-doc.autoTable({
-  head: [headers],
-  body: tableData,
-  startY: belowContentY + 50, // Adjust Y position as needed
-  theme: 'striped',
-  margin: { left: 40, right: 40 } // Adjust margins as needed
-});
-// Get the below content from the UI
-const belowContentElement2 = document.getElementById('below-attainment');
 
-// Convert the table HTML to a string
-const tableHtml2 = belowContentElement2.innerHTML;
+    const nameAndSign = "Examiners name & Sign:";
+    doc.text(nameAndSign, belowContentX - 60, belowContentY + 560, {
+      align: "center",
+    });
 
-// Create a temporary element to parse the HTML table
-const tempElement2 = document.createElement('div');
-tempElement2.innerHTML = tableHtml2;
+    const totalPages2 = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages2; i++) {
+      doc.setPage(i);
+      doc.setFont("normal");
+      doc.text(
+        "Page " + i + " of " + totalPages2,
+        doc.internal.pageSize.getWidth() - 70,
+        doc.internal.pageSize.getHeight() - 10
+      );
+    }
 
-// Get the table element
-const tableElement2 = tempElement2.querySelector('table');
+    // Save the PDF
+    doc.save("table.pdf");
+  };
 
-// Parse the HTML table and extract the data
-const tableData2 = [];
-const rows2 = tableElement2.querySelectorAll('tr');
-rows2.forEach((row, rowIndex) => {
-  const rowData2 = [];
-  const cells2 = row.querySelectorAll('td');
-  cells2.forEach((cell, cellIndex) => {
-    const text2 = cell.textContent.trim();
-    rowData2.push(text2);
-  });
-  tableData2.push(rowData2);
-});
-
-// Add the second table to the PDF
-doc.autoTable({
-  body: tableData2,
-  startY: belowContentY + 450, // Adjust Y position as needed
-  theme: 'striped',
-  margin: { left: 300, right: 300 } // Adjust margins as needed
-});
-const nameAndSign="Examiners name & Sign:"
-doc.text(nameAndSign, belowContentX-60, belowContentY+560, { align: "center" });
-
-const totalPages = doc.internal.getNumberOfPages();
-for (let i = 1; i <= totalPages; i++) {
-  doc.setPage(i);
-  doc.setFont('normal');
-  doc.text('Page ' + i + ' of ' + totalPages, doc.internal.pageSize.getWidth() - 70, doc.internal.pageSize.getHeight() - 10);
-}
-  // Add page number for the "below" page
-  // Save the PDF
-  doc.save("table.pdf");
-};
   return (
     <>
       <Level />
-      <MaxMarkTable tableName={tableName}/>
+      <MaxMarkTable tableName={tableName} />
       <div id="table-container">
         <Table striped bordered hover>
           <thead>
@@ -611,7 +653,6 @@ for (let i = 1; i <= totalPages; i++) {
           <tbody>
             {data.map((row, index) => {
               return (
-                
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{row["Roll No"]}</td>
@@ -842,7 +883,14 @@ for (let i = 1; i <= totalPages; i++) {
                               parseInt(e.target.value, 10) || 0,
                               e
                             );
-                          } else if (value==='f' || value==='F' || value === "ff" || value === "FF" || value === "Ff" || value === "fF") {
+                          } else if (
+                            value === "f" ||
+                            value === "F" ||
+                            value === "ff" ||
+                            value === "FF" ||
+                            value === "Ff" ||
+                            value === "fF"
+                          ) {
                             // If input is 'a' or 'A', update normally
                             setData({ ...data, ["UA"]: 0 });
                             handleMarksChange(
@@ -874,12 +922,20 @@ for (let i = 1; i <= totalPages; i++) {
                     valuefortest1 === "UT-3" ||
                     valuefortest1 === "UA") && (
                     <td>
-                      {row["Total-UT2"] === null || row["UT2-Q1"] === null || row["UT2-Q2"] === null? "A" : row["Total-UT2"]}
+                      {row["Total-UT2"] === null ||
+                      row["UT2-Q1"] === null ||
+                      row["UT2-Q2"] === null
+                        ? "A"
+                        : row["Total-UT2"]}
                     </td>
                   )}
                   {(valuefortest1 === "UT-3" || valuefortest1 === "UA") && (
                     <td>
-                      {row["Total-UT3"] === null || row["UT3-Q1"] === null || row["UT3-Q2"] === null? "A" : row["Total-UT3"]}
+                      {row["Total-UT3"] === null ||
+                      row["UT3-Q1"] === null ||
+                      row["UT3-Q2"] === null
+                        ? "A"
+                        : row["Total-UT3"]}
                     </td>
                   )}
                 </tr>
@@ -894,10 +950,7 @@ for (let i = 1; i <= totalPages; i++) {
         <Button onClick={insertData} className="leftbtn">
           Save Changed marks
         </Button>
-        <Button onClick={generatePDF} className="leftbtn">
-          {/* <Button onClick={handleGeneratePdf()} className="leftbtn"> */}
-          Export to PDF
-        </Button>
+        
         <Button onClick={convertToExcel} className="leftbtn">
           Export to Excel
         </Button>
@@ -912,17 +965,12 @@ for (let i = 1; i <= totalPages; i++) {
       )}
       {resultState && (
         <div className="omkar">
-          <Button
-            className="p-[20px] font-bol"
-            onClick={handleGeneratePdfreport}
-          >
-            {resultState ? "Generate Report" : "Show Result"}
-          </Button>
+          <Button onClick={generatePDF} className="leftbtn">
+          Export to PDF
+        </Button>
         </div>
       )}
     </>
   );
 };
 export default Main_table;
-
-
