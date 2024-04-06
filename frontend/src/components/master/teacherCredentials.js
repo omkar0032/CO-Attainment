@@ -5,7 +5,7 @@ import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
-const MasterDataTable = () => {
+const TeacherCredentials = () => {
   const [file, setFile] = useState(null);
   const [showTeachersBool, setShowTeachersBool] = useState(false);
   const [data, setData] = useState([]);
@@ -276,4 +276,4 @@ const MasterDataTable = () => {
   );
 };
 
-export default MasterDataTable;
+export default TeacherCredentials;

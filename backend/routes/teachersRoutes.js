@@ -11,10 +11,11 @@ const {
   resendOTP,
   resetPassword,
   updateTeacherSubjects,
-  getSubjectsAndDivisions
+  fetchTeacherData,
 } = require("../controllers/teacherController");
 
 router.get("/create_LinkTable/:tableName", createAndLinkTable);
+router.get("/teacherData/:tableName",fetchTeacherData);
 router.post("/upload_teachers/:tableName", uploadExcelTeachers);
 router.post("/upload_main_table", uploadMainTable);
 // router.post("/login",login);
@@ -26,5 +27,4 @@ router.post(
   "/teachers/update_teacher_subjects/:tableName",
   updateTeacherSubjects
 );
-router.get("/getSubjectsAndDivisions/:email/:dataTableName",getSubjectsAndDivisions);
 module.exports = router;

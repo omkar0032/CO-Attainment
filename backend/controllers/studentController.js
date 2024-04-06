@@ -30,7 +30,6 @@ const createTableStudents = async (req, res) => {
       console.log(rowCount);
       if (rowCount === 0) {
         // Table is empty, send notification
-        console.log("first");
         const fetchDataQuery = `SELECT * FROM ${tableName}`;
         const tableData = await pool.query(fetchDataQuery);
         console.log(rowCount);
@@ -85,7 +84,6 @@ const uploadExcelStudents = async (req, res) => {
     // Save the file to a temporary location
     const filePath = path.join(__dirname, fileName);
     await excelFile.mv(filePath);
-    console.log(filePath, tableName);
 
     // Call the function to process the Excel file
     const result=await excelToMySQLArray(filePath, tableName);
@@ -106,7 +104,6 @@ async function excelToMySQLArray(filePath, tableName) {
     // Load the Excel file
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(filePath);
-    console.log(tableName);
 
     // Get the first worksheet
     const worksheet = workbook.getWorksheet(1);
@@ -140,7 +137,11 @@ async function excelToMySQLArray(filePath, tableName) {
 
         // Populate rowData dynamically
         columns.forEach((colName, index) => {
-          const cellValue = row.getCell(index + 1).value;
+          let cellValue = row.getCell(index + 1).value;
+          // If cell value is "A", set it to null
+          if (cellValue === "A") {
+            cellValue = null;
+          }
           rowData[colName] = cellValue;
         });
 

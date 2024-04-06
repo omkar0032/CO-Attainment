@@ -64,6 +64,8 @@ const DataTable = ({tableName}) => {
         formData.append('file', file);
 
         try {
+            console.log("before logging")
+            console.log(formData)
             const response = await axios.post(`http://localhost:3000/upload/${tableName}`, formData);
 
             if (response.status === 200) {

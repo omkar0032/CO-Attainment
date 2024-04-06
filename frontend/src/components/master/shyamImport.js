@@ -106,16 +106,8 @@ const ShyamImport = ({tableName}) => {
                   // Display toast notification for empty table
                   toast.warning("Table is empty. Upload to the database.");
                 } 
-                // else {
-                  // console.log("first")
-                  // console.log(reportInfo);
-                  // console.log(valuefortest1)
-                //   const updatedData = response.data.map((row) => {});
-                //   console.log(updatedData)
                   setTeachersData(response.data);
                   console.log(teachersData)
-                  // console.log(data)
-                // }
               }
             } else {
               // Unexpected response, handle it

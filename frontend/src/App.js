@@ -25,6 +25,7 @@ import EditPattern from './components/editPattern';
 import EditSubject from './components/editSubjects';
 import { UseData } from './NewContext';
 import UnauthorizedAlert from './Alert';
+import TeacherCredentials from './components/master/teacherCredentials';
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [excelData, setExcelData] = useState([]);
@@ -102,6 +103,9 @@ const App = () => {
               }
               {valueForRole === 'HOD' ?
                 <Route path='/edit-subject' element={<EditSubject />} /> : <Route path='/edit-subject' element={<UnauthorizedAlert2 />} />
+              }
+              {valueForRole === 'HOD' ?
+                <Route path='/teacherCredentials' element={<TeacherCredentials />} /> : <Route path='/teacherCredentials' element={<UnauthorizedAlert2 />} />
               }
             </Routes>
             <Footer />
