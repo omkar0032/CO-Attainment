@@ -67,54 +67,49 @@ function Dropdown(teachers_table) {
     let subjectnames = [];   
     const [transformedSubject,setTransformedSubject]=useState([]);
 
-    // passed in option={patternname}
-
+    
     useEffect(() => {
         transformPattern();
         transformDepartment();
+        console.log(email)
         
-        // const fetchSubjectsAndDivisions = async () => {
-        //     try {
-        //         const dataTableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${valueforsem?.value}`;
-        //         console.log(dataTableName);
-        //         const response = await axios.get(`http://localhost:3000/getSubjectsAndDivisions/${email}/${dataTableName}`);
-        //         const { subjects, divisions } = response.data;
-        //         setSubjects(subjects);
-        //         setDivisions(divisions);
+    }, []);
 
-        //         const transformedSubjects = subjects.map(subject => ({
-        //             value: subject,
-        //             label: subject,
-        //         }));
-        //         setTransformedSubjects(transformedSubjects);
-        //         // Function to map division numbers to prefixes
-        //         const mapDivisionToPrefix = (division) => {
-        //             if (divisions >= 1 && divisions <= 4) {
-        //                 return `cs${divisions}`;
-        //             } else if (divisions >= 5 && divisions <= 8) {
-        //                 return `entc${divisions}`;
-        //             } else if (divisions >= 9 && divisions <= 11) {
-        //                 return `it${divisions}`;
-        //             } else {
-        //                 // Handle other cases if needed
-        //                 return `unknown${divisions}`;
-        //             }
-        //         };
+    let subjectAndDivisions;
+    const fetchSubjectsAndDivisions = async (selectedOption) => {
+        try {
+            const dataTableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${selectedOption?.value}`;
+            const loggedInUserNameFromStorage = localStorage.getItem('Userdata');
+            const loggedInUserNameFromStorage1=JSON.parse(loggedInUserNameFromStorage)
+            console.log("Data: ",dataTableName);
+            subjectAndDivisions = await axios.get(`http://localhost:3000/getSubjectsAndDivisions/${loggedInUserNameFromStorage1.email}/${dataTableName}`);
+       
+        } catch (error) {
+            console.error('Error fetching subjects and divisions:', error.message);
+        }
+    };
 
-        //         // Transform the array of divisions into the desired format
-        //         const transformedDivisions = divisions.map((division) => ({
-        //             value: mapDivisionToPrefix(division),
-        //             label: division,
-        //         }));
-        //         setTransformedDivisions(transformedDivisions);
-        //     } catch (error) {
-        //         console.error('Error fetching subjects and divisions:', error.message);
-        //     }
-        // };
-        // if (valueforsemlabel) {
-        //     fetchSubjectsAndDivisions();
-        // }
-    }, []);//[valueforsemlabel]);
+    const checkSubjectAndDivision = async(selectedOption)=>{
+        try{
+
+        // Check if the selected subject exists in the response data
+        const selectedSubject = selectedOption.value;
+        const subjectsData = subjectAndDivisions.data.Subject;
+        console.log(subjectsData);
+        if (selectedSubject in subjectsData) {
+            console.log(`${selectedSubject} exists in the subjectDivisionCoordinator object.`);
+            // Do something if the subject exists
+        } else {
+            console.log(`${selectedSubject} does not exist in the subjectDivisionCoordinator object.`);
+            // Do something if the subject does not exist
+        }
+
+
+        }
+        catch(error){
+            console.log("Error occured: ", error);
+        }
+    }
 
     const transformPattern=async()=>{
         await handleGetPattern();
@@ -440,6 +435,7 @@ function Dropdown(teachers_table) {
                             setValueforsem(selectedOption);
                             transformdivision();
                             transformSubject(selectedOption);
+                            fetchSubjectsAndDivisions(selectedOption);
                         }}
                         isSearchable
                         placeholder="Select Sem"
@@ -455,6 +451,7 @@ function Dropdown(teachers_table) {
                         onChange={(selectedOption) => {
                             setValueforsubject(selectedOption);
                             setvalueforsubjectlabel(selectedOption.label);
+                            checkSubjectAndDivision(selectedOption);
                         }}
                         isSearchable
                         placeholder="Select Subject"

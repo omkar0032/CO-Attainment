@@ -12,7 +12,6 @@ const crypto = require('crypto');
 const secretKey = crypto.randomBytes(32).toString('hex');
 const{setUserId}=require("../service/auth");
 const jwt = require("jsonwebtoken");
-const {v4:uuidv4}=require("uuid");
 const {setUser}=require("../service/auth");
 
 app.use(bodyParser.json());
@@ -541,38 +540,7 @@ const resetPassword = async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred while resetting the password." });
   }
 }
-const getSubjectsAndDivisions = async (req, res) => {
-  const { email, dataTableName } = req.params;
-  console.log(email, "   ", dataTableName);
 
-  try {
-    // Fetch subjects and divisions associated with the logged-in teacher's email
-    const getSubjectsAndDivisionsQuery = `SELECT ${dataTableName}.Subject, ${dataTableName}.Division
-    FROM ${dataTableName}
-    JOIN teacherdata ON ${dataTableName}.\`Email ID\` = teacherdata.\`Email ID\`
-    WHERE teacherdata.\`Email ID\` = '${email}'
-    `;
-    const results = await teachersPool.query(getSubjectsAndDivisionsQuery, [email]);
-    console.log(results);
-    if (results && results.length > 0) {
-      // Extract subjects and divisions from the first array element
-      const dataRows = results[0];
-      const subjects = dataRows.map((row) => row.Subject);
-      const uniqueDivisions = [...new Set(dataRows.map((row) => row.Division))];
-
-      // Print or send the subjects and divisions
-      console.log('Subjects:', subjects);
-      console.log('Divisions:', uniqueDivisions);
-
-      // Send the subjects and divisions as JSON
-      res.json({ subjects, divisions: uniqueDivisions });
-    }
-
-  }
-  catch (error) {
-    console.log("Error occured: ", error);
-  }
-}
 
 const updateTeacherSubjects = async (req, res) => {
   try {
@@ -603,6 +571,44 @@ const updateTeacherSubjects = async (req, res) => {
 };
 
 //--------------------------------------------------------------------------------------
+const getSubjectsAndDivisions = async (req, res) => {
+  const { email, dataTableName } = req.params;
+  console.log(email, "   ", dataTableName);
+
+  try {
+    // Fetch subjects and divisions associated with the logged-in teacher's email
+    const getSubjectsAndDivisionsQuery = `SELECT ${dataTableName}.Subject, ${dataTableName}.Division, ${dataTableName}.Coordinator
+    FROM ${dataTableName}
+    JOIN teacherdata ON ${dataTableName}.\`Email ID\` = teacherdata.\`Email ID\`
+    WHERE teacherdata.\`Email ID\` = '${email}'
+    `;
+    const results = await teachersPool.query(getSubjectsAndDivisionsQuery, [email]);
+    console.log("Results: ",results[0]);
+    if (results && results.length > 0) {
+      // // Extract subjects, divisions, and coordinators
+      // const dataRows = results[0];
+      // const subjectDivisionCoordinator = {};
+
+      // // Construct object with subject:division:coordinator
+      // dataRows.forEach(row => {
+      //   const { Subject, Division, Coordinator } = row;
+      //   if (!subjectDivisionCoordinator[Subject]) {
+      //     subjectDivisionCoordinator[Subject] = {};
+      //   }
+      //   subjectDivisionCoordinator[Subject][Division] = Coordinator;
+      // });
+
+      // // Print or send the subjects, divisions, and coordinators
+      // console.log('Subject-Division-Coordinator:', subjectDivisionCoordinator);
+
+      // Send the subjects, divisions, and coordinators as JSON
+      res.json(results[0]);
+    }
+
+  } catch (error) {
+    console.log("Error occurred: ", error);
+  }
+}
 
 
 
@@ -611,4 +617,4 @@ const updateTeacherSubjects = async (req, res) => {
 //-------------------------------------------------------------------------------------
 
 
-module.exports = { updateTeacherSubjects,createAndLinkTable, uploadExcelTeachers, uploadMainTable, login, forgotPassword, verifyOTP, resendOTP, resetPassword, getSubjectsAndDivisions };
+module.exports = { getSubjectsAndDivisions,updateTeacherSubjects,createAndLinkTable, uploadExcelTeachers, uploadMainTable, login, forgotPassword, verifyOTP, resendOTP, resetPassword,  };

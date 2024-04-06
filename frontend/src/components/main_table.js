@@ -84,6 +84,7 @@ const Main_table = ({ tableName }) => {
             });
         
             setData(updatedData);
+            console.log(updatedData)
             // console.log(data)
           }
         }

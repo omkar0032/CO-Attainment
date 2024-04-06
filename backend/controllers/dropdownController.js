@@ -194,4 +194,7 @@ const handleCoPoAttainment=async(req,res)=>{
         res.status(500).send({message:"enternal server error"});
     }
 }
+
+
+
 module.exports = { deletePatternAndYear, insertPattern, fetchPatternAndYear, handleGetPattern, handleGetAcadamicYear, handleGetDepartment, handleGetDivision, handleGetSubject, fetchSubjects, deleteSubject, addSubject,handleCoPoAttainment}
