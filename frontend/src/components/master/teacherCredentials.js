@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import * as XLSX from "xlsx";
 import axios from "axios";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer, toast } from "react-toastify";
 
 const TeacherCredentials = () => {
   const [file, setFile] = useState(null);
@@ -16,12 +16,12 @@ const TeacherCredentials = () => {
   const tableName = "teacherdata";
   const showAllTeachersData = async () => {
     try {
-        console.log("first")
+      console.log("first");
       const response = await axios.get(
         `http://localhost:3000/teacherData/${tableName}`
       );
       console.log(response.data);
-      console.log("first")
+      console.log("first");
       // setdata(result);
       if (response.data.length === 0) {
         // Display toast notification for empty table
@@ -148,12 +148,13 @@ const TeacherCredentials = () => {
   };
   const handleSaveData = async () => {
     try {
+      console.log("into ");
       const response = await axios.post(
         `http://localhost:3000/teachers/update_teacher_data/${tableName}`,
         data
       );
-
-      toast.success("Changes saved successfully");
+      toast.error("dfghjkghj");
+      console.log("after ");
     } catch (error) {
       console.error("Error in saving the data", error);
       // Handle error if needed
@@ -162,7 +163,7 @@ const TeacherCredentials = () => {
   const handleAddRow = () => {
     setData([
       ...data,
-      { "Email ID": "", Password: "", name: "", Department: "",Role:"" },
+      { "Email ID": "", Password: "", name: "", Department: "", Role: "" },
     ]);
   };
   return (
@@ -185,93 +186,93 @@ const TeacherCredentials = () => {
         </div>
       </div>
       {/* {showTeachersBool && ( */}
-        {/* <div> */}
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>Sr No</th>
-                <th>Mail</th>
-                <th>Password</th>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Role</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td className="name-col">
-                    <input
-                      type="text"
-                      value={row["Email ID"]}
-                      onChange={(e) => handleInputChange(e, index, "Email ID")}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={row["Password"]}
-                      onChange={(e) => handleInputChange(e, index, "Password")}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={row["name"]}
-                      onChange={(e) => handleInputChange(e, index, "name")}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={row["Department"]}
-                      onChange={(e) =>
-                        handleInputChange(e, index, "Department")
-                      }
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={row["Role"]}
-                      onChange={(e) =>
-                        handleInputChange(e, index, "Role")
-                      }
-                    />
-                  </td>
-                  <td>
-                    <Button
-                      variant="danger"
-                      onClick={() => handleDeleteRow(index)}
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colSpan="6">
-                  <Button onClick={handleAddRow}>Add Row</Button>
-                </td>
-              </tr>
-            </tfoot>
-          </Table>
-          <Button
-            onClick={handleSaveData}
-            style={{
-              width: "30%",
-              textAlign: "center",
-              alignItems: "center",
-              marginLeft: "40%",
-            }}
-          >
-            Save Data
-          </Button>
-        {/* </div> */}
-    {/* //   )} */}
+      {/* <div> */}
+      <Table striped bordered hover style={{ fontSize: "14px" }}>
+        <thead>
+          <tr>
+            <th style={{ padding: "8px" }}>Sr No</th>
+            <th style={{ padding: "8px" }}>Mail</th>
+            <th style={{ padding: "8px" }}>Password</th>
+            <th style={{ padding: "8px" }}>Name</th>
+            <th style={{ padding: "8px" }}>Department</th>
+            <th style={{ padding: "8px" }}>Role</th>
+            <th style={{ padding: "4px", width: "5%" }}>Delete</th>{" "}
+            {/* Adjusted width */}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, index) => (
+            <tr key={index}>
+              <td style={{ padding: "8px" }}>{index + 1}</td>
+              <td className="name-col" style={{ padding: "8px" }}>
+                <input
+                  type="text"
+                  value={row["Email ID"]}
+                  onChange={(e) => handleInputChange(e, index, "Email ID")}
+                />
+              </td>
+              <td style={{ padding: "8px" }}>
+                <input
+                  type="text"
+                  value={row["Password"]}
+                  onChange={(e) => handleInputChange(e, index, "Password")}
+                />
+              </td>
+              <td style={{ padding: "8px" }}>
+                <input
+                  type="text"
+                  value={row["name"]}
+                  onChange={(e) => handleInputChange(e, index, "name")}
+                />
+              </td>
+              <td style={{ padding: "8px" }}>
+                <input
+                  type="text"
+                  value={row["Department"]}
+                  onChange={(e) => handleInputChange(e, index, "Department")}
+                />
+              </td>
+              <td style={{ padding: "8px" }}>
+                <input
+                  type="text"
+                  value={row["Role"]}
+                  onChange={(e) => handleInputChange(e, index, "Role")}
+                />
+              </td>
+              <td style={{ padding: "4px", width: "5%" }}>
+                <Button
+                  style={{ width: "100%", padding: "4px" }}
+                  variant="danger"
+                  onClick={() => handleDeleteRow(index)}
+                >
+                  Delete
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan="6" style={{ padding: "8px" }}>
+              <Button onClick={handleAddRow}>Add Row</Button>
+            </td>
+          </tr>
+        </tfoot>
+      </Table>
+
+      <Button
+        onClick={handleSaveData}
+        style={{
+          width: "30%",
+          textAlign: "center",
+          alignItems: "center",
+          marginLeft: "40%",
+        }}
+      >
+        Save Data
+      </Button>
+      {/* </div> */}
+      {/* //   )} */}
     </>
   );
 };

@@ -146,14 +146,17 @@ const MasterDataTable = () => {
     updatedData[index][key] = event.target.value;
     setData(updatedData);
   };
-  const handleSaveData = async () => {
+  const 
+  handleSaveData = async () => {
     try {
+      console.log("into fun")
       const response = await axios.post(
         `http://localhost:3000/teachers/update_teacher_data/${tableName}`,
         data
       );
-
+      console.log("succesee")
       toast.success("Changes saved successfully");
+      
     } catch (error) {
       console.error("Error in saving the data", error);
       // Handle error if needed
@@ -166,7 +169,7 @@ const MasterDataTable = () => {
     ]);
   };
   return (
-    <>
+    <div style={{ width: "90%"}}>
       <h1 style={{ textAlign: "center" }}>Insert Teacher's Data</h1>
       <Button onClick={downloadSampleFile} style={{ margin: "3% 0 0 43%" }}>
         Download Sample File
@@ -184,9 +187,7 @@ const MasterDataTable = () => {
           </Button>
         </div>
       </div>
-      {/* {showTeachersBool && ( */}
-        {/* <div> */}
-          <Table striped bordered hover>
+          <Table striped bordered hover >
             <thead>
               <tr>
                 <th>Sr No</th>
@@ -240,8 +241,8 @@ const MasterDataTable = () => {
                       }
                     />
                   </td>
-                  <td>
-                    <Button
+                  <td style={{width:"5px"}}>
+                    <Button 
                       variant="danger"
                       onClick={() => handleDeleteRow(index)}
                     >
@@ -272,7 +273,7 @@ const MasterDataTable = () => {
           </Button>
         {/* </div> */}
     {/* //   )} */}
-    </>
+    </div>
   );
 };
 

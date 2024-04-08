@@ -8,13 +8,13 @@ export const ContextProvider = ({ children }) => {
     const [valuefortest1, setValuefortest1] = useState();
 
     // this hook to be set in level.js and used in below_table.js
-    const [countLevelOneUT, setCountLevelOneUT] = useState(93);
-    const [countLevelOneUA, setCountLevelOneUA] = useState(100);
-    const [countLevelTwoUT, setCountLevelTwoUT] = useState(82);
-    const [countLevelTwoUA, setCountLevelTwoUA] = useState(92);
+    const [countLevelOneUT, setCountLevelOneUT] = useState(82);
+    const [countLevelOneUA, setCountLevelOneUA] = useState(97);
+    const [countLevelTwoUT, setCountLevelTwoUT] = useState(69);
+    const [countLevelTwoUA, setCountLevelTwoUA] = useState(83);
 
-    const [countLevelThreeUT, setCountLevelThreeUT] = useState(76);
-    const [countLevelThreeUA, setCountLevelThreeUA] = useState(82);
+    const [countLevelThreeUT, setCountLevelThreeUT] = useState(61);
+    const [countLevelThreeUA, setCountLevelThreeUA] = useState(76);
 
 
     // this hook to store toggle button of show result
