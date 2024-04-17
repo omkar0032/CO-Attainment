@@ -1,17 +1,23 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
+    min-height: 100vh;
+    /* Ensures the body takes up the full height of the viewport */
+    display: flex;
+    /* Uses flexbox layout */
+    flex-direction: column;
+    /* Arranges content in a column layout */
 }
 
 .footer {
     background-color: #333;
     color: #fff;
-    /* padding-top: 20px; */
     text-align: center;
-    left: 0;
-    bottom: 0;
     width: 100%;
-    margin-top: 110px;
+    margin-top: auto;
+    /* Ensures the footer is at the bottom of the page */
+    padding: 20px;
+    /* Adds padding for better spacing */
 }
 
 .footer p {

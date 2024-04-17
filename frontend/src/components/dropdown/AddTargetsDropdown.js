@@ -7,7 +7,8 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import ParentComponent from "../ParentComponent";
 import Main_table from "../main_table";
-function Dropdown(teachers_table) {
+import TableWithInput from "../new_average";
+function AddTargetsDropdown(teachers_table) {
   const { email } = UseData();
 
   // to select pattern
@@ -22,9 +23,6 @@ function Dropdown(teachers_table) {
   // for department
   const [valuefordepartment, setValuedepartment] = useState("");
 
-  // useState for All divisions initial state is object
-  // const [valuefordivisionArray, setValuefordivisionArray] = useState([]);
-  // this to use usestate for addition for subject selection
   const [valuefordivision, setValuefordivision] = useState("");
 
   // to select semester and initialsing it by array
@@ -64,7 +62,7 @@ function Dropdown(teachers_table) {
   const [transformedDivision, setTransformedDivision] = useState([]);
   let subjectnames = [];
   const [transformedSubject, setTransformedSubject] = useState([]);
-  const [yearData, setYearData] = useState([]);
+
   // passed in option={patternname}
 
   useEffect(() => {
@@ -78,14 +76,18 @@ function Dropdown(teachers_table) {
       value: convertPattern(patternname),
       label: String(patternname.Pattern),
     }));
+    // console.log(transformedPatterns);
     setTransformedPattern(transformedPatterns);
   };
   const convertPattern = (pattern) => {
+    // console.log(String(pattern.Pattern));
     return "p" + String(pattern.Pattern);
   };
 
   const transformAcadamicYear = async (selectedOption) => {
     await handleGetAcadamicYear(selectedOption);
+    // console.log(acadamicyearnames);
+    // console.log(acadamicYears);
     const transformedAcadamicYears = acadamicyearnames.map(
       (acadamicyearname) => ({
         value: convertAcadamicYear(acadamicyearname),
@@ -102,11 +104,13 @@ function Dropdown(teachers_table) {
 
   const transformDepartment = async () => {
     await handleGetDeparment();
+    // console.log(departmentnames);
     const transformedDepartments = departmentnames.map((departmentname) => ({
       value: departmentname.Department.toLowerCase(),
       label: departmentname.Department,
     }));
     setTransformedDepartment(transformedDepartments);
+    // console.log(transformedDepartments);
   };
 
   const transformdivision = async () => {
@@ -120,11 +124,13 @@ function Dropdown(teachers_table) {
 
   const transformSubject = async (selectedOption) => {
     await handleGetSubject(selectedOption);
+    // console.log(subjectnames);
     const transformedSubject1 = subjectnames.map((subjectname) => ({
       value: subjectname.Subject_Name.toLowerCase(),
       label: subjectname.Subject_Name,
     }));
     setTransformedSubject(transformedSubject1);
+    console.log(transformedSubject1);
   };
 
   const createTable = async () => {
@@ -134,81 +140,18 @@ function Dropdown(teachers_table) {
       valueforacadamicyear &&
       valueforyear &&
       valuefordepartment &&
-      valuefordivision &&
       valueforsem &&
-      valueforsubject &&
-      valuefortest
+      valueforsubject
     ) {
       setShowbtn(true);
       setTableName(tableName);
-
+      
       try {
         setShowbtn(true);
-
-        const academicYear = valueforacadamicyear.label; // This is the academic year range (e.g., "2021-2022")
-
-        // Split the academic year range at the hyphen "-"
-        const academicYearParts = academicYear.split("-");
-
-        // Convert the first part of the split to an integer (it should represent the starting year)
-        const startingYear = parseInt(academicYearParts[0], 10);
         const response = await axios.get(
-          `http://localhost:3000/createTable/${tableName}`
+        //   `http://localhost:3000/students/average_attainment/${tableName}${startingYear}`
         );
-        const pastYears = await axios.get(
-          `http://localhost:3000/average_attainment_pastYears/${tableName}/${startingYear}`
-        );
-
-        const rows = pastYears.data;
-
-                // Store the data in an array
-                let sumUA60 = 0;
-                let sumUA66 = 0;
-                let sumUAPass = 0;
-                let sumUT60 = 0;
-                let sumUT66 = 0;
-                let sumUTPass = 0;
-            
-                // Iterate over each row and accumulate the values for each column
-                rows.forEach(row => {
-                    sumUA60 += row.UA_60;
-                    sumUA66 += row.UA_66;
-                    sumUAPass += row.UA_PASS;
-                    sumUT60 += row.UT_60;
-                    sumUT66 += row.UT_66;
-                    sumUTPass += row.UT_PASS;
-                });
-            
-                // Calculate the number of rows
-                const numRows = rows.length;
-            
-                // Calculate the averages and add 2 to each average
-                const averageData = {
-                    averageUA60: (sumUA60 / numRows) + 2,
-                    averageUA66: (sumUA66 / numRows) + 2,
-                    averageUAPass: (sumUAPass / numRows) + 2,
-                    averageUT60: (sumUT60 / numRows) + 2,
-                    averageUT66: (sumUT66 / numRows) + 2,
-                    averageUTPass: (sumUTPass / numRows) + 2
-                };
-            
-                // return averageData;
-
-        if (response.data.length === 0) {
-          // Display toast notification for empty table
-          toast.warn("Table is empty. Upload to the database.");
-        } else if (response.status === 200) {
-          if (response.data === "Table created successfully.") {
-            // Table created successfully, show success notification
-            toast.success("Table Created Successfully. Enter Data.");
-          } else {
-            setShowTable(true);
-          }
-        } else {
-          // Unexpected response, handle it
-          console.error("Unexpected response:", response);
-          // Handle unexpected response if needed
-        }
+        console.log(response);
       } catch (error) {
         console.error("Error creating table:", error);
         // Handle error if needed
@@ -226,6 +169,7 @@ function Dropdown(teachers_table) {
 
       if (result.status === 200) {
         patternnames = result.data;
+        // console.log(acadamicyearnames);
       } else {
         console.error(
           `Error: Received unexpected status code ${result.status}`
@@ -247,6 +191,7 @@ function Dropdown(teachers_table) {
 
       if (response.status === 200) {
         acadamicyearnames = response.data;
+        // console.log(acadamicyearnames);
       } else {
         console.error(
           `Error: Received unexpected status code ${response.status}`
@@ -264,6 +209,7 @@ function Dropdown(teachers_table) {
 
       if (result.status === 200) {
         departmentnames = result.data;
+        // console.log(departmentnames);
       } else {
         console.error(
           `Error: Received unexpected status code ${result.status}`
@@ -277,12 +223,14 @@ function Dropdown(teachers_table) {
   const handleGetDivision = async () => {
     try {
       const name = valuefordepartment.label + "_" + valueforyear.label;
+      console.log(name);
       const response = await axios.get(
         `http://localhost:3000/division/${name}`
       );
 
       if (response.status === 200) {
         divisionnames = response.data;
+        // console.log(acadamicyearnames);
       } else {
         console.error(
           `Error: Received unexpected status code ${response.status}`
@@ -296,10 +244,12 @@ function Dropdown(teachers_table) {
   const handleGetSubject = async (selectedOption) => {
     try {
       const name = `${valueforpattern?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${selectedOption?.value}`;
+      console.log(name);
       const response = await axios.get(`http://localhost:3000/subject/${name}`);
 
       if (response.status === 200) {
         subjectnames = response.data;
+        // console.log(subjectnames);
       } else {
         console.error(
           `Error: Received unexpected status code ${response.status}`
@@ -354,6 +304,7 @@ function Dropdown(teachers_table) {
   const handleOnChange = (selectedOption) => {
     setValuefortest(selectedOption);
     setValuefortest1(selectedOption.label);
+    // console.log(valuefortest1);
   };
 
   return (
@@ -449,42 +400,16 @@ function Dropdown(teachers_table) {
             required
           />
         </div>
-
-        <div className="buttonbox">
-          <label>Test:</label>
-          <Select
-            options={testname}
-            value={valuefortest}
-            onChange={(selectedOption) => {
-              handleOnChange(selectedOption);
-            }}
-            isSearchable
-            placeholder="Select Test"
-            required
-          />
-        </div>
-        <div className="buttonbox">
-          <label>Division:</label>
-          <Select
-            options={transformedDivision}
-            value={valuefordivision}
-            onChange={(selectedOption) => {
-              setValuefordivision(selectedOption);
-            }}
-            isSearchable
-            placeholder="Select Division"
-            required
-          ></Select>
-        </div>
       </div>
       <div className="create-table">
-        <Button onClick={createTable}>Show Records</Button>
+        <Button onClick={createTable}>Add Attainments</Button>
+
+        
       </div>
+      {showbtn && <TableWithInput tableName={tableName} />}
       <ToastContainer />
-      {showbtn && <ParentComponent tableName={tableName} />}
-      {showTable && <Main_table tableName={tableName} />}
     </>
   );
 }
 
-export default Dropdown;
+export default AddTargetsDropdown;

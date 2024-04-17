@@ -4,7 +4,7 @@ const UnauthorizedAlert = () => {
     useEffect(() => {
       alert("You are not an authorized person!");
     }, []);
-
+    
     return null;
   };
 

@@ -4,6 +4,7 @@ import axios from 'axios';
 // import Level from './Level';
 import { UseData } from "../NewContext";
 import { toast } from 'react-toastify';
+import { Button } from 'react-bootstrap';
 function BelowTable({ containerRef, tableName }) {
 
   // for NewContext.js to use in calcualation nad values are used not modified
@@ -430,7 +431,7 @@ function BelowTable({ containerRef, tableName }) {
           </tbody>
         </table> : <div></div>}
       </div>
-      <button onClick={handleSetCO} className='bg-primary'>{showAttainment ? null:"Show Attainment"}</button>
+      <Button style={{marginLeft: '47%',marginBottom: '10px'}} onClick={handleSetCO} className='bg-primary'>{showAttainment ? "Hide Attainment":"Show Attainment"}</Button>
 {
   showAttainment && (
     <>

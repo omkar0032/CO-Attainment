@@ -35,8 +35,6 @@ const Main_table = ({ tableName }) => {
   const createTable = async () => {
     try {
       setShowbtn(true);
-      console.log("valuetest1", valuefortest1);
-      console.log("valueacadamicyear", valueforacadamicyearlabel);
       const response = await axios.get(
         `http://localhost:3000/createTable/${tableName}`
       );
@@ -55,22 +53,6 @@ const Main_table = ({ tableName }) => {
             // Display toast notification for empty table
             toast.warning("Table is empty. Upload to the database.");
           } else {
-            // console.log("first")
-            // console.log(reportInfo);
-            // console.log(valuefortest1)
-            // const updatedData = response.data.map((row) => {
-            //   const newTotalUT1 = row["UT1-Q1"] + row["UT1-Q2"];
-            //   const newTotalUT2 = row["UT2-Q1"] + row["UT2-Q2"];
-            //   const newTotalUT3 = row["UT3-Q1"] + row["UT3-Q2"];
-
-            //   return {
-            //     ...row,
-            //     ["Total-UT1"]: newTotalUT1,
-            //     ["Total-UT2"]: newTotalUT2,
-            //     ["Total-UT3"]: newTotalUT3,
-            //   };
-            // });
-            // setData(updatedData);
             const updatedData = response.data.map((row) => {
               const totalUT1 =
                 row["UT1-Q1"] !== null && row["UT1-Q2"] !== null
@@ -93,7 +75,6 @@ const Main_table = ({ tableName }) => {
             });
 
             setData(updatedData);
-            // console.log(data)
           }
         }
       } else {
@@ -215,7 +196,6 @@ const Main_table = ({ tableName }) => {
         { dataToInsert: data }
       );
       toast.success("Data updatde successfullyy!!");
-      console.log(response.data);
     } catch (error) {
       console.error("Error inserting data:", error);
     }
@@ -225,12 +205,8 @@ const Main_table = ({ tableName }) => {
   };
   const handleGeneratePdf = async () => {
     try {
-      // console.log("academic year",valueforacadamicyear)
-      // console.log("in the handleGenerate")
       const tableContainer = document.getElementById("table-container");
       const belowTableContainer = document.getElementById("below");
-      // console.log(belowTableContainer)
-      // console.log(tableContainer)
       if (!tableContainer) {
         console.error("Table container not found.");
         return;
@@ -279,7 +255,6 @@ const Main_table = ({ tableName }) => {
   };
   const handleGeneratePdfreport = async () => {
     try {
-      console.log("in the handleGenerate");
       const belowTableContainer = document.getElementById("below");
       // belowTableContainer.style.height = "100px";
       toast.info("Report generating");
@@ -607,7 +582,7 @@ const Main_table = ({ tableName }) => {
 
   return (
     <>
-      <Level />
+      <Level tableName={tableName} />
       <MaxMarkTable tableName={tableName} />
       <div id="table-container">
         <Table striped bordered hover>
@@ -956,7 +931,7 @@ const Main_table = ({ tableName }) => {
         </Button>
       </div>
       <div className="omkar">
-        <Button className="p-[20px] font-bol" onClick={displayResult}>
+        <Button style={{marginLeft: '47%',marginBottom: '10px'}} className="p-[20px] font-bol" onClick={displayResult}>
           {resultState ? "Hide Result" : "Show Result"}
         </Button>
       </div>
