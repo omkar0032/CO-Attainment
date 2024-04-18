@@ -1,35 +1,65 @@
+/* Resetting default styles and adding customizations */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     min-height: 100vh;
-    /* Ensures the body takes up the full height of the viewport */
     display: flex;
-    /* Uses flexbox layout */
     flex-direction: column;
-    /* Arranges content in a column layout */
+    background-color: rgb(0, 150, 255);
+    border-radius: 15px; /* Adding border radius to all corners */
+    margin-top: 35px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px; /* Adding a light background color */
 }
 
+/* Styling the footer */
 .footer {
-    background-color: #333;
-    color: #fff;
+    background-color: #0096ff; /* Changing the footer background color */
+    color: #fff; /* Changing text color to white */
     text-align: center;
     width: 100%;
     margin-top: auto;
-    /* Ensures the footer is at the bottom of the page */
-    padding: 20px;
-    /* Adds padding for better spacing */
+    padding: 8px; /* Increasing padding for better spacing */
+    border-bottom-left-radius: 15px; /* Matching border radius with the body */
+    border-bottom-right-radius: 15px; /* Matching border radius with the body */
 }
 
 .footer p {
-    margin: 0;
+    margin: 10px 0; /* Adding margin for better spacing */
 }
 
-.social-links {
-    margin-top: 20px;
-}
-
+/* Adding hover effect to social links */
 .social-links a {
     color: #fff;
     text-decoration: none;
     margin: 0 10px;
+    transition: color 0.3s ease; /* Adding smooth color transition */
+}
+
+.social-links a:hover {
+    color: #ffd700; /* Changing color on hover */
+}
+
+/* Adding animation to footer */
+@keyframes footerAnimation {
+    0% {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.footer {
+    animation: footerAnimation 0.8s ease forwards; /* Applying animation */
+}
+/* Styling the footer */
+.footer a {
+    color: #00008B; /* Dark blue color */
+    text-decoration: none; /* Removing underline */
+}
+
+.footer a:hover {
+    color: #ffd700; /* Changing color on hover */
 }

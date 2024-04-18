@@ -5,10 +5,10 @@ export default function Footer() {
     <>
       <footer class="footer">
         <div class="contact-info">
-          <h2>Contact Us</h2>
+          <h2 >Contact Us</h2>
           <p>Email: info.pict.edu.in</p>
           <p>Phone: 123-456-7890</p>
-          <p>Address: 123 Street, City, Country</p>
+          <p>Address: Survey No. 27, Near, Trimurti Chowk, Bharati Vidyapeeth Campus, Dhankawadi, Pune, Maharashtra 411043</p>
         </div>
         <div class="social-links">
           <a href="https://facebook.com/example" target="_blank">
@@ -26,9 +26,9 @@ export default function Footer() {
         </div>
 
         <small>
-          Copyright © 2023 Football History Archives. All Rights Reserved.
-        </small>
-      </footer>
+        Copyright © 2024 <a href="https://pict.edu" target="_blank" rel="noopener noreferrer">pict.edu</a>. All Rights Reserved.
+    </small>
+</footer>
     </>
   );
 }
