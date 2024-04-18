@@ -6,7 +6,7 @@ export default function Footer() {
       <footer class="footer">
         <div class="contact-info">
           <h2>Contact Us</h2>
-          <p>Email: info@example.com</p>
+          <p>Email: info.pict.edu.in</p>
           <p>Phone: 123-456-7890</p>
           <p>Address: 123 Street, City, Country</p>
         </div>
