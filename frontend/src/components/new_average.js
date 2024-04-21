@@ -1,14 +1,67 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Table,Button } from 'react-bootstrap';
+import { UseData } from "../NewContext";
 import AddTargetsDropdown from './dropdown/AddTargetsDropdown';
 import { toast } from 'react-toastify';
 const TableWithInput = ({tableName}) => {
   // Separate useState for each input
-  const [data, setData] = useState([
+
+  useEffect(()=>{
+    fetchDataFortable();
+  },[])
+  const { valueforacadamicyearlabel, setValueForAcademicYearlabel } = UseData();
+  const [responseData,setResponseData]=useState();
+  const [data, setData] = useState([]);
+  const fetchDataFortable = async () => {
+    try {
+      console.log("in func")
+      const academicYear = valueforacadamicyearlabel;
+      if (!academicYear) {
+        console.error("Academic year is not defined");
+        return;
+      }
+
+      // Split the academic year and validate
+      const academicYearParts = academicYear.split("-");
+      if (academicYearParts.length !== 2) {
+        console.error("Invalid academic year format");
+        return;
+      }
+
+      const startingYear = parseInt(academicYearParts[0], 10);
+      console.log("in func")
+      const response = await axios.get(`http://localhost:3000/average_attainment_pastYears/${tableName}/${startingYear}`);
+      setResponseData(response.data);
+      console.log("after link func")
+
+      console.log(responseData)
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      // Handle error, show toast, etc.
+      toast.error("Failed to fetch data");
+    }
+  }
+
+  useEffect(() => {
+  if (responseData && responseData.length > 0) {
+    setData([
+      {
+        year: `${responseData[0].Year}-${responseData[0].Year+1}`,
+        staff: 'Target',
+        ut1: `${responseData[0].UT_66}`,
+        ua1: `${responseData[0].UA_66}`,
+        ut2: `${responseData[0].UT_60}`,
+        ua2: `${responseData[0].UA_60}`,
+        ut3: `${responseData[0].UT_PASS}`,
+        ua3: `${responseData[0].UA_PASS}`,
+        coUt: `${responseData[0].CO_UT}`,
+        coUa: `${responseData[0].CO_UA}`,
+        coAt: `${responseData[0].CO_AT}`,
+      },
     {
-      year: '2017-18',
-      staff: 'Target',
+      year: '',
+      staff: 'Achieved',
       ut1: '',
       ua1: '',
       ut2: '',
@@ -18,6 +71,19 @@ const TableWithInput = ({tableName}) => {
       coUt: '',
       coUa: '',
       coAt: '',
+    },
+    {
+      year:`${responseData[1].Year}-${responseData[1].Year +1}` ,
+      staff: 'Target',
+      ut1: `${responseData[1].UT_66}`,
+        ua1: `${responseData[1].UA_66}`,
+        ut2: `${responseData[1].UT_60}`,
+        ua2: `${responseData[1].UA_60}`,
+        ut3: `${responseData[1].UT_PASS}`,
+        ua3: `${responseData[1].UA_PASS}`,
+        coUt: `${responseData[1].CO_UT}`,
+        coUa: `${responseData[1].CO_UA}`,
+        coAt: `${responseData[1].CO_AT}`,
     },
     {
       year: '',
@@ -33,43 +99,17 @@ const TableWithInput = ({tableName}) => {
       coAt: '',
     },
     {
-      year: '2018-19',
+      year: `${responseData[2].Year}-${responseData[2].Year+1}`,
       staff: 'Target',
-      ut1: '',
-      ua1: '',
-      ut2: '',
-      ua2: '',
-      ut3: '',
-      ua3: '',
-      coUt: '',
-      coUa: '',
-      coAt: '',
-    },
-    {
-      year: '',
-      staff: 'Achieved',
-      ut1: '',
-      ua1: '',
-      ut2: '',
-      ua2: '',
-      ut3: '',
-      ua3: '',
-      coUt: '',
-      coUa: '',
-      coAt: '',
-    },
-    {
-      year: '2019-20',
-      staff: 'Target',
-      ut1: '',
-      ua1: '',
-      ut2: '',
-      ua2: '',
-      ut3: '',
-      ua3: '',
-      coUt: '',
-      coUa: '',
-      coAt: '',
+      ut1: `${responseData[2].UT_66}`,
+      ua1: `${responseData[2].UA_66}`,
+      ut2: `${responseData[2].UT_60}`,
+      ua2: `${responseData[2].UA_60}`,
+      ut3: `${responseData[2].UT_PASS}`,
+      ua3: `${responseData[2].UA_PASS}`,
+      coUt: `${responseData[2].CO_UT}`,
+      coUa: `${responseData[2].CO_UA}`,
+      coAt: `${responseData[2].CO_AT}`,
     },
     {
       year: '',
@@ -85,8 +125,9 @@ const TableWithInput = ({tableName}) => {
       coAt: '',
     },
   ]);
-
-  const handleInputChange = (rowIndex, field, value) => {
+}
+}, [responseData]);
+ const handleInputChange = (rowIndex, field, value) => {
     const updatedData = [...data];
     updatedData[rowIndex][field] = value;
     setData(updatedData);
@@ -136,18 +177,18 @@ const TableWithInput = ({tableName}) => {
           {data.map((row, rowIndex) => (
             <tr key={rowIndex}>
               <td>
-                <input
-                  type="text"
-                  value={row.year}
-                  onChange={(e) => handleInputChange(rowIndex, 'year', e.target.value)}
-                />
+                {/* <input
+                  type="text" */}
+                  {row.year}
+                {/* //   onChange={(e) => handleInputChange(rowIndex, 'year', e.target.value)}
+                // /> */}
               </td>
               <td>
-                <input
-                  type="text"
-                  value={row.staff}
-                  onChange={(e) => handleInputChange(rowIndex, 'staff', e.target.value)}
-                />
+                {/* <input
+                  type="text" */}
+                  {row.staff}
+                  {/* onChange={(e) => handleInputChange(rowIndex, 'staff', e.target.value)}
+                /> */}
               </td>
               <td>
                 <input
