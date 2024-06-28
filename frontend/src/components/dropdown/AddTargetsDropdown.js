@@ -10,32 +10,14 @@ import Main_table from "../main_table";
 import TableWithInput from "../new_average";
 function AddTargetsDropdown(teachers_table) {
   const { email } = UseData();
-
-  // to select pattern
   const [valueforpattern, setValueforpattern] = useState("");
-
-  // select Acadmic Year.
   const [valueforacadamicyear, setValueForAcadamicYear] = useState("");
-
-  //to select year.
   const [valueforyear, setValueforyear] = useState("");
-
-  // for department
   const [valuefordepartment, setValuedepartment] = useState("");
-
   const [valuefordivision, setValuefordivision] = useState("");
-
-  // to select semester and initialsing it by array
   const [valueforsemArray, setValueforsemArray] = useState([]);
-  // this useState for addition to find subject
   const [valueforsem, setValueforsem] = useState("");
-
-  // useState for Subject contaning initial value as object.
-  // const [valueforsubjectArray, setValueforsubjectArray] = useState([]);
-  // to is actual setValue for subject selection
   const [valueforsubject, setValueforsubject] = useState();
-
-  // // this hook for test selection like ut 1 ut2
   const [valuefortest, setValuefortest] = useState();
   const { valuefortest1, setValuefortest1 } = UseData();
   const { valueforacadamicyearlabel, setValueForAcademicYearlabel } = UseData();
@@ -43,7 +25,6 @@ function AddTargetsDropdown(teachers_table) {
   const { valueforyearlabel, setvalueforyearlabel } = UseData();
   const { valueforsubjectlabel, setvalueforsubjectlabel } = UseData();
   const { valueforsemlabel, setvalueforsemlabel } = UseData();
-
   const [showbtn, setShowbtn] = useState(false);
   const [tableName, setTableName] = useState();
   const [showTable, setShowTable] = useState(false);
@@ -51,7 +32,6 @@ function AddTargetsDropdown(teachers_table) {
   const [divisions, setDivisions] = useState([]);
   const [transformedSubjects, setTransformedSubjects] = useState([]);
   const [transformedDivisions, setTransformedDivisions] = useState([]);
-
   let patternnames = [];
   const [transformedPattern, setTransformedPattern] = useState([]);
   let acadamicyearnames = [];
@@ -62,9 +42,6 @@ function AddTargetsDropdown(teachers_table) {
   const [transformedDivision, setTransformedDivision] = useState([]);
   let subjectnames = [];
   const [transformedSubject, setTransformedSubject] = useState([]);
-
-  // passed in option={patternname}
-
   useEffect(() => {
     transformPattern();
     transformDepartment();
@@ -76,18 +53,14 @@ function AddTargetsDropdown(teachers_table) {
       value: convertPattern(patternname),
       label: String(patternname.Pattern),
     }));
-    // console.log(transformedPatterns);
     setTransformedPattern(transformedPatterns);
   };
   const convertPattern = (pattern) => {
-    // console.log(String(pattern.Pattern));
     return "p" + String(pattern.Pattern);
   };
 
   const transformAcadamicYear = async (selectedOption) => {
     await handleGetAcadamicYear(selectedOption);
-    // console.log(acadamicyearnames);
-    // console.log(acadamicYears);
     const transformedAcadamicYears = acadamicyearnames.map(
       (acadamicyearname) => ({
         value: convertAcadamicYear(acadamicyearname),
@@ -104,13 +77,11 @@ function AddTargetsDropdown(teachers_table) {
 
   const transformDepartment = async () => {
     await handleGetDeparment();
-    // console.log(departmentnames);
     const transformedDepartments = departmentnames.map((departmentname) => ({
       value: departmentname.Department.toLowerCase(),
       label: departmentname.Department,
     }));
     setTransformedDepartment(transformedDepartments);
-    // console.log(transformedDepartments);
   };
 
   const transformdivision = async () => {
@@ -124,7 +95,6 @@ function AddTargetsDropdown(teachers_table) {
 
   const transformSubject = async (selectedOption) => {
     await handleGetSubject(selectedOption);
-    // console.log(subjectnames);
     const transformedSubject1 = subjectnames.map((subjectname) => ({
       value: subjectname.Subject_Name.toLowerCase(),
       label: subjectname.Subject_Name,
@@ -134,7 +104,7 @@ function AddTargetsDropdown(teachers_table) {
   };
 
   const createTable = async () => {
-    const tableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${valueforsem?.value}_${valueforsubject?.value}`;
+    const tableName = `${valueforpattern?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${valueforsem?.value}_${valueforsubject?.value}`;
     if (
       valueforpattern &&
       valueforacadamicyear &&
@@ -249,7 +219,6 @@ function AddTargetsDropdown(teachers_table) {
 
       if (response.status === 200) {
         subjectnames = response.data;
-        // console.log(subjectnames);
       } else {
         console.error(
           `Error: Received unexpected status code ${response.status}`
@@ -260,8 +229,6 @@ function AddTargetsDropdown(teachers_table) {
     }
   };
 
-  // passed in option={yearname}
-
   const yearname = [
     { value: "y1_d", label: "FE" },
     { value: "y2_d", label: "SE" },
@@ -269,7 +236,6 @@ function AddTargetsDropdown(teachers_table) {
     { value: "y4_d", label: "BE" },
   ];
 
-  // One of these Array of objects is passed when user hits YEAR section because sem depends on YEAR
   const fe = [
     { value: "sem1", label: "Sem_1" },
     { value: "sem2", label: "Sem_2" },
@@ -289,10 +255,7 @@ function AddTargetsDropdown(teachers_table) {
     { value: "sem7", label: "Sem_7" },
     { value: "sem8", label: "Sem_8" },
   ];
-  // this Object of Above Array.
   const semname = { fe, se, te, be };
-
-  //    this Array for test pattern
   const testname = [
     { value: "t1", label: "UT-1" },
     { value: "t2", label: "UT-2" },
@@ -300,11 +263,9 @@ function AddTargetsDropdown(teachers_table) {
     { value: "t4", label: "UA" },
   ];
 
-  // this hook for test selection like ut 1 ut2
   const handleOnChange = (selectedOption) => {
     setValuefortest(selectedOption);
     setValuefortest1(selectedOption.label);
-    // console.log(valuefortest1);
   };
 
   return (

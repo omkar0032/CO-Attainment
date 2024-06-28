@@ -217,97 +217,59 @@ function Dropdown(teachers_table) {
     setTransformedSubject(transformedSubject1);
   };
 
-  const createTable = async () => {
+  const createTables = async () => {
+       
     const tableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${valueforsem?.value}_${valueforsubject?.value}`;
     if (
-      valueforpattern &&
-      valueforacadamicyear &&
-      valueforyear &&
-      valuefordepartment &&
-      valuefordivision &&
-      valueforsem &&
-      valueforsubject &&
-      valuefortest
+        valueforpattern &&
+        valueforacadamicyear&&  
+        valueforyear &&
+        valuefordepartment &&
+        valuefordivision &&
+        valueforsem &&
+        valueforsubject &&
+        valuefortest
     ) {
-      setShowbtn(true);
-      setTableName(tableName);
-
-      try {
         setShowbtn(true);
-
-        const academicYear = valueforacadamicyear.label; // This is the academic year range (e.g., "2021-2022")
-
-        // Split the academic year range at the hyphen "-"
-        const academicYearParts = academicYear.split("-");
-
-        // Convert the first part of the split to an integer (it should represent the starting year)
-        const startingYear = parseInt(academicYearParts[0], 10);
-        const response = await axios.get(
-          `http://localhost:3000/createTable/${tableName}`
-        );
-        const pastYears = await axios.get(
-          `http://localhost:3000/average_attainment_pastYears/${tableName}/${startingYear}`
-        );
-
-        const rows = pastYears.data;
-
-                // Store the data in an array
-                let sumUA60 = 0;
-                let sumUA66 = 0;
-                let sumUAPass = 0;
-                let sumUT60 = 0;
-                let sumUT66 = 0;
-                let sumUTPass = 0;
-            
-                // Iterate over each row and accumulate the values for each column
-                rows.forEach(row => {
-                    sumUA60 += row.UA_60;
-                    sumUA66 += row.UA_66;
-                    sumUAPass += row.UA_PASS;
-                    sumUT60 += row.UT_60;
-                    sumUT66 += row.UT_66;
-                    sumUTPass += row.UT_PASS;
-                });
-            
-                // Calculate the number of rows
-                const numRows = rows.length;
-            
-                // Calculate the averages and add 2 to each average
-                const averageData = {
-                    averageUA60: (sumUA60 / numRows) + 2,
-                    averageUA66: (sumUA66 / numRows) + 2,
-                    averageUAPass: (sumUAPass / numRows) + 2,
-                    averageUT60: (sumUT60 / numRows) + 2,
-                    averageUT66: (sumUT66 / numRows) + 2,
-                    averageUTPass: (sumUTPass / numRows) + 2
-                };
-            
-                // return averageData;
-
-        if (response.data.length === 0) {
-          // Display toast notification for empty table
-          toast.warn("Table is empty. Upload to the database.");
-        } else if (response.status === 200) {
-          if (response.data === "Table created successfully.") {
-            // Table created successfully, show success notification
-            toast.success("Table Created Successfully. Enter Data.");
-          } else {
-            setShowTable(true);
-          }
-        } else {
-          // Unexpected response, handle it
-          console.error("Unexpected response:", response);
-          // Handle unexpected response if needed
+        setTableName(tableName);
+        try {
+            setShowbtn(true);
+            console.log(tableName);
+            const response = await axios.get(
+                `http://localhost:3000/createTable/${tableName}/${valueforyearlabel}/${valuefordepartmentlabel}/${valuefordivisionlabel}
+            `);
+           
+            if (response.data.length === 0) {
+                
+                // Display toast notification for empty table
+                toast.warn("Table is empty. Upload to the database.");
+            } else if (response.status === 200) {
+                console.log(response.data);
+                if (response.data === "Table created successfully.") {
+                    console.log("creattt2");
+                    // Table created successfully, show success notification
+                    toast.success("Table Created Successfully. Enter Data.");
+                    // await createTable(tableName);
+                } else {
+                    console.log("creattt1");
+                    setShowTable(true);
+                    await createTable(tableName);
+                }
+            } else {
+                // Unexpected response, handle it
+                console.error("Unexpected response:", response);
+                // Handle unexpected response if needed
+            }
+        } catch (error) {
+            console.error("Error creating table:", error);
+            // Handle error if needed
         }
-      } catch (error) {
-        console.error("Error creating table:", error);
-        // Handle error if needed
-      }
     } else {
-      // Display toast notification for missing fields
-      toast.error("Please select all fields");
-    }
-  };
+        // Display toast notification for missing fields
+        toast.error("Please select all fields");
+        }
+    };
+
 
   // get pattern from backend
   const handleGetPattern = async () => {
