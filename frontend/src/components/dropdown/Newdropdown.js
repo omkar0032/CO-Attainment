@@ -7,6 +7,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import ParentComponent from "../ParentComponent";
 import Main_table from "../main_table";
+
 function Dropdown(teachers_table) {
     const { email } = UseData();
 
@@ -47,6 +48,9 @@ function Dropdown(teachers_table) {
     const { valueforyearlabel, setvalueforyearlabel } = UseData();
     const { valueforsubjectlabel, setvalueforsubjectlabel } = UseData();
     const { valueforsemlabel, setvalueforsemlabel } = UseData();
+    const {valuefordivisionlabel,setValuefordivisionlabel}=UseData();
+    const {data, setData} = UseData();
+    const {createTable}=UseData();
 
     const [showbtn, setShowbtn] = useState(false);
     const [tableName, setTableName] = useState();
@@ -67,43 +71,90 @@ function Dropdown(teachers_table) {
     let subjectnames = [];   
     const [transformedSubject,setTransformedSubject]=useState([]);
 
+    const [divisionAndSubject,setDivisionAndSubject]=useState();
     
+    const [role,setRole]=useState("");
     useEffect(() => {
         transformPattern();
         transformDepartment();
-        console.log(email)
         
     }, []);
 
-    let subjectAndDivisions;
+    // let subjectAndDivisions;
     const fetchSubjectsAndDivisions = async (selectedOption) => {
         try {
             const dataTableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${selectedOption?.value}`;
             const loggedInUserNameFromStorage = localStorage.getItem('Userdata');
             const loggedInUserNameFromStorage1=JSON.parse(loggedInUserNameFromStorage)
-            console.log("Data: ",dataTableName);
-            subjectAndDivisions = await axios.get(`http://localhost:3000/getSubjectsAndDivisions/${loggedInUserNameFromStorage1.email}/${dataTableName}`);
-       
+            setRole(loggedInUserNameFromStorage1.role);
+            console.log(role);
+            // console.log("Data: ",dataTableName);
+            const subjectAndDivisions = await axios.get(`http://localhost:3000/getSubjectsAndDivisions/${loggedInUserNameFromStorage1.email}/${dataTableName}`);
+            console.log(subjectAndDivisions);
+            setDivisionAndSubject(subjectAndDivisions)
         } catch (error) {
             console.error('Error fetching subjects and divisions:', error.message);
         }
     };
 
-    const checkSubjectAndDivision = async(selectedOption)=>{
+    const checkSubject = async(selectedOption)=>{
         try{
 
         // Check if the selected subject exists in the response data
-        const selectedSubject = selectedOption.value;
-        const subjectsData = subjectAndDivisions.data.Subject;
-        console.log(subjectsData);
-        if (selectedSubject in subjectsData) {
-            console.log(`${selectedSubject} exists in the subjectDivisionCoordinator object.`);
-            // Do something if the subject exists
-        } else {
-            console.log(`${selectedSubject} does not exist in the subjectDivisionCoordinator object.`);
-            // Do something if the subject does not exist
+        // console.log(divisionAndSubject);
+        const selectedSubject = selectedOption.label;
+        // console.log(selectedSubject);
+        // console.log(divisionAndSubject.data);
+        
+        let flag=0;
+        if(role==='HOD'){
+            flag=1; 
+        }
+        else{
+            for(let i=0;i<divisionAndSubject.data.length;i++){
+                if(selectedSubject===divisionAndSubject.data[i].Subject){
+                    flag=1;
+                    break;
+                }
+            }
+        }
+        
+        if(flag==1){
+            setValueforsubject(selectedOption);
+        }else{
+            toast.warn("You have chosen the wrong option");
+            // alert("You are chossing wrong option.Select Once again");
+            setValueforsubject(null);
         }
 
+        }
+        catch(error){
+            console.log("Error occured: ", error);
+        }
+    }
+
+    const checkDivision = async(selectedOption)=>{
+        try{
+        const selectedDivision = selectedOption.label;
+        // console.log(typeof(selectedDivision));
+        let flag1=0;
+        if(role=='HOD'){
+            flag1=1;
+        }else{
+            for(let i=0;i<divisionAndSubject.data.length;i++){
+                if((valueforsubject.label===divisionAndSubject.data[i].Subject && Number(selectedDivision)===divisionAndSubject.data[i].Division ) || (valueforsubject.label===divisionAndSubject.data[i].Coordinator)){
+                    flag1=1;
+                    break;
+                }
+            }
+        }
+        
+        if(flag1==1){
+            setValuefordivision(selectedOption);
+        }else{
+           toast.warn("You have chosen the wrong option");
+            setValuefordivision(null);
+        }
 
         }
         catch(error){
@@ -156,10 +207,12 @@ function Dropdown(teachers_table) {
 
     const transformdivision=async()=>{
         await handleGetDivision();
-        const transformedDivision1=divisionnames.map(division=>({
+        let transformedDivision1=divisionnames.map(division=>({
             value:String(division.Division),
             label:String(division.Division)
         }));
+
+        transformedDivision1.push({value:'all',label:"All"});
         setTransformedDivision(transformedDivision1);
     }
 
@@ -171,14 +224,15 @@ function Dropdown(teachers_table) {
             label:subjectname.Subject_Name
         }));
         setTransformedSubject(transformedSubject1);
-        console.log(transformedSubject1);
+        // console.log(transformedSubject1);
     }
     
-    const createTable = async () => {
+    const createTables = async () => {
+       
         const tableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${valueforsem?.value}_${valueforsubject?.value}`;
         if (
             valueforpattern &&
-            valueforacadamicyear&&
+            valueforacadamicyear&&  
             valueforyear &&
             valuefordepartment &&
             valuefordivision &&
@@ -192,17 +246,24 @@ function Dropdown(teachers_table) {
                 setShowbtn(true);
                 console.log(tableName);
                 const response = await axios.get(
-                    `http://localhost:3000/createTable/${tableName}`
+                    `http://localhost:3000/createTable/${tableName}/${valueforyearlabel}/${valuefordepartmentlabel}/${valuefordivisionlabel}`
                 );
+               
                 if (response.data.length === 0) {
+                    
                     // Display toast notification for empty table
                     toast.warn("Table is empty. Upload to the database.");
                 } else if (response.status === 200) {
+                    console.log(response.data);
                     if (response.data === "Table created successfully.") {
+                        console.log("creattt2");
                         // Table created successfully, show success notification
                         toast.success("Table Created Successfully. Enter Data.");
+                        // await createTable(tableName);
                     } else {
+                        console.log("creattt1");
                         setShowTable(true);
+                        await createTable(tableName);
                     }
                 } else {
                     // Unexpected response, handle it
@@ -357,6 +418,7 @@ function Dropdown(teachers_table) {
         // console.log(valuefortest1);
     }
 
+
     return (
         <>
             <div className="boxComponent">
@@ -369,6 +431,12 @@ function Dropdown(teachers_table) {
                         onChange={(selectedOption) => {
                             setValueforpattern(selectedOption);
                             transformAcadamicYear(selectedOption);
+                            setValuefordivision(null);
+                            setValueforsubject(null);
+                            setValueforsem(null);
+                            setValuedepartment(null);
+                            setValueforyear(null);
+                            setValueForAcadamicYear(null);
                         }}
                         isSearchable
                         placeholder="Select Pattern"
@@ -381,8 +449,13 @@ function Dropdown(teachers_table) {
                         options={transformedAcadamicYear}
                         value={valueforacadamicyear}
                         onChange={(selectedOption) => {
-                            setValueForAcadamicYear(selectedOption)
-                            setValueForAcademicYearlabel(selectedOption.label)
+                            setValueForAcadamicYear(selectedOption);
+                            setValueForAcademicYearlabel(selectedOption.label);
+                            setValuefordivision(null);
+                            setValueforsubject(null);
+                            setValueforsem(null);
+                            setValuedepartment(null);
+                            setValueforyear(null);
 
                         }
                         }
@@ -400,6 +473,10 @@ function Dropdown(teachers_table) {
                             setValueforyear(selectedOption);
                             setvalueforyearlabel(selectedOption.label);
                             setValueforsemArray(semname[selectedOption.label.toLowerCase()]);
+                            setValuefordivision(null);
+                            setValueforsubject(null);
+                            setValueforsem(null);
+                            setValuedepartment(null);
                         }}
                         isSearchable
                         placeholder="Select Year"
@@ -416,6 +493,9 @@ function Dropdown(teachers_table) {
                         onChange={(selectedOption) => {
                             setValuedepartment(selectedOption)
                             setvaluefordepartmentlabel(selectedOption.label);
+                            setValuefordivision(null);
+                            setValueforsubject(null);
+                            setValueforsem(null);
                         }
                         }
                         isSearchable
@@ -436,6 +516,8 @@ function Dropdown(teachers_table) {
                             transformdivision();
                             transformSubject(selectedOption);
                             fetchSubjectsAndDivisions(selectedOption);
+                            setValuefordivision(null);
+                            setValueforsubject(null);
                         }}
                         isSearchable
                         placeholder="Select Sem"
@@ -449,9 +531,10 @@ function Dropdown(teachers_table) {
                         options={transformedSubject}
                         value={valueforsubject}
                         onChange={(selectedOption) => {
-                            setValueforsubject(selectedOption);
+                            
                             setvalueforsubjectlabel(selectedOption.label);
-                            checkSubjectAndDivision(selectedOption);
+                            checkSubject(selectedOption);
+                            setValuefordivision(null);
                         }}
                         isSearchable
                         placeholder="Select Subject"
@@ -479,7 +562,10 @@ function Dropdown(teachers_table) {
                         options={transformedDivision}
                         value={valuefordivision}
                         onChange={(selectedOption) => {
-                            setValuefordivision(selectedOption);
+                            checkDivision(selectedOption);
+                            setValuefordivisionlabel(selectedOption.label);
+                            // setValuefordivision(selectedOption);
+                            
                         }}
 
                         isSearchable
@@ -490,7 +576,7 @@ function Dropdown(teachers_table) {
                 </div>
             </div>
             <div className="create-table">
-                <Button onClick={createTable}>Show Records</Button>
+                <Button onClick={createTables}>Show Records</Button>
             </div>
             <ToastContainer />
             {showbtn    && (<ParentComponent tableName={tableName} />)}

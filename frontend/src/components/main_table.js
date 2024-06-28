@@ -18,11 +18,9 @@ import jsPDF from "jspdf";
 import "jspdf-autotable"
 import MaxMarkTable from "./MaxMarksTable";
 const Main_table = ({ tableName }) => {
-  useEffect(() => {
-    createTable();
-  }, []);
+  
   const containerRef = useRef(null);
-  const [data, setData] = useState([]);
+  const {data, setData} = UseData();
   const [isShow, setIsShow] = useState(false);
   const [showbtn, setShowbtn] = useState(false);
   const { valuefortest1, setValuefortest1 } = UseData();
@@ -31,75 +29,11 @@ const Main_table = ({ tableName }) => {
   const { valueforyearlabel, setvalueforyearlabel } = UseData();
   const { valueforsubjectlabel, setvalueforsubjectlabel } = UseData();
   const { valueforsemlabel, setvalueforsemlabel } = UseData();
+  const {valuefordivisionlabel,setValuefordivisionlabel}=UseData();
   const { resultState, setResultState } = UseData() || {};
-  const createTable = async () => {
-    try {
-      setShowbtn(true);
-      console.log("valuetest1", valuefortest1);
-      console.log("valueacadamicyear", valueforacadamicyearlabel);
-      const response = await axios.get(
-        `http://localhost:3000/createTable/${tableName}`
-      );
-      if (response.data.length === 0) {
-        // Display toast notification for empty table
-        toast.warn("Table is empty. Upload to the database.");
-      } else if (response.status === 200) {
-        if (response.data === "Table created successfully.") {
-          // Table created successfully, show success notification
-          toast.success("Table Created Successfully. Enter Data.");
-        } else {
-          // Table data fetched successfully, show success notification
-          toast.success("Data Fetched Successfully.");
-          // Handle table data if needed
-          if (response.data.length === 0) {
-            // Display toast notification for empty table
-            toast.warning("Table is empty. Upload to the database.");
-          } else {
-            // console.log("first")
-            // console.log(reportInfo);
-            // console.log(valuefortest1)
-            // const updatedData = response.data.map((row) => {
-            //   const newTotalUT1 = row["UT1-Q1"] + row["UT1-Q2"];
-            //   const newTotalUT2 = row["UT2-Q1"] + row["UT2-Q2"];
-            //   const newTotalUT3 = row["UT3-Q1"] + row["UT3-Q2"];
-
-            //   return {
-            //     ...row,
-            //     ["Total-UT1"]: newTotalUT1,
-            //     ["Total-UT2"]: newTotalUT2,
-            //     ["Total-UT3"]: newTotalUT3,
-            //   };
-            // });
-            // setData(updatedData);
-            const updatedData = response.data.map((row) => {
-              const totalUT1 = (row["UT1-Q1"] !== null && row["UT1-Q2"] !== null) ? row["UT1-Q1"] + row["UT1-Q2"] : null;
-              const totalUT2 = (row["UT2-Q1"] !== null && row["UT2-Q2"] !== null) ? row["UT2-Q1"] + row["UT2-Q2"] : null;
-              const totalUT3 = (row["UT3-Q1"] !== null && row["UT3-Q2"] !== null) ? row["UT3-Q1"] + row["UT3-Q2"] : null;
-              return {
-                ...row,
-                ["Total-UT1"]: totalUT1,
-                ["Total-UT2"]: totalUT2,
-                ["Total-UT3"]: totalUT3,
-              };
-            });
-        
-            setData(updatedData);
-            console.log(updatedData)
-            // console.log(data)
-          }
-        }
-      } else {
-        // Unexpected response, handle it
-        console.error("Unexpected response:", response);
-        // Handle unexpected response if needed
-      }
-    } catch (error) {
-      console.error("Error creating table:", error);
-      // Handle error if needed
-    }
-  };
-
+  
   useEffect(() => {
+    console.log(data);
     const updatedData = data.map((row) => {
       const totalUT1 = (row["UT1-Q1"] !== null && row["UT1-Q2"] !== null) ? row["UT1-Q1"] + row["UT1-Q2"] : null;
       const totalUT2 = (row["UT2-Q1"] !== null && row["UT2-Q2"] !== null) ? row["UT2-Q1"] + row["UT2-Q2"] : null;
@@ -206,9 +140,11 @@ const Main_table = ({ tableName }) => {
       console.error("Error inserting data:", error);
     }
   };
+
   const displayResult = () => {
     setResultState((prevState) => !prevState); // Toggle the display state
   };
+
   const handleGeneratePdf = async () => {
     try {
       // console.log("academic year",valueforacadamicyear)
@@ -596,6 +532,9 @@ for (let i = 1; i <= totalPages; i++) {
               {(valuefortest1 === "UT-3" || valuefortest1 === "UA") && (
                 <th>CO-6</th>
               )}
+              {valuefortest1 === "UA" && <th>Ensem-CO1</th>}
+              {valuefortest1 === "UA" && <th>Ensem-CO2</th>}
+              {valuefortest1 === "UA" && <th>Endesm</th>}
               {valuefortest1 === "UA" && <th>UA</th>}
               {(valuefortest1 === "UT-1" ||
                 valuefortest1 === "UT-2" ||
@@ -612,7 +551,6 @@ for (let i = 1; i <= totalPages; i++) {
           <tbody>
             {data.map((row, index) => {
               return (
-                
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{row["Roll No"]}</td>
@@ -887,7 +825,6 @@ for (let i = 1; i <= totalPages; i++) {
               );
             })}
           </tbody>
-                  
         </Table>
       </div>
       <div />
@@ -905,7 +842,7 @@ for (let i = 1; i <= totalPages; i++) {
       </div>
       <div className="omkar">
         <Button className="p-[20px] font-bol" onClick={displayResult}>
-          {resultState ? "Hide Result" : "Show Result"}
+          {(resultState ) ? "Attainment" : "Calculate Attainment"}
         </Button>
       </div>
       {resultState && (

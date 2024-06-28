@@ -47,7 +47,7 @@ const LoginForm = () => {
         localStorage.setItem('Userdata',JSON.stringify(userdata) ); // Store user's details
         handelLoggedINOrNot();
         toast.success("Login Successful.");
-        navigate('/');
+        navigate('/Home');
       } else {
         if (response.status === 401) {
           toast.warning("Invalid Credentials!");
