@@ -50,11 +50,9 @@ const EditPattern = () => {
     const handleSave = async () => {
         if (!academicYear) {
             toast.warn("Invalid Academic Year.");
-        }
-        else if (!year) {
+        } else if (!year) {
             toast.warn("Invalid Year.");
-        }
-        else {
+        } else {
             try {
                 const response = await axios.post('http://localhost:3000/insert_pattern', {
                     PYear: year,
@@ -65,18 +63,18 @@ const EditPattern = () => {
                     fetchData(); // Fetch updated data after saving
                     setYear(''); // Clear input fields after saving
                     setAcademicYear('');
-                }
-                else {
+                } else if (response.status === 400) {
+                    toast.warn('Duplicate entry for Academic Year');
+                } else {
                     toast.warn('Failed to save pattern.');
                 }
             } catch (error) {
                 console.error('Error saving pattern:', error);
                 toast.error('An error occurred while saving pattern.');
             }
-
         }
-
     };
+    
 
     const handleRemove = async (PYear, AYear) => {
         try {

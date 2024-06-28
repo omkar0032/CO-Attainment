@@ -89,7 +89,7 @@ function MaxMarkTable({ tableName }) {
     };
     return (
         <>
-            <Button onClick={handelOnclick} >{data ? "Enter Marks" : "hide marks"}</Button>
+            <Button style={{marginLeft: '47%',marginBottom: '10px'}} onClick={handelOnclick} >{data ? "Hide Marks" : "Enter Marks"}</Button>
             {data && <div className="level-container col-md-9">
                 <form >
                     <Table>
@@ -115,7 +115,7 @@ function MaxMarkTable({ tableName }) {
                         </tbody>
                     </Table>
                     {/* <Button className="bg-primary" type="submit">Save</Button> */}
-                    <Button className="bg-primary" onClick={updateMarks}>Edit</Button>
+                    <Button style={{marginLeft: '48%',marginBottom: '10px'}} className="bg-primary" onClick={updateMarks}>Edit</Button>
                 </form>
             </div>}
         </>

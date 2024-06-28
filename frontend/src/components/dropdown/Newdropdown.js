@@ -1,44 +1,42 @@
 import { Table, Button } from "react-bootstrap";
 import React, { useContext, useState, useEffect } from "react";
-import Select from 'react-select';
+import Select from "react-select";
 import { ContextProvider, UseData } from "../../NewContext";
-import './Dropdown.css';
+import "./Dropdown.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import ParentComponent from "../ParentComponent";
 import Main_table from "../main_table";
 
 function Dropdown(teachers_table) {
-    const { email } = UseData();
+  const { email } = UseData();
 
-    // to select pattern
-    const [valueforpattern, setValueforpattern] = useState("");
+  // to select pattern
+  const [valueforpattern, setValueforpattern] = useState("");
 
-    // select Acadmic Year.
-    const [valueforacadamicyear, setValueForAcadamicYear] = useState("");
+  // select Acadmic Year.
+  const [valueforacadamicyear, setValueForAcadamicYear] = useState("");
 
-    //to select year.
-    const [valueforyear, setValueforyear] = useState("");
+  //to select year.
+  const [valueforyear, setValueforyear] = useState("");
 
-    // for department
-    const [valuefordepartment, setValuedepartment] = useState("");
-   
+  // for department
+  const [valuefordepartment, setValuedepartment] = useState("");
 
+  // useState for All divisions initial state is object
+  // const [valuefordivisionArray, setValuefordivisionArray] = useState([]);
+  // this to use usestate for addition for subject selection
+  const [valuefordivision, setValuefordivision] = useState("");
 
-    // useState for All divisions initial state is object
-    // const [valuefordivisionArray, setValuefordivisionArray] = useState([]);
-    // this to use usestate for addition for subject selection
-    const [valuefordivision, setValuefordivision] = useState("");
+  // to select semester and initialsing it by array
+  const [valueforsemArray, setValueforsemArray] = useState([]);
+  // this useState for addition to find subject
+  const [valueforsem, setValueforsem] = useState("");
 
-    // to select semester and initialsing it by array
-    const [valueforsemArray, setValueforsemArray] = useState([]);
-    // this useState for addition to find subject
-    const [valueforsem, setValueforsem] = useState("");
-
-    // useState for Subject contaning initial value as object. 
-    // const [valueforsubjectArray, setValueforsubjectArray] = useState([]);
-    // to is actual setValue for subject selection
-    const [valueforsubject, setValueforsubject] = useState();
+  // useState for Subject contaning initial value as object.
+  // const [valueforsubjectArray, setValueforsubjectArray] = useState([]);
+  // to is actual setValue for subject selection
+  const [valueforsubject, setValueforsubject] = useState();
 
     // // this hook for test selection like ut 1 ut2
     const [valuefortest, setValuefortest] = useState();
@@ -52,13 +50,13 @@ function Dropdown(teachers_table) {
     const {data, setData} = UseData();
     const {createTable}=UseData();
 
-    const [showbtn, setShowbtn] = useState(false);
-    const [tableName, setTableName] = useState();
-    const [showTable, setShowTable] = useState(false);
-    const [subjects, setSubjects] = useState([]);
-    const [divisions, setDivisions] = useState([]);
-    const [transformedSubjects, setTransformedSubjects] = useState([]);
-    const [transformedDivisions, setTransformedDivisions] = useState([]);   
+  const [showbtn, setShowbtn] = useState(false);
+  const [tableName, setTableName] = useState();
+  const [showTable, setShowTable] = useState(false);
+  const [subjects, setSubjects] = useState([]);
+  const [divisions, setDivisions] = useState([]);
+  const [transformedSubjects, setTransformedSubjects] = useState([]);
+  const [transformedDivisions, setTransformedDivisions] = useState([]);
 
     let patternnames =[];
     const [transformedPattern,setTransformedPattern]=useState([]);
@@ -162,48 +160,42 @@ function Dropdown(teachers_table) {
         }
     }
 
-    const transformPattern=async()=>{
-        await handleGetPattern();
-        let transformedPatterns= patternnames.map( patternname=>({
-            value:convertPattern( patternname),
-            label:String( patternname.Pattern),
-        }));
-        // console.log(transformedPatterns);
-        setTransformedPattern(transformedPatterns);
-    }
-    const convertPattern=(pattern)=>{
-        // console.log(String(pattern.Pattern));
-        return "p"+String(pattern.Pattern);
-    }
+  const transformPattern = async () => {
+    await handleGetPattern();
+    let transformedPatterns = patternnames.map((patternname) => ({
+      value: convertPattern(patternname),
+      label: String(patternname.Pattern),
+    }));
+    setTransformedPattern(transformedPatterns);
+  };
+  const convertPattern = (pattern) => {
+    return "p" + String(pattern.Pattern);
+  };
 
-    const transformAcadamicYear=async(selectedOption)=>{
-        await handleGetAcadamicYear(selectedOption);
-        // console.log(acadamicyearnames);
-        // console.log(acadamicYears);
-        const transformedAcadamicYears=acadamicyearnames.map(acadamicyearname=>({
-            value:convertAcadamicYear(acadamicyearname),
-            label:acadamicyearname.Academic_Year,
-        }))
-        setTransformedAcadamicYear(transformedAcadamicYears);
-        
-    }
+  const transformAcadamicYear = async (selectedOption) => {
+    await handleGetAcadamicYear(selectedOption);
+    const transformedAcadamicYears = acadamicyearnames.map(
+      (acadamicyearname) => ({
+        value: convertAcadamicYear(acadamicyearname),
+        label: acadamicyearname.Academic_Year,
+      })
+    );
+    setTransformedAcadamicYear(transformedAcadamicYears);
+  };
 
-    const convertAcadamicYear=(acadamicYear)=>{
-        const[startYear,endYear]=acadamicYear.Academic_Year.split('-');
-        return "y_"+startYear+"_"+endYear;
-    }
+  const convertAcadamicYear = (acadamicYear) => {
+    const [startYear, endYear] = acadamicYear.Academic_Year.split("-");
+    return "y_" + startYear + "_" + endYear;
+  };
 
-    const transformDepartment=async()=>{
-        await handleGetDeparment();
-        // console.log(departmentnames);
-        const transformedDepartments=departmentnames.map(departmentname=>({
-            value:departmentname.Department.toLowerCase(),
-            label:departmentname.Department
-            
-        }));
-        setTransformedDepartment(transformedDepartments);
-        // console.log(transformedDepartments);
-    }
+  const transformDepartment = async () => {
+    await handleGetDeparment();
+    const transformedDepartments = departmentnames.map((departmentname) => ({
+      value: departmentname.Department.toLowerCase(),
+      label: departmentname.Department,
+    }));
+    setTransformedDepartment(transformedDepartments);
+  };
 
     const transformdivision=async()=>{
         await handleGetDivision();
@@ -216,208 +208,243 @@ function Dropdown(teachers_table) {
         setTransformedDivision(transformedDivision1);
     }
 
-    const transformSubject=async(selectedOption)=>{
-        await handleGetSubject(selectedOption);
-        // console.log(subjectnames);
-        const transformedSubject1=subjectnames.map(subjectname=>({
-            value:subjectname.Subject_Name.toLowerCase(),
-            label:subjectname.Subject_Name
-        }));
-        setTransformedSubject(transformedSubject1);
-        // console.log(transformedSubject1);
-    }
-    
-    const createTables = async () => {
-       
-        const tableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${valueforsem?.value}_${valueforsubject?.value}`;
-        if (
-            valueforpattern &&
-            valueforacadamicyear&&  
-            valueforyear &&
-            valuefordepartment &&
-            valuefordivision &&
-            valueforsem &&
-            valueforsubject &&
-            valuefortest
-        ) {
-            setShowbtn(true);
-            setTableName(tableName);
-            try {
-                setShowbtn(true);
-                console.log(tableName);
-                const response = await axios.get(
-                    `http://localhost:3000/createTable/${tableName}/${valueforyearlabel}/${valuefordepartmentlabel}/${valuefordivisionlabel}`
-                );
-               
-                if (response.data.length === 0) {
-                    
-                    // Display toast notification for empty table
-                    toast.warn("Table is empty. Upload to the database.");
-                } else if (response.status === 200) {
-                    console.log(response.data);
-                    if (response.data === "Table created successfully.") {
-                        console.log("creattt2");
-                        // Table created successfully, show success notification
-                        toast.success("Table Created Successfully. Enter Data.");
-                        // await createTable(tableName);
-                    } else {
-                        console.log("creattt1");
-                        setShowTable(true);
-                        await createTable(tableName);
-                    }
-                } else {
-                    // Unexpected response, handle it
-                    console.error("Unexpected response:", response);
-                    // Handle unexpected response if needed
-                }
-            } catch (error) {
-                console.error("Error creating table:", error);
-                // Handle error if needed
-            }
+  const transformSubject = async (selectedOption) => {
+    await handleGetSubject(selectedOption);
+    const transformedSubject1 = subjectnames.map((subjectname) => ({
+      value: subjectname.Subject_Name.toLowerCase(),
+      label: subjectname.Subject_Name,
+    }));
+    setTransformedSubject(transformedSubject1);
+  };
+
+  const createTable = async () => {
+    const tableName = `${valueforpattern?.value}_${valueforacadamicyear?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${valueforsem?.value}_${valueforsubject?.value}`;
+    if (
+      valueforpattern &&
+      valueforacadamicyear &&
+      valueforyear &&
+      valuefordepartment &&
+      valuefordivision &&
+      valueforsem &&
+      valueforsubject &&
+      valuefortest
+    ) {
+      setShowbtn(true);
+      setTableName(tableName);
+
+      try {
+        setShowbtn(true);
+
+        const academicYear = valueforacadamicyear.label; // This is the academic year range (e.g., "2021-2022")
+
+        // Split the academic year range at the hyphen "-"
+        const academicYearParts = academicYear.split("-");
+
+        // Convert the first part of the split to an integer (it should represent the starting year)
+        const startingYear = parseInt(academicYearParts[0], 10);
+        const response = await axios.get(
+          `http://localhost:3000/createTable/${tableName}`
+        );
+        const pastYears = await axios.get(
+          `http://localhost:3000/average_attainment_pastYears/${tableName}/${startingYear}`
+        );
+
+        const rows = pastYears.data;
+
+                // Store the data in an array
+                let sumUA60 = 0;
+                let sumUA66 = 0;
+                let sumUAPass = 0;
+                let sumUT60 = 0;
+                let sumUT66 = 0;
+                let sumUTPass = 0;
+            
+                // Iterate over each row and accumulate the values for each column
+                rows.forEach(row => {
+                    sumUA60 += row.UA_60;
+                    sumUA66 += row.UA_66;
+                    sumUAPass += row.UA_PASS;
+                    sumUT60 += row.UT_60;
+                    sumUT66 += row.UT_66;
+                    sumUTPass += row.UT_PASS;
+                });
+            
+                // Calculate the number of rows
+                const numRows = rows.length;
+            
+                // Calculate the averages and add 2 to each average
+                const averageData = {
+                    averageUA60: (sumUA60 / numRows) + 2,
+                    averageUA66: (sumUA66 / numRows) + 2,
+                    averageUAPass: (sumUAPass / numRows) + 2,
+                    averageUT60: (sumUT60 / numRows) + 2,
+                    averageUT66: (sumUT66 / numRows) + 2,
+                    averageUTPass: (sumUTPass / numRows) + 2
+                };
+            
+                // return averageData;
+
+        if (response.data.length === 0) {
+          // Display toast notification for empty table
+          toast.warn("Table is empty. Upload to the database.");
+        } else if (response.status === 200) {
+          if (response.data === "Table created successfully.") {
+            // Table created successfully, show success notification
+            toast.success("Table Created Successfully. Enter Data.");
+          } else {
+            setShowTable(true);
+          }
         } else {
-            // Display toast notification for missing fields
-            toast.error("Please select all fields");
+          // Unexpected response, handle it
+          console.error("Unexpected response:", response);
+          // Handle unexpected response if needed
         }
-    };
-
-    // get pattern from backend
-    const handleGetPattern=async()=>{
-        try{
-            const result=await axios.get("http://localhost:3000/pattern");
-            
-            if (result.status === 200) {
-                patternnames=result.data;
-                // console.log(acadamicyearnames);
-            } else {
-                console.error(`Error: Received unexpected status code ${result.status}`);
-            }
-        }catch(error){
-           console.log("Error while fetching data")
-        }
+      } catch (error) {
+        console.error("Error creating table:", error);
+        // Handle error if needed
+      }
+    } else {
+      // Display toast notification for missing fields
+      toast.error("Please select all fields");
     }
+  };
 
-    // get acadamic year from backend
-    
-    const handleGetAcadamicYear = async (selectedOption) => {
-        try {
-            const name = selectedOption?.label;
-            const response = await axios.get(`http://localhost:3000/pattrenname/${name}`);
-            
-            if (response.status === 200) {
-                acadamicyearnames = response.data;
-                // console.log(acadamicyearnames);
-            } else {
-                console.error(`Error: Received unexpected status code ${response.status}`);
-            }
-        } catch (error) {
-            console.error("Error while fetching data:", error.message);
-        }
-    };
-    
-     // get pattern from backend
-     const handleGetDeparment=async()=>{
-        try{
-            const result=await axios.get("http://localhost:3000/department");
-            
-            if (result.status === 200) {
-                departmentnames=result.data;
-                // console.log(departmentnames);
-            } else {
-                console.error(`Error: Received unexpected status code ${result.status}`);
-            }
-        }catch(error){
-           console.log("Error while fetching data")
-        }
+  // get pattern from backend
+  const handleGetPattern = async () => {
+    try {
+      const result = await axios.get("http://localhost:3000/pattern");
+
+      if (result.status === 200) {
+        patternnames = result.data;
+      } else {
+        console.error(
+          `Error: Received unexpected status code ${result.status}`
+        );
+      }
+    } catch (error) {
+      console.log("Error while fetching data");
     }
+  };
 
-    const handleGetDivision = async () => {
-        try {
-            const name = valuefordepartment.label+"_"+valueforyear.label;
-            console.log(name)
-            const response = await axios.get(`http://localhost:3000/division/${name}`);
-            
-            if (response.status === 200) {
-                divisionnames = response.data;
-                // console.log(acadamicyearnames);
-            } else {
-                console.error(`Error: Received unexpected status code ${response.status}`);
-            }
-        } catch (error) {
-            console.error("Error while fetching data:", error.message);
-        }
-    };
+  // get acadamic year from backend
 
-    const handleGetSubject = async (selectedOption) => {
-        try {
-            const name = `${valueforpattern?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${selectedOption?.value}`;
-            console.log(name)
-            const response = await axios.get(`http://localhost:3000/subject/${name}`);
-            
-            if (response.status === 200) {
-                subjectnames = response.data;
-                // console.log(subjectnames);
-            } else {
-                console.error(`Error: Received unexpected status code ${response.status}`);
-            }
-        } catch (error) {
-            console.error("Error while fetching data:", error.message);
-        }
-        
-    };
+  const handleGetAcadamicYear = async (selectedOption) => {
+    try {
+      const name = selectedOption?.label;
+      const response = await axios.get(
+        `http://localhost:3000/pattrenname/${name}`
+      );
 
-    
-    // passed in option={yearname}
-
-    const yearname = [
-        { value: "y1_d", label: "FE" },
-        { value: "y2_d", label: "SE" },
-        { value: "y3_d", label: "TE" },
-        { value: "y4_d", label: "BE" },
-    ]
-
-    // One of these Array of objects is passed when user hits YEAR section because sem depends on YEAR
-    const fe = [
-        { value: "sem1", label: "Sem_1" },
-        { value: "sem2", label: "Sem_2" },
-    ]
-
-    const se = [
-        { value: "sem3", label: "Sem_3" },
-        { value: "sem4", label: "Sem_4" },
-
-    ]
-
-    const te = [
-        { value: "sem5", label: "Sem_5" },
-        { value: "sem6", label: "Sem_6" },
-
-    ]
-
-    const be = [
-        { value: "sem7", label: "Sem_7" },
-        { value: "sem8", label: "Sem_8" },
-
-    ]
-    // this Object of Above Array.
-    const semname = { fe, se, te, be };
-
-    
-
-    //    this Array for test pattern 
-    const testname = [
-        { value: "t1", label: "UT-1" },
-        { value: "t2", label: "UT-2" },
-        { value: "t3", label: "UT-3" },
-        { value: "t4", label: "UA" },
-    ]
-
-    // this hook for test selection like ut 1 ut2
-    const handleOnChange = (selectedOption) => {
-        setValuefortest(selectedOption);
-        setValuefortest1(selectedOption.label);
-        // console.log(valuefortest1);
+      if (response.status === 200) {
+        acadamicyearnames = response.data;
+      } else {
+        console.error(
+          `Error: Received unexpected status code ${response.status}`
+        );
+      }
+    } catch (error) {
+      console.error("Error while fetching data:", error.message);
     }
+  };
 
+  // get pattern from backend
+  const handleGetDeparment = async () => {
+    try {
+      const result = await axios.get("http://localhost:3000/department");
+
+      if (result.status === 200) {
+        departmentnames = result.data;
+      } else {
+        console.error(
+          `Error: Received unexpected status code ${result.status}`
+        );
+      }
+    } catch (error) {
+      console.log("Error while fetching data");
+    }
+  };
+
+  const handleGetDivision = async () => {
+    try {
+      const name = valuefordepartment.label + "_" + valueforyear.label;
+      const response = await axios.get(
+        `http://localhost:3000/division/${name}`
+      );
+
+      if (response.status === 200) {
+        divisionnames = response.data;
+      } else {
+        console.error(
+          `Error: Received unexpected status code ${response.status}`
+        );
+      }
+    } catch (error) {
+      console.error("Error while fetching data:", error.message);
+    }
+  };
+
+  const handleGetSubject = async (selectedOption) => {
+    try {
+      const name = `${valueforpattern?.value}_${valueforyear?.value}_${valuefordepartment?.value}_${selectedOption?.value}`;
+      const response = await axios.get(`http://localhost:3000/subject/${name}`);
+
+      if (response.status === 200) {
+        subjectnames = response.data;
+      } else {
+        console.error(
+          `Error: Received unexpected status code ${response.status}`
+        );
+      }
+    } catch (error) {
+      console.error("Error while fetching data:", error.message);
+    }
+  };
+
+  // passed in option={yearname}
+
+  const yearname = [
+    { value: "y1_d", label: "FE" },
+    { value: "y2_d", label: "SE" },
+    { value: "y3_d", label: "TE" },
+    { value: "y4_d", label: "BE" },
+  ];
+
+  // One of these Array of objects is passed when user hits YEAR section because sem depends on YEAR
+  const fe = [
+    { value: "sem1", label: "Sem_1" },
+    { value: "sem2", label: "Sem_2" },
+  ];
+
+  const se = [
+    { value: "sem3", label: "Sem_3" },
+    { value: "sem4", label: "Sem_4" },
+  ];
+
+  const te = [
+    { value: "sem5", label: "Sem_5" },
+    { value: "sem6", label: "Sem_6" },
+  ];
+
+  const be = [
+    { value: "sem7", label: "Sem_7" },
+    { value: "sem8", label: "Sem_8" },
+  ];
+  // this Object of Above Array.
+  const semname = { fe, se, te, be };
+
+  //    this Array for test pattern
+  const testname = [
+    { value: "t1", label: "UT-1" },
+    { value: "t2", label: "UT-2" },
+    { value: "t3", label: "UT-3" },
+    { value: "t4", label: "UA" },
+  ];
+
+  // this hook for test selection like ut 1 ut2
+  const handleOnChange = (selectedOption) => {
+    setValuefortest(selectedOption);
+    setValuefortest1(selectedOption.label);
+  };
 
     return (
         <>

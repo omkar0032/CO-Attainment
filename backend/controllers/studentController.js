@@ -34,7 +34,6 @@ const createTableStudents = async (req, res) => {
       const checkEmptyTableQuery = `SELECT COUNT(*) AS row_count FROM ${tableName}`;
       const rowCountResult = await pool.query(checkEmptyTableQuery);
       const rowCount = rowCountResult[0][0].row_count;
-      console.log(rowCount);
       if (rowCount === 0) {
         // console.log(rowCount);
         return res.status(200).send([]);
@@ -199,7 +198,6 @@ const updateDatabaseStudents = async (req, res) => {
   try {
     // Validate request body
     const data = req.body.dataToInsert;
-    console.log(data[0]);
     tableName = req.params.tableName;
 
     // Execute all queries concurrently
@@ -242,7 +240,6 @@ const updateDatabaseStudents = async (req, res) => {
         ];
 
         const [result] = await pool.query(query, values);
-        console.log(result);
       })
     );
 
@@ -278,11 +275,9 @@ const countsOfPresentStudent = async (req, res) => {
     }
 
     // Log the entire first row of the result
-    console.log("First row of the result:", queryResult[0]);
 
     // Attempt to fetch the value of sum_q11
     const present = queryResult[0];
-    // console.log("Fetched sum_q11:", present);
 
     res.send(present); // Sending a JSON response with the value of sum_q11
   } catch (error) {
@@ -314,11 +309,9 @@ const countsOfAbsentStudent = async (req, res) => {
     }
 
     // Log the entire first row of the result
-    console.log("First row of the result:", queryResult[0]);
 
     // Attempt to fetch the value of sum_q11
     const present = queryResult[0];
-    // console.log("Fetched sum_q11:", present);
 
     res.send(present); // Sending a JSON response with the value of sum_q11
   } catch (error) {
@@ -350,11 +343,9 @@ const countsOfPresentStudentPercentage = async (req, res) => {
     }
 
     // Log the entire first row of the result
-    // console.log("First row of the result:", queryResult[0]);
 
     // Attempt to fetch the value of sum_q11
     const present = queryResult[0];
-    // console.log("Fetched sum_q11:", present);
 
     res.send(present); // Sending a JSON response with the value of sum_q11
   } catch (error) {
@@ -392,11 +383,9 @@ const countsOflevel1 = async (req, res) => {
     }
 
     // Log the entire first row of the result
-    console.log("First row of the result:", queryResult[0]);
 
     // Attempt to fetch the value of sum_q11
     const present = queryResult[0];
-    // console.log("Fetched sum_q11:", present);
 
     res.send(present); // Sending a JSON response with the value of sum_q11
   } catch (error) {
@@ -433,11 +422,9 @@ const countsOflevel2 = async (req, res) => {
     }
 
     // Log the entire first row of the result
-    console.log("First row of the result:", queryResult[0]);
 
     // Attempt to fetch the value of sum_q11
     const present = queryResult[0];
-    // console.log("Fetched sum_q11:", present);
 
     res.send(present); // Sending a JSON response with the value of sum_q11
   } catch (error) {
@@ -467,17 +454,14 @@ const countsOflevel3 = async (req, res) => {
     const queryResult = await pool.query(sql);
 
     if (queryResult.length === 0) {
-      console.log("No data found");
       res.status(404).send("No data found");
       return;
     }
 
     // Log the entire first row of the result
-    console.log("First row of the result:", queryResult[0]);
 
     // Attempt to fetch the value of sum_q11
     const present = queryResult[0];
-    // console.log("Fetched sum_q11:", present);
 
     res.send(present); // Sending a JSON response with the value of sum_q11
   } catch (error) {
@@ -485,16 +469,10 @@ const countsOflevel3 = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
-
-
-
-
 const updateMaxMarks = async (req, res) => {
   try {
-    // console.log("in bacend");
     const valueForMaxMarks = req.body.valueForMaxMarks;
     const tableName = req.params.tableName;
-    // console.log(valueForMaxMarks);
 
     const { CO_1, CO_2, CO_3, CO_4, CO_5, CO_6 } = valueForMaxMarks;
 
@@ -539,6 +517,95 @@ const getMaxMarks = async (req, res) => {
     res.status(500).send("Error while fetching");
   }
 };
+
+const saveTarget_averageData = async (req, res) => {
+  const { data } = req.body;
+  const { tableName } = req.params;
+  let connection;
+
+  try {
+    connection = await pool.getConnection();
+
+    // Iterate over data, starting from the second element, in steps of 2
+    for (let i = 1; i < data.length; i += 2) {
+      const row = data[i];
+      const year = data[i - 1].year || 0;
+
+      // Extract values from row
+      const ut1Value = row.ut1 || 0;
+      const ua1Value = row.ua1 || 0;
+      const ut2Value = row.ut2 || 0;
+      const ua2Value = row.ua2 || 0;
+      const ut3Value = row.ut3 || 0;
+      const ua3Value = row.ua3 || 0;
+      const utCoAtValue = row.coUt || 0;
+      const uaCoAtValue = row.coUa || 0;
+      const coAtValue = row.coAt || 0;
+
+      // Prepare and execute the SQL query
+      const queryResult = await connection.query(
+        `INSERT INTO yearwise_attainments (TableName, Year, UT_66, UA_66, UT_60, UA_60, UT_PASS, UA_PASS, CO_UT, CO_UA, CO_AT)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          UT_66 = VALUES(UT_66),
+          UA_66 = VALUES(UA_66),
+          UT_60 = VALUES(UT_60),
+          UA_60 = VALUES(UA_60),
+          UT_PASS = VALUES(UT_PASS),
+          UA_PASS = VALUES(UA_PASS),
+          CO_UT = VALUES(CO_UT),
+          CO_UA = VALUES(CO_UA),
+          CO_AT = VALUES(CO_AT)`,
+        [tableName, year, ut1Value, ua1Value, ut2Value, ua2Value, ut3Value, ua3Value, utCoAtValue, uaCoAtValue, coAtValue]
+      );
+    }
+
+    // Respond with success message
+    res.status(200).json({ message: 'Data saved successfully' });
+  } catch (error) {
+    console.error('Error saving data to the database', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (connection) {
+        connection.release();
+    }
+  }
+};
+const average_attainment_pastYears = async (req, res) => {
+  const { tableName, startingYear } = req.params;
+  // Calculate the past years of interest
+  const pastYears = [
+      startingYear - 1,
+      startingYear - 2,
+      startingYear - 3
+  ];
+
+  let connection;
+  try {
+      connection = await pool.getConnection();
+      // Query the database for rows from the specified table name and past years
+      const query = `
+          SELECT *
+          FROM yearwise_attainments
+          WHERE TableName = ?
+          AND Year IN (?, ?, ?)
+      `;
+      const [rows] = await connection.query(query, [tableName, ...pastYears]);
+
+      // Send the retrieved rows to the frontend as a JSON response
+      res.status(200).json(rows);
+  } catch (error) {
+      console.error('Error querying the database', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+      if (connection) {
+          connection.release();
+      }
+  }
+};
+
+
+
 module.exports = {
   createTableStudents,
   uploadExcelStudents,
@@ -550,5 +617,7 @@ module.exports = {
   countsOflevel2,
   countsOflevel3,
   getMaxMarks,
-  updateMaxMarks
+  updateMaxMarks,
+  saveTarget_averageData,
+  average_attainment_pastYears
 };

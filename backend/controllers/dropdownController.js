@@ -115,8 +115,8 @@ const insertPattern = async (req, res) => {
         const result = await dropdownPool.query(sql, [PYear, AYear]);
         res.status(200).send('Pattern saved successfully');
     } catch (error) {
-        console.error('Error inserting pattern:', error);
-        res.status(500).send('Error in saving pattern');
+            console.error('Error inserting pattern:', error);
+            res.status(500).send('Error in saving pattern');  
     }
 }
 
