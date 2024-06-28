@@ -650,7 +650,7 @@ const updateTeacherData=async(req,res)=>{
 //--------------------------------------------------------------------------------------
 const getSubjectsAndDivisions = async (req, res) => {
   const { email, dataTableName } = req.params;
-  console.log(email, "   ", dataTableName);
+  // console.log(email, "   ", dataTableName);
 
   try {
     // Fetch subjects and divisions associated with the logged-in teacher's email
@@ -660,7 +660,7 @@ const getSubjectsAndDivisions = async (req, res) => {
     WHERE teacherdata.\`Email ID\` = '${email}'
     `;
     const results = await teachersPool.query(getSubjectsAndDivisionsQuery, [email]);
-    console.log("Results: ",results[0]);
+    // console.log("Results: ",results[0]);
     if (results && results.length > 0) {
       // // Extract subjects, divisions, and coordinators
       // const dataRows = results[0];
@@ -684,6 +684,17 @@ const getSubjectsAndDivisions = async (req, res) => {
 
   } catch (error) {
     console.log("Error occurred: ", error);
+  }
+}
+
+
+const getSubjectAsPerAllotmaint=async(req,res)=>{
+  try{
+      const{subjectTableName,email}=req.params;
+      const query=`slect Subject from ${subjectTableName} where \`Email ID\`==${email}`;
+      const result=await teachersPool.query(query);
+  }catch(error){
+    res.send({message:"Internal server error"});
   }
 }
 

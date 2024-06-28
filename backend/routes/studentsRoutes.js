@@ -15,7 +15,7 @@ const {
   updateMaxMarks
 } = require("../controllers/studentController");
 
-router.get("/createTable/:tableName", createTableStudents);
+router.get("/createTable/:tableName/:degree_year/:department/:division", createTableStudents);
 router.get("/insertCountsOfPresentStudent/:tableName", countsOfPresentStudent);
 router.get("/insertCountsOfAbsentStudent/:tableName", countsOfAbsentStudent);
 router.get("/insertCountsOfPresentStudentPercentage/:tableName", countsOfPresentStudentPercentage);

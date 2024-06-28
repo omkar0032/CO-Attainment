@@ -1,11 +1,18 @@
 // controllers/studentsController.js
 const { pool } = require("../config/database");
+const{dropdownPool}=require("../config/database")
 const ExcelJS = require("exceljs");
 const xlsx = require("xlsx");
 // const fileUpload = require("express-fileupload");
 const path = require("path");
 const createTableStudents = async (req, res) => {
-  const { tableName } = req.params;
+  const { tableName,degree_year,department,division } = req.params;
+  let divisionInNumber;
+  // if(division!='ALL'){
+  //   const divisionInNumber=Number(division);
+  // }
+   division!='All' ?  divisionInNumber=Number(division): divisionInNumber=-1;
+  
   console.log(tableName);
   // Check if the table already exists
   const checkTableQuery = `
@@ -29,17 +36,20 @@ const createTableStudents = async (req, res) => {
       const rowCount = rowCountResult[0][0].row_count;
       console.log(rowCount);
       if (rowCount === 0) {
-        // Table is empty, send notification
-        const fetchDataQuery = `SELECT * FROM ${tableName}`;
-        const tableData = await pool.query(fetchDataQuery);
-        console.log(rowCount);
+        // console.log(rowCount);
         return res.status(200).send([]);
-      } else {
-        console.log("tableData[0]");
-        // Table is not empty, fetch data
-        const fetchDataQuery = `SELECT * FROM ${tableName}`;
+      }else if(division=='All'){
+        const fetchDataQuery = `SELECT * FROM ${tableName} `;
         const tableData = await pool.query(fetchDataQuery);
-        // console.log(tableData[0])
+        return res.status(200).send(tableData[0]);
+
+      }  else {
+        const queryToFetchDivisionCode=`SELECT Division_Code FROM department_and_year_wise_division WHERE (Degree_Year='${degree_year}' AND Department='${department}') AND Division=${divisionInNumber}`;
+        const resultOfDivisionCode=await dropdownPool.query(queryToFetchDivisionCode);
+        // console.log(resultOfDivisionCode[0][0].Division_Code)
+        const divisionCode=resultOfDivisionCode[0][0].Division_Code;
+        const fetchDataQuery = `SELECT * FROM ${tableName} WHERE \`Roll No\` LIKE '${divisionCode}%'`;
+        const tableData = await pool.query(fetchDataQuery);
         return res.status(200).send(tableData[0]);
       }
     } else {
