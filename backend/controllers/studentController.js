@@ -263,6 +263,8 @@ const countsOfPresentStudent = async (req, res) => {
       SUM(CASE WHEN \`UT2-Q2\` IS NOT NULL THEN 1 ELSE 0 END) AS sum_q22,
       SUM(CASE WHEN \`UT3-Q1\` IS NOT NULL THEN 1 ELSE 0 END) AS sum_q31,
       SUM(CASE WHEN \`UT3-Q2\` IS NOT NULL THEN 1 ELSE 0 END) AS sum_q32,
+      SUM(CASE WHEN \`INSEM-Q1\` IS NOT NULL THEN 1 ELSE 0 END) AS sum_insemq1,
+      SUM(CASE WHEN \`INSEM-Q2\` IS NOT NULL THEN 1 ELSE 0 END) AS sum_insemq2,
       SUM(CASE WHEN UA IS NOT NULL THEN 1 ELSE 0 END) AS sum_UA
       FROM ${tableName} AS new_table;`;
 
@@ -297,6 +299,8 @@ const countsOfAbsentStudent = async (req, res) => {
       SUM(CASE WHEN \`UT2-Q2\` IS  NULL THEN 1 ELSE 0 END) AS sum_q22,
       SUM(CASE WHEN \`UT3-Q1\` IS  NULL THEN 1 ELSE 0 END) AS sum_q31,
       SUM(CASE WHEN \`UT3-Q2\` IS  NULL THEN 1 ELSE 0 END) AS sum_q32,
+      SUM(CASE WHEN \`INSEM-Q1\` IS  NULL THEN 1 ELSE 0 END) AS sum_insemq1,
+      SUM(CASE WHEN \`INSEM-Q2\` IS  NULL THEN 1 ELSE 0 END) AS sum_insemq2,
       SUM(CASE WHEN UA IS  NULL THEN 1 ELSE 0 END) AS sum_UA
       FROM ${tableName} AS new_table;`;
 
@@ -331,8 +335,10 @@ const countsOfPresentStudentPercentage = async (req, res) => {
         (SUM(CASE WHEN \`UT2-Q2\` IS NOT NULL THEN 1 ELSE 0 END) * 100) / COUNT(*) AS sum_q22,
         (SUM(CASE WHEN \`UT3-Q1\` IS NOT NULL THEN 1 ELSE 0 END) * 100) / COUNT(*) AS sum_q31,
         (SUM(CASE WHEN \`UT3-Q2\` IS NOT NULL THEN 1 ELSE 0 END) * 100) / COUNT(*) AS sum_q32,
+        (SUM(CASE WHEN \`INSEM-Q1\` IS NOT NULL THEN 1 ELSE 0 END) * 100) / COUNT(*) AS sum_insemq1,
+        (SUM(CASE WHEN \`INSEM-Q2\` IS NOT NULL THEN 1 ELSE 0 END) * 100) / COUNT(*) AS sum_insemq2,
         (SUM(CASE WHEN UA IS NOT NULL THEN 1 ELSE 0 END) * 100) / COUNT(*) AS sum_UA
-      FROM ${tableName} AS new_table;
+        FROM ${tableName} AS new_table;
       `;
     const queryResult = await pool.query(sql);
 
@@ -371,8 +377,12 @@ const countsOflevel1 = async (req, res) => {
       SUM(CASE WHEN (\`UT2-Q2\` IS NOT NULL AND \`UT2-Q2\` >=(${firstResult['CO-4']}*40/100) ) THEN 1 ELSE 0 END) AS sum_q22,
       SUM(CASE WHEN (\`UT3-Q1\` IS NOT NULL AND \`UT3-Q1\` >=(${firstResult['CO-5']}*40/100) ) THEN 1 ELSE 0 END) AS sum_q31,
       SUM(CASE WHEN (\`UT3-Q2\` IS NOT NULL AND \`UT3-Q2\` >=(${firstResult['CO-6']}*40/100) ) THEN 1 ELSE 0 END) AS sum_q32,
+      SUM(CASE WHEN (\`INSEM-Q1\` IS NOT NULL AND \`INSEM-Q1\` >=(15*40/100) ) THEN 1 ELSE 0 END) AS sum_insemq1,
+      SUM(CASE WHEN (\`INSEM-Q2\` IS NOT NULL AND \`INSEM-Q2\` >=(15*40/100) ) THEN 1 ELSE 0 END) AS sum_insemq2,
+      SUM(CASE WHEN (\`ENDSEM\`  IS NOT NULL AND \`ENDSEM\` >=(70*40/100) ) THEN 1 ELSE 0 END) AS sum_endsem,
       SUM(CASE WHEN (UA IS NOT NULL AND UA >=(100*40/100) ) THEN 1 ELSE 0 END) AS sum_UA
       FROM ${tableName} AS new_table;`;
+
 
     const queryResult = await pool.query(sql);
 
@@ -410,6 +420,9 @@ const countsOflevel2 = async (req, res) => {
       SUM(CASE WHEN (\`UT2-Q2\` IS NOT NULL AND \`UT2-Q2\` >=(${firstResult['CO-4']}*60/100) ) THEN 1 ELSE 0 END) AS sum_q22,
       SUM(CASE WHEN (\`UT3-Q1\` IS NOT NULL AND \`UT3-Q1\` >=(${firstResult['CO-5']}*60/100) ) THEN 1 ELSE 0 END) AS sum_q31,
       SUM(CASE WHEN (\`UT3-Q2\` IS NOT NULL AND \`UT3-Q2\` >=(${firstResult['CO-6']}*60/100) ) THEN 1 ELSE 0 END) AS sum_q32,
+      SUM(CASE WHEN (\`INSEM-Q1\` IS NOT NULL AND \`INSEM-Q1\` >=(15*60/100) ) THEN 1 ELSE 0 END) AS sum_insemq1,
+      SUM(CASE WHEN (\`INSEM-Q2\` IS NOT NULL AND \`INSEM-Q2\` >=(15*60/100) ) THEN 1 ELSE 0 END) AS sum_insemq2,
+      SUM(CASE WHEN (\`ENDSEM\`  IS NOT NULL AND \`ENDSEM\` >=(70*60/100) ) THEN 1 ELSE 0 END) AS sum_endsem,
       SUM(CASE WHEN (UA IS NOT NULL AND UA >=(100*60/100) ) THEN 1 ELSE 0 END) AS sum_UA
       FROM ${tableName} AS new_table;`;
 
@@ -448,6 +461,9 @@ const countsOflevel3 = async (req, res) => {
       SUM(CASE WHEN (\`UT2-Q2\` IS NOT NULL AND \`UT2-Q2\` >=(${firstResult['CO-4']}*66/100) ) THEN 1 ELSE 0 END) AS sum_q22,
       SUM(CASE WHEN (\`UT3-Q1\` IS NOT NULL AND \`UT3-Q1\` >=(${firstResult['CO-5']}*66/100) ) THEN 1 ELSE 0 END) AS sum_q31,
       SUM(CASE WHEN (\`UT3-Q2\` IS NOT NULL AND \`UT3-Q2\` >=(${firstResult['CO-6']}*66/100) ) THEN 1 ELSE 0 END) AS sum_q32,
+      SUM(CASE WHEN (\`INSEM-Q1\` IS NOT NULL AND \`INSEM-Q1\` >=(15*66/100) ) THEN 1 ELSE 0 END) AS sum_insemq1,
+      SUM(CASE WHEN (\`INSEM-Q2\` IS NOT NULL AND \`INSEM-Q2\` >=(15*66/100) ) THEN 1 ELSE 0 END) AS sum_insemq2,
+      SUM(CASE WHEN (\`ENDSEM\`  IS NOT NULL AND \`ENDSEM\` >=(70*66/100) ) THEN 1 ELSE 0 END) AS sum_endsem,
       SUM(CASE WHEN (UA IS NOT NULL AND UA >=(100*66/100) ) THEN 1 ELSE 0 END) AS sum_UA
       FROM ${tableName} AS new_table;`;
 

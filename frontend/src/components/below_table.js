@@ -29,8 +29,8 @@ function BelowTable({ containerRef, tableName }) {
     sum_q22: "0",
     sum_q31: "0",
     sum_q32: "0",
-    // sum_insemq1:"0",
-    // sum_insemq2:"0",
+    sum_insemq1:"0",
+    sum_insemq2:"0",
     sum_UA: "0"
   }]);
 
@@ -42,8 +42,8 @@ function BelowTable({ containerRef, tableName }) {
     sum_q22: "0",
     sum_q31: "0",
     sum_q32: "0",
-    // sum_insemq1:"0",
-    // sum_insemq2:"0",
+    sum_insemq1:"0",
+    sum_insemq2:"0",
     sum_UA: "0"
   }]);
 
@@ -55,8 +55,8 @@ function BelowTable({ containerRef, tableName }) {
     sum_q22: "0",
     sum_q31: "0",
     sum_q32: "0",
-    // sum_insemq1:"0",
-    // sum_insemq2:"0",
+    sum_insemq1:"0",
+    sum_insemq2:"0",
     sum_UA: "0"
   }]);
 
@@ -68,8 +68,9 @@ function BelowTable({ containerRef, tableName }) {
     sum_q22: "0",
     sum_q31: "0",
     sum_q32: "0",
-    // sum_insemq1:"0",
-    // sum_insemq2:"0",
+    sum_insemq1:"0",
+    sum_insemq2:"0",
+    sum_endsem:"0",
     sum_UA: "0"
   }]);
 
@@ -81,8 +82,9 @@ function BelowTable({ containerRef, tableName }) {
     sum_q22: "0",
     sum_q31: "0",
     sum_q32: "0",
-    // sum_insemq1:"0",
-    // sum_insemq2:"0",
+    sum_insemq1:"0",
+    sum_insemq2:"0",
+    sum_endsem:"0",
     sum_UA: "0"
   }]);
 
@@ -94,8 +96,9 @@ function BelowTable({ containerRef, tableName }) {
     sum_q22: "0",
     sum_q31: "0",
     sum_q32: "0",
-    // sum_insemq1:"0",
-    // sum_insemq2:"0",
+    sum_insemq1:"0",
+    sum_insemq2:"0",
+    sum_endsem:"0",
     sum_UA: "0"
   }]);
 
@@ -128,6 +131,9 @@ function BelowTable({ containerRef, tableName }) {
     setCovalue(prevState => {
       // Perform the calculations
       const UA_CO_AT = (((((countLevelOne[0].sum_UA * 100) / presentStudent[0].sum_UA) / countLevelOneUA) + (((countLevelTwo[0].sum_UA * 100) / presentStudent[0].sum_UA) * 2 / countLevelTwoUA) + (((countLevelThree[0].sum_UA * 100) / presentStudent[0].sum_UA) * 3 / countLevelThreeUA)) / 6).toFixed(2);
+      // const UA_CO_AT =((((((((((countLevelOne[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1) / countLevelOneUA) + (((countLevelTwo[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1) * 2 / countLevelTwoUA) + (((countLevelThree[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1) * 3 / countLevelThreeUA)) / 6)+
+      //   (((((countLevelOne[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2) / countLevelOneUA) + (((countLevelTwo[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2) * 2 / countLevelTwoUA) + (((countLevelThree[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2) * 3 / countLevelThreeUA)) / 6))/2))+
+      //   (((((((countLevelOne[0].sum_endsem * 100) / presentStudent[0].sum_UA) / countLevelOneUA) + (((countLevelTwo[0].sum_endsem * 100) / presentStudent[0].sum_UA) * 2 / countLevelTwoUA) + (((countLevelThree[0].sum_endsem * 100) / presentStudent[0].sum_UA) * 3 / countLevelThreeUA)) / 6))))/2).toFixed(2) ;
       
       const UT_CO_attainment = (((((((((countLevelOne[0].sum_q11 * 100) / presentStudent[0].sum_q11) / countLevelOneUT)) + ((((countLevelTwo[0].sum_q11 * 100) / presentStudent[0].sum_q11) * 2 / countLevelTwoUT)) + ((((countLevelThree[0].sum_q11 * 100) / presentStudent[0].sum_q11) * 3 / countLevelThreeUT))) / 6)) +
                     (((((((countLevelOne[0].sum_q12 * 100) / presentStudent[0].sum_q12) / countLevelOneUT)) + ((((countLevelTwo[0].sum_q12 * 100) / presentStudent[0].sum_q12) * 2 / countLevelTwoUT)) + ((((countLevelThree[0].sum_q12 * 100) / presentStudent[0].sum_q11) * 3 / countLevelThreeUT))) / 6)) +
@@ -282,8 +288,6 @@ function BelowTable({ containerRef, tableName }) {
             <td>{presentStudent[0].sum_insemq2}</td>
             <td>{presentStudent[0].sum_UA}</td>
             <td>{presentStudent[0].sum_UA}</td>
-
-
           </tbody>
           <tbody>
             <td>ABSENT STUDENT</td>
@@ -321,7 +325,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{countLevelOne[0].sum_q32}</td>
             <td>{countLevelOne[0].sum_insemq1}</td>
             <td>{countLevelOne[0].sum_insemq2}</td>
-            <td>{countLevelOne[0].sum_UA}</td>
+            <td>{countLevelOne[0].sum_endsem}</td>
             <td>{countLevelOne[0].sum_UA}</td>
           </tbody>
           <tbody>
@@ -334,7 +338,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{countLevelTwo[0].sum_q32}</td>
             <td>{countLevelTwo[0].sum_insemq1}</td>
             <td>{countLevelTwo[0].sum_insemq2}</td>
-            <td>{countLevelTwo[0].sum_UA}</td>
+            <td>{countLevelTwo[0].sum_endsem}</td>
             <td>{countLevelTwo[0].sum_UA}</td>
           </tbody>
           <tbody>
@@ -347,7 +351,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{countLevelThree[0].sum_q32}</td>
             <td>{countLevelThree[0].sum_insemq1}</td>
             <td>{countLevelThree[0].sum_insemq2}</td>
-            <td>{countLevelThree[0].sum_UA}</td>
+            <td>{countLevelThree[0].sum_endsem}</td>
             <td>{countLevelThree[0].sum_UA}</td>
 
           </tbody>
@@ -361,7 +365,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{((countLevelOne[0].sum_q32 * 100) / presentStudent[0].sum_q32).toFixed(2)}</td>
             <td>{((countLevelOne[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1).toFixed(2)}</td>
             <td>{((countLevelOne[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2).toFixed(2)}</td>
-            <td>{((countLevelOne[0].sum_UA * 100) / presentStudent[0].sum_UA).toFixed(2)}</td>
+            <td>{((countLevelOne[0].sum_endsem * 100) / presentStudent[0].sum_UA).toFixed(2)}</td>
             <td>{((countLevelOne[0].sum_UA * 100) / presentStudent[0].sum_UA).toFixed(2)}</td>
             <td>{((((countLevelOne[0].sum_q11 * 100) / presentStudent[0].sum_q11)+((countLevelOne[0].sum_q12 * 100) / presentStudent[0].sum_q12)+((countLevelOne[0].sum_q21 * 100) / presentStudent[0].sum_q21)+((countLevelOne[0].sum_q22 * 100) / presentStudent[0].sum_q22)+((countLevelOne[0].sum_q31 * 100) / presentStudent[0].sum_q31)+((countLevelOne[0].sum_q32 * 100) / presentStudent[0].sum_q32))/6).toFixed(2)}</td>
           </tbody>
@@ -375,7 +379,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{((countLevelTwo[0].sum_q32 * 100) / presentStudent[0].sum_q32).toFixed(2)}</td>
             <td>{((countLevelTwo[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1).toFixed(2)}</td>
             <td>{((countLevelTwo[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2).toFixed(2)}</td>
-            <td>{((countLevelTwo[0].sum_UA * 100) / presentStudent[0].sum_UA).toFixed(2)}</td>
+            <td>{((countLevelTwo[0].sum_endsem * 100) / presentStudent[0].sum_UA).toFixed(2)}</td>
             <td>{((countLevelTwo[0].sum_UA * 100) / presentStudent[0].sum_UA).toFixed(2)}</td>
             <td>{((((countLevelTwo[0].sum_q11 * 100) / presentStudent[0].sum_q11)+((countLevelTwo[0].sum_q12 * 100) / presentStudent[0].sum_q12)+((countLevelTwo[0].sum_q21 * 100) / presentStudent[0].sum_q21)+((countLevelTwo[0].sum_q22 * 100) / presentStudent[0].sum_q22)+((countLevelTwo[0].sum_q31 * 100) / presentStudent[0].sum_q31)+((countLevelTwo[0].sum_q32 * 100) / presentStudent[0].sum_q32))/6).toFixed(2)}</td>
           </tbody>
@@ -389,7 +393,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{((countLevelThree[0].sum_q32 * 100) / presentStudent[0].sum_q32).toFixed(2)}</td>
             <td>{((countLevelThree[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1).toFixed(2)}</td>
             <td>{((countLevelThree[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2).toFixed(2)}</td>
-            <td>{((countLevelThree[0].sum_UA * 100) / presentStudent[0].sum_UA).toFixed(2)}</td>
+            <td>{((countLevelThree[0].sum_endsem * 100) / presentStudent[0].sum_UA).toFixed(2)}</td>
             <td>{((countLevelThree[0].sum_UA * 100) / presentStudent[0].sum_UA).toFixed(2)}</td>
             <td>{((((countLevelThree[0].sum_q11 * 100) / presentStudent[0].sum_q11)+((countLevelThree[0].sum_q12 * 100) / presentStudent[0].sum_q12)+((countLevelThree[0].sum_q21 * 100) / presentStudent[0].sum_q21)+((countLevelThree[0].sum_q22 * 100) / presentStudent[0].sum_q22)+((countLevelThree[0].sum_q31 * 100) / presentStudent[0].sum_q31)+((countLevelThree[0].sum_q32 * 100) / presentStudent[0].sum_q32))/6).toFixed(2)}</td>
           </tbody>
@@ -403,7 +407,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{(((countLevelOne[0].sum_q32 * 100) / presentStudent[0].sum_q32) / countLevelOneUT).toFixed(2)}</td>
             <td>{(((countLevelOne[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1) / countLevelOneUA).toFixed(2)}</td>
             <td>{(((countLevelOne[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2) / countLevelOneUA).toFixed(2)}</td>
-            <td>{(((countLevelOne[0].sum_UA * 100) / presentStudent[0].sum_UA) / countLevelOneUA).toFixed(2)}</td>
+            <td>{(((countLevelOne[0].sum_endsem * 100) / presentStudent[0].sum_UA) / countLevelOneUA).toFixed(2)}</td>
             <td>{(((countLevelOne[0].sum_UA * 100) / presentStudent[0].sum_UA) / countLevelOneUA).toFixed(2)}</td>
           </tbody>
           <tbody>
@@ -416,7 +420,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{(((countLevelTwo[0].sum_q32 * 100) / presentStudent[0].sum_q32) * 2 / countLevelTwoUT).toFixed(2)}</td>
             <td>{(((countLevelTwo[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1) * 2 / countLevelTwoUA).toFixed(2)}</td>
             <td>{(((countLevelTwo[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2) * 2 / countLevelTwoUA).toFixed(2)}</td>
-            <td>{(((countLevelTwo[0].sum_UA * 100) / presentStudent[0].sum_UA) * 2 / countLevelTwoUA).toFixed(2)}</td>
+            <td>{(((countLevelTwo[0].sum_endsem * 100) / presentStudent[0].sum_UA) * 2 / countLevelTwoUA).toFixed(2)}</td>
             <td>{(((countLevelTwo[0].sum_UA * 100) / presentStudent[0].sum_UA) * 2 / countLevelTwoUA).toFixed(2)}</td>
           </tbody>
           <tbody>
@@ -429,7 +433,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{(((countLevelThree[0].sum_q32 * 100) / presentStudent[0].sum_q32) * 3 / countLevelThreeUT).toFixed(2)}</td>
             <td>{(((countLevelThree[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1) * 3 / countLevelThreeUA).toFixed(2)}</td>
             <td>{(((countLevelThree[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2) * 3 / countLevelThreeUA).toFixed(2)}</td>
-            <td>{(((countLevelThree[0].sum_UA * 100) / presentStudent[0].sum_UA) * 3 / countLevelThreeUA).toFixed(2)}</td>
+            <td>{(((countLevelThree[0].sum_endsem * 100) / presentStudent[0].sum_UA) * 3 / countLevelThreeUA).toFixed(2)}</td>
             <td>{(((countLevelThree[0].sum_UA * 100) / presentStudent[0].sum_UA) * 3 / countLevelThreeUA).toFixed(2)}</td>
           </tbody>
           <tbody>
@@ -442,7 +446,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{(((countLevelOne[0].sum_q32 * 100) / presentStudent[0].sum_q32) / countLevelOneUT).toFixed(2)}</td>
             <td>{(((countLevelOne[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1) / countLevelOneUA).toFixed(2)}</td>
             <td>{(((countLevelOne[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2) / countLevelOneUA).toFixed(2)}</td>
-            <td>{(((countLevelOne[0].sum_UA * 100) / presentStudent[0].sum_UA) / countLevelOneUA).toFixed(2)}</td>
+            <td>{(((countLevelOne[0].sum_endsem * 100) / presentStudent[0].sum_UA) / countLevelOneUA).toFixed(2)}</td>
             <td>{(((countLevelOne[0].sum_UA * 100) / presentStudent[0].sum_UA) / countLevelOneUA).toFixed(2)}</td>
             {/* <td></td> */}
           </tbody>
@@ -456,7 +460,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{(((countLevelTwo[0].sum_q32 * 100) / presentStudent[0].sum_q32) * 2 / countLevelTwoUT).toFixed(2)}</td>
             <td>{(((countLevelTwo[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1) * 2 / countLevelTwoUA).toFixed(2)}</td>
             <td>{(((countLevelTwo[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2) * 2 / countLevelTwoUA).toFixed(2)}</td>
-            <td>{(((countLevelTwo[0].sum_UA * 100) / presentStudent[0].sum_UA) * 2 / countLevelTwoUA).toFixed(2)}</td>
+            <td>{(((countLevelTwo[0].sum_endsem * 100) / presentStudent[0].sum_UA) * 2 / countLevelTwoUA).toFixed(2)}</td>
             <td>{(((countLevelTwo[0].sum_UA * 100) / presentStudent[0].sum_UA) * 2 / countLevelTwoUA).toFixed(2)}</td>
             {/* <td></td> */}
           </tbody>
@@ -470,7 +474,7 @@ function BelowTable({ containerRef, tableName }) {
             <td>{(((countLevelThree[0].sum_q32 * 100) / presentStudent[0].sum_q32) * 3 / countLevelThreeUT).toFixed(2)}</td>
             <td>{(((countLevelThree[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1) * 3 / countLevelThreeUA).toFixed(2)}</td>
             <td>{(((countLevelThree[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2) * 3 / countLevelThreeUA).toFixed(2)}</td>
-            <td>{(((countLevelThree[0].sum_UA * 100) / presentStudent[0].sum_UA) * 3 / countLevelThreeUA).toFixed(2)}</td>
+            <td>{(((countLevelThree[0].sum_endsem * 100) / presentStudent[0].sum_UA) * 3 / countLevelThreeUA).toFixed(2)}</td>
             <td>{(((countLevelThree[0].sum_UA * 100) / presentStudent[0].sum_UA) * 3 / countLevelThreeUA).toFixed(2)}</td>
             {/* <td></td> */}
           </tbody>
@@ -498,7 +502,7 @@ function BelowTable({ containerRef, tableName }) {
               (((((((countLevelOne[0].sum_q32 * 100) / presentStudent[0].sum_q32) / countLevelOneUT)) + ((((countLevelTwo[0].sum_q32 * 100) / presentStudent[0].sum_q32) * 2 / countLevelTwoUT)) + ((((countLevelThree[0].sum_q32 * 100) / presentStudent[0].sum_q32) * 3 / countLevelThreeUT))) / 6))) / 6).toFixed(2),1)}</td>
              <td colSpan="2">{Math.min((((((((countLevelOne[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1) / countLevelOneUA) + (((countLevelTwo[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1) * 2 / countLevelTwoUA) + (((countLevelThree[0].sum_insemq1 * 100) / presentStudent[0].sum_insemq1) * 3 / countLevelThreeUA)) / 6)+
               (((((countLevelOne[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2) / countLevelOneUA) + (((countLevelTwo[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2) * 2 / countLevelTwoUA) + (((countLevelThree[0].sum_insemq2 * 100) / presentStudent[0].sum_insemq2) * 3 / countLevelThreeUA)) / 6))/2).toFixed(2),1)}</td>
-            <td>{Math.min((((((countLevelOne[0].sum_UA * 100) / presentStudent[0].sum_UA) / countLevelOneUA) + (((countLevelTwo[0].sum_UA * 100) / presentStudent[0].sum_UA) * 2 / countLevelTwoUA) + (((countLevelThree[0].sum_UA * 100) / presentStudent[0].sum_UA) * 3 / countLevelThreeUA)) / 6).toFixed(2),1)}</td>
+            <td>{Math.min((((((countLevelOne[0].sum_endsem * 100) / presentStudent[0].sum_UA) / countLevelOneUA) + (((countLevelTwo[0].sum_endsem * 100) / presentStudent[0].sum_UA) * 2 / countLevelTwoUA) + (((countLevelThree[0].sum_endsem * 100) / presentStudent[0].sum_UA) * 3 / countLevelThreeUA)) / 6).toFixed(2),1)}</td>
             <td>{Math.min((((((countLevelOne[0].sum_UA * 100) / presentStudent[0].sum_UA) / countLevelOneUA) + (((countLevelTwo[0].sum_UA * 100) / presentStudent[0].sum_UA) * 2 / countLevelTwoUA) + (((countLevelThree[0].sum_UA * 100) / presentStudent[0].sum_UA) * 3 / countLevelThreeUA)) / 6).toFixed(2),1)}</td>
           </tbody>
         </table> : <div></div>}
@@ -522,11 +526,8 @@ function BelowTable({ containerRef, tableName }) {
         <table style={{ margin: "25px" }}>
           <tbody>
             <tr>
-              <td>Insem_CO_Ataniment</td>
+              <td>UA_CO_Attainment</td>
               <td><input name='UA_CO_AT' defaultValue={coValue.UA_CO_AT}  onChange={(event)=>handleOnChange(event)}></input></td>
-            </tr>
-            <tr>
-              <td>Endsem_CO_Attainment</td>
             </tr>
             <tr>
               <td>UT_CO_Attainment</td>
@@ -540,6 +541,7 @@ function BelowTable({ containerRef, tableName }) {
         </table>
         <button onClick={handleCoPoAttainment} className='bg-primary'>Save Attainment</button>
       </div>
+
     </>
   ) 
 }

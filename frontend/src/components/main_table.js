@@ -936,7 +936,7 @@ const Main_table = ({ tableName }) => {
       </div>
       <div className="omkar">
         <Button style={{marginLeft: '47%',marginBottom: '10px'}} className="p-[20px] font-bol" onClick={displayResult}>
-          {resultState ? "Hide Result" : "Show Result"}
+          {resultState ? "Attainment" : "Calculate Attainment"}
         </Button>
       </div>
       {resultState && (
